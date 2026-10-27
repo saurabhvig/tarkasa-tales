@@ -16,9 +16,9 @@ isbn: "9798165504198"
 asin: "B0HPCSBCCJ"
 amazon:
   amazonNl: "https://www.amazon.nl/dp/B0HPCSBCCJ"
-  # amazonCom: "https://www.amazon.com/dp/B0HPCSBCCJ"     # add once checked
-  # amazonCoUk: "https://www.amazon.co.uk/dp/B0HPCSBCCJ"  # add once checked
-  # amazonDe: "https://www.amazon.de/dp/B0HPCSBCCJ"       # add once checked
+  amazonCom: "https://www.amazon.com/dp/B0HPCSBCCJ"
+  amazonCoUk: "https://www.amazon.co.uk/dp/B0HPCSBCCJ"
+  amazonDe: "https://www.amazon.de/dp/B0HPCSBCCJ"
 status: published
 featured: true
 themes: ["Curiosity", "Imagination", "Checking ideas", "Persistence", "Light and energy"]

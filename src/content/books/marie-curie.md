@@ -16,9 +16,9 @@ isbn: "9798164891602"
 asin: "B0HP78VF2B"
 amazon:
   amazonNl: "https://www.amazon.nl/dp/B0HP78VF2B"
-  # amazonCom: "https://www.amazon.com/dp/B0HP78VF2B"     # add once checked
-  # amazonCoUk: "https://www.amazon.co.uk/dp/B0HP78VF2B"  # add once checked
-  # amazonDe: "https://www.amazon.de/dp/B0HP78VF2B"       # add once checked
+  amazonCom: "https://www.amazon.com/dp/B0HP78VF2B"
+  amazonCoUk: "https://www.amazon.co.uk/dp/B0HP78VF2B"
+  amazonDe: "https://www.amazon.de/dp/B0HP78VF2B"
 status: published
 featured: true
 themes: ["Curiosity", "Persistence", "Science and discovery", "Girls in science", "Helping others"]
