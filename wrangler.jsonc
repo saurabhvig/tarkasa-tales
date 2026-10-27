@@ -3,6 +3,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tarkasa-tales",
   "compatibility_date": "2026-10-01",
+  // The web addresses this site answers on. Cloudflare creates the DNS records and HTTPS certificates.
+  "routes": [
+    { "pattern": "tarkasatales.com", "custom_domain": true },
+    { "pattern": "www.tarkasatales.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     // Show our friendly custom page for addresses that don't exist
