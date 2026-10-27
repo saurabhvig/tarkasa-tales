@@ -12,12 +12,13 @@ ageMax: 8
 language: English
 pageCount: 40
 formats: [Paperback]
+asin: "B0HN84T8MQ"
 amazon:
-  # amazonCom: "https://www.amazon.com/dp/XXXXXXXXXX"
-  # amazonCoUk: "https://www.amazon.co.uk/dp/XXXXXXXXXX"
-  # amazonDe: "https://www.amazon.de/dp/XXXXXXXXXX"
-  # amazonNl: "https://www.amazon.nl/dp/XXXXXXXXXX"
-status: coming-soon        # change to: published  (and add the Amazon links above)
+  amazonNl: "https://www.amazon.nl/dp/B0HN84T8MQ"
+  # amazonCom: "https://www.amazon.com/dp/B0HN84T8MQ"     # add once checked
+  # amazonCoUk: "https://www.amazon.co.uk/dp/B0HN84T8MQ"  # add once checked
+  # amazonDe: "https://www.amazon.de/dp/B0HN84T8MQ"       # add once checked
+status: published
 featured: true
 themes: ["Feeling nervous", "Frustration", "Sadness and loss", "Jealousy", "Friendship", "Helping others"]
 samples:
