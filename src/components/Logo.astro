@@ -1,0 +1,13 @@
+---
+import Mark from './Mark.astro';
+interface Props { reversed?: boolean; size?: 'md' | 'lg' }
+const { reversed = false, size = 'md' } = Astro.props;
+const big = size === 'lg';
+---
+<a href="/" class="inline-flex items-center gap-2.5 no-underline rounded-xl" aria-label="Tarkasa Tales — home">
+  <Mark size={big ? 64 : 50} reversed={reversed} />
+  <span class="flex flex-col leading-[0.92]" aria-hidden="true">
+    <span class:list={['font-display font-bold', big ? 'text-[2.1rem]' : 'text-[1.65rem]', reversed ? 'text-cream' : 'text-plum']}>Tarkasa</span>
+    <span class:list={['font-display font-medium tracking-[0.4em] pl-0.5', big ? 'text-base' : 'text-[0.8rem]', reversed ? 'text-[#E9E1F7]' : 'text-ink-soft']}>TALES</span>
+  </span>
+</a>

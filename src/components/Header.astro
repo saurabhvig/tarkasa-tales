@@ -1,0 +1,77 @@
+---
+import Logo from './Logo.astro';
+
+export const NAV = [
+  { href: '/', label: 'Home' },
+  { href: '/books/', label: 'Our Books' },
+  { href: '/series/', label: 'Book Series' },
+  { href: '/coming-soon/', label: 'Coming Soon' },
+  { href: '/activities/', label: 'Free Activities' },
+  { href: '/about/', label: 'About' },
+  { href: '/contact/', label: 'Contact' },
+];
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<header class="site-header border-b border-line bg-cream/95 backdrop-blur supports-[backdrop-filter]:bg-cream/85 relative z-30">
+  <div class="container-site flex items-center justify-between gap-4 py-3">
+    <Logo />
+    <button
+      type="button"
+      class="menu-toggle lg:hidden inline-flex items-center gap-2 min-h-12 px-4 rounded-2xl bg-plum text-cream font-extrabold"
+      aria-controls="site-nav"
+      aria-expanded="false"
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="i-open" d="M4 7H20M4 12H20M4 17H14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"></path><path class="i-close" d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"></path></svg>
+      <span>Menu</span>
+    </button>
+    <nav id="site-nav" aria-label="Main" class="site-nav">
+      <ul class="flex flex-col lg:flex-row lg:items-center gap-1">
+        {NAV.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+              class="nav-link block rounded-full px-4 lg:px-3 xl:px-3.5 py-3 lg:py-2.5 font-bold no-underline text-ink hover:bg-white hover:text-plum aria-[current=page]:bg-white aria-[current=page]:text-plum aria-[current=page]:font-extrabold"
+            >{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .i-close { display: none; }
+  .menu-toggle[aria-expanded='true'] .i-open { display: none; }
+  .menu-toggle[aria-expanded='true'] .i-close { display: inline; }
+  /* Without JavaScript the menu is always shown, so nothing is ever unreachable. */
+  @media (max-width: 1023.98px) {
+    :global(.js) .site-nav { display: none; }
+    :global(.js) .site-nav.is-open {
+      display: block; position: absolute; left: 0; right: 0; top: 100%;
+      background: var(--color-cream); border-bottom: 1px solid var(--color-line);
+      padding: 0.5rem 1rem 1.25rem; box-shadow: 0 18px 30px rgba(46, 33, 64, 0.12);
+    }
+    .site-nav { width: 100%; }
+    .site-header > div { flex-wrap: wrap; }
+    :global(.js) .site-header > div { flex-wrap: nowrap; }
+    .nav-link { font-size: 1.125rem; }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.getElementById('site-nav');
+  if (toggle && nav) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('is-open', open);
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') { setOpen(false); toggle.focus(); }
+    });
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', () => setOpen(false));
+  }
+</script>

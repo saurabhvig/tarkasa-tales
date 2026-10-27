@@ -1,0 +1,144 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BookCard from '../components/BookCard.astro';
+import SeriesCard from '../components/SeriesCard.astro';
+import ComingSoonCard from '../components/ComingSoonCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Sparkle from '../components/Sparkle.astro';
+import Planet from '../components/Planet.astro';
+import Mark from '../components/Mark.astro';
+import NameEquation from '../components/NameEquation.astro';
+import { getFeatured, getPublished, getComingSoon, getAllSeries, coverAlt } from '../lib/books';
+import { SITE } from '../site.config';
+
+const featured = await getFeatured();
+const published = await getPublished();
+const featuredBooks = (featured.length ? featured : published).slice(0, 4);
+const heroBooks = [...featuredBooks, ...(await getComingSoon())].slice(0, 3);
+const soon = (await getComingSoon()).slice(0, 3);
+const series = await getAllSeries();
+
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.name,
+  url: SITE.url,
+  logo: `${SITE.url}/brand/icon-512.png`,
+  slogan: SITE.tagline,
+  ...(SITE.contactEmail ? { email: SITE.contactEmail } : {}),
+  sameAs: Object.values(SITE.social).filter(Boolean),
+};
+const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url };
+---
+<BaseLayout title={SITE.name} jsonLd={[orgLd, siteLd]}>
+  <!-- HERO -->
+  <section aria-labelledby="hero-title" class="relative overflow-hidden">
+    <div class="container-site grid items-center gap-12 py-14 lg:grid-cols-2 lg:py-20">
+      <div class="flex flex-col gap-6">
+        <p class="inline-flex items-center gap-2 self-start rounded-full bg-white px-4 py-2 text-sm font-extrabold text-plum">
+          <Sparkle size={16} /> Illustrated books for curious minds, ages 4–8
+        </p>
+        <h1 id="hero-title" class="text-[2.9rem] sm:text-6xl lg:text-[4.4rem] leading-[1.02]">Little Questions.<br />Big Discoveries.</h1>
+        <p class="max-w-xl text-lg sm:text-xl leading-relaxed">
+          Explore inspiring scientists, timeless stories and wonderful discoveries through beautifully illustrated books that spark curiosity and imagination.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/books/" class="btn btn-primary text-[1.0625rem] min-h-[3.4rem] px-8">Explore Our Books</a>
+          <a href="/series/" class="btn btn-secondary text-[1.0625rem] min-h-[3.4rem] px-8">Discover Our Series</a>
+        </div>
+        <p class="text-[0.9375rem] text-ink-soft">Picture books for ages 4–8 · Available on Amazon</p>
+      </div>
+
+      <div class="relative mx-auto h-[20rem] w-full max-w-[34rem] sm:h-[28rem]" aria-hidden="true">
+        <div class="absolute inset-[6%_0_0_6%] rounded-[48%_52%_44%_56%/52%_46%_54%_48%] bg-yellow"></div>
+        <Planet size={120} class="absolute right-[4%] top-0" />
+        <Sparkle size={40} color="#F39A9D" class="absolute left-0 top-[2%]" />
+        <Sparkle size={26} color="#53406C" class="absolute left-[10%] bottom-[4%]" />
+        {heroBooks.map((b, i) => (
+          <Image
+            src={b.data.cover}
+            alt=""
+            widths={[240, 360, 480]}
+            sizes="(min-width: 640px) 220px, 40vw"
+            loading="eager"
+            class:list={[
+              'absolute aspect-[4/5] rounded-xl object-cover border-[5px] border-white shadow-[0_22px_36px_rgba(46,33,64,0.25)]',
+              i === 0 && 'left-[30%] top-[6%] w-[40%] z-20',
+              i === 1 && 'left-[5%] top-[22%] w-[35%] -rotate-[8deg] z-10',
+              i === 2 && 'right-[3%] top-[26%] w-[33%] rotate-[7deg] z-10',
+            ]}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED -->
+  {featuredBooks.length > 0 && (
+    <section aria-labelledby="featured" class="rounded-t-[3rem] bg-white/70">
+      <div class="container-site flex flex-col gap-9 py-16 lg:py-20">
+        <SectionHeading eyebrow="Reader favourites" title="Featured books" id="featured" linkHref="/books/" linkLabel="See all books" />
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {featuredBooks.map((b) => <BookCard book={b} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- COLLECTIONS -->
+  <section aria-labelledby="collections" class="bg-white/70">
+    <div class="container-site flex flex-col gap-8 pb-20">
+      <SectionHeading eyebrow="Explore" title="Our collections" id="collections" linkHref="/series/" linkLabel="All series" />
+      <div class="grid gap-7 lg:grid-cols-2">
+        {series.map((s) => <SeriesCard series={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- COMING SOON -->
+  {soon.length > 0 && (
+    <section aria-labelledby="soon">
+      <div class="container-site flex flex-col gap-8 py-20">
+        <SectionHeading eyebrow="On the way" title="Coming soon" id="soon" linkHref="/coming-soon/" linkLabel="All upcoming books" />
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {soon.map((b) => <ComingSoonCard book={b} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ACTIVITIES -->
+  <section aria-labelledby="activities" class:list={["container-site pb-20", soon.length === 0 && "pt-20"]}>
+    <div class="flex flex-wrap items-center gap-10 rounded-[2.5rem] bg-yellow px-7 py-12 sm:px-12 text-plum-deep">
+      <div class="flex min-w-[16rem] flex-1 flex-col gap-4">
+        <p class="text-sm font-extrabold uppercase tracking-[0.12em]">Free printables</p>
+        <h2 id="activities" class="text-[2.1rem] sm:text-[2.6rem] !text-plum-deep">Keep the curiosity going after the last page</h2>
+        <p class="text-lg">Colouring sheets, word searches and simple science activities for grown-ups to print and enjoy with young readers.</p>
+        <a href="/activities/" class="btn btn-dark self-start">Browse Free Activities</a>
+      </div>
+      <ul class="grid flex-1 min-w-[16rem] grid-cols-3 gap-3 sm:gap-4">
+        <li class="flex flex-col items-center gap-2 rounded-3xl bg-cream px-2 py-5 text-center font-extrabold"><Sparkle size={40} color="#F39A9D" />Colouring</li>
+        <li class="flex flex-col items-center gap-2 rounded-3xl bg-cream px-2 py-5 text-center font-extrabold">
+          <svg width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="6" width="36" height="36" rx="8" fill="none" stroke="#53406C" stroke-width="3"></rect><path d="M14 18H34M14 26H28M14 34H22" stroke="#80C9C3" stroke-width="4" stroke-linecap="round"></path></svg>Word search
+        </li>
+        <li class="flex flex-col items-center gap-2 rounded-3xl bg-cream px-2 py-5 text-center font-extrabold">
+          <svg width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><path d="M18 6H30M20 6V20L9 38C8 40 9 42 12 42H36C39 42 40 40 39 38L28 20V6" fill="none" stroke="#53406C" stroke-width="3" stroke-linejoin="round"></path><path d="M14 32H34L37 38H11Z" fill="#B6A5E3"></path></svg>Science
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section aria-labelledby="why" class="container-site pb-24">
+    <div class="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
+      <Mark size={76} />
+      <h2 id="why" class="text-[2.1rem] sm:text-[2.6rem]">Why “Tarkasa”?</h2>
+      <NameEquation />
+      <p class="text-lg sm:text-xl leading-relaxed">
+        Tarkasa brings together two Sanskrit words: <em lang="sa-Latn">tarka</em> (<span lang="sa">तर्क</span>), reasoning and logical thinking, and <em lang="sa-Latn">jijñāsā</em> (<span lang="sa">जिज्ञासा</span>), the desire to know. Together they describe what we hope every book sparks: the curiosity to ask questions, and the thinking that helps answer them.
+      </p>
+      <a href="/about/" class="font-extrabold text-lg">About Tarkasa Tales <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</BaseLayout>

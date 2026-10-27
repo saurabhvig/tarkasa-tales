@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Planet from '../components/Planet.astro';
+import { SITE } from '../site.config';
+const email = SITE.contactEmail;
+const reasons = [
+  ['Parents & grandparents', 'Questions about our books or which title suits your child.'],
+  ['Teachers & libraries', 'Using our books and free activities in classrooms and reading programmes.'],
+  ['Orders & delivery', 'Our books are sold by Amazon, so please contact Amazon customer service about orders, delivery and returns.'],
+];
+---
+<BaseLayout title="Contact" description="Get in touch with Tarkasa Tales about our children’s books, school and library enquiries, or free activities.">
+  <div class="container-site grid gap-12 py-14 lg:grid-cols-[1.2fr_1fr] lg:py-20">
+    <div class="flex flex-col gap-6">
+      <p class="eyebrow">Contact</p>
+      <h1 class="text-5xl sm:text-6xl">We’d love to hear from you</h1>
+      <p class="text-xl leading-relaxed">Questions about our books, ideas for future titles, or school and library enquiries — send us an email and we’ll reply as soon as we can.</p>
+      {email ? (
+        <div class="flex flex-col items-start gap-3 rounded-[var(--radius-card)] bg-white p-6">
+          <p class="font-bold text-ink-soft">Email us at</p>
+          <a href={`mailto:${email}`} class="font-display text-2xl sm:text-3xl font-semibold break-all">{email}</a>
+          <a href={`mailto:${email}?subject=${encodeURIComponent('Hello Tarkasa Tales')}`} class="btn btn-primary mt-2">Write an email</a>
+        </div>
+      ) : (
+        <p class="rounded-[var(--radius-card)] border-2 border-dashed border-plum bg-yellow-soft p-6 font-bold text-plum-deep">Our contact email address will appear here very soon.</p>
+      )}
+      <p class="text-[0.9375rem] text-ink-soft">We only use your email to reply to you. See our <a href="/privacy/" class="font-bold">Privacy Policy</a>. Children: please ask a grown-up to write to us for you.</p>
+    </div>
+    <div class="flex flex-col gap-4">
+      <Planet size={140} class="self-end" />
+      {reasons.map(([t, d]) => (
+        <div class="rounded-[var(--radius-card)] bg-white p-5">
+          <h2 class="text-xl">{t}</h2>
+          <p class="mt-1">{d}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

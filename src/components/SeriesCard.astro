@@ -1,0 +1,28 @@
+---
+import { Image } from 'astro:assets';
+import { type Series, getBooksInSeries, SERIES_COLORS, seriesUrl, coverAlt } from '../lib/books';
+interface Props { series: Series; headingLevel?: 'h2' | 'h3' }
+const { series, headingLevel = 'h3' } = Astro.props;
+const col = SERIES_COLORS[series.data.color];
+const books = (await getBooksInSeries(series.id)).slice(0, 2);
+const H = headingLevel;
+---
+<article class:list={['relative flex flex-wrap items-center gap-7 rounded-[var(--radius-panel)] p-7 sm:p-10 text-plum-deep', col.panel]}>
+  <div class="flex min-w-[14rem] flex-1 flex-col gap-3">
+    <p class="text-sm font-extrabold uppercase tracking-[0.12em]">Series</p>
+    <H class="text-[2rem] sm:text-[2.4rem] !text-plum-deep">
+      <a href={seriesUrl(series)} class="no-underline text-plum-deep hover:text-plum-deep after:absolute after:inset-0 after:rounded-[var(--radius-panel)]">{series.data.title}</a>
+    </H>
+    <p class="text-lg font-bold">{series.data.tagline}</p>
+    <p>{series.data.summary}</p>
+    <span class="btn btn-dark mt-1 self-start" aria-hidden="true">Explore the series</span>
+  </div>
+  {books.length > 0 && (
+    <div class="flex shrink-0 pr-4" aria-hidden="true">
+      {books.map((b, i) => (
+        <Image src={b.data.cover} alt="" widths={[200]} sizes="110px" class:list={['w-[6.5rem] sm:w-[7rem] aspect-[4/5] rounded-xl object-cover shadow-[0_12px_24px_rgba(46,33,64,0.25)] border-4 border-white', i === 0 ? '-rotate-6' : 'rotate-6 -ml-8 mt-6']} />
+      ))}
+    </div>
+  )}
+</article>
+<style>article:has(a:focus-visible) { outline: 3px solid var(--color-plum-deep); outline-offset: 4px; } article a:focus-visible { outline: none; box-shadow: none; }</style>

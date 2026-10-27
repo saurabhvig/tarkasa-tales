@@ -1,0 +1,67 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import BookCard from '../../components/BookCard.astro';
+import Sparkle from '../../components/Sparkle.astro';
+import { type Series, getAllSeries, getBooksInSeries, SERIES_COLORS } from '../../lib/books';
+import { SITE } from '../../site.config';
+
+export async function getStaticPaths() {
+  return (await getAllSeries()).map((series) => ({ params: { slug: series.id }, props: { series } }));
+}
+interface Props { series: Series }
+const { series } = Astro.props;
+const { Content } = await render(series);
+const books = await getBooksInSeries(series.id);
+const published = books.filter((b) => b.data.status === 'published');
+const upcoming = books.filter((b) => b.data.status === 'coming-soon');
+const col = SERIES_COLORS[series.data.color];
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'BookSeries',
+  name: series.data.title,
+  description: series.data.summary,
+  url: new URL(`/series/${series.id}/`, SITE.url).href,
+  publisher: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+};
+---
+<BaseLayout title={series.data.title} description={series.data.seoDescription ?? series.data.summary} jsonLd={ld}>
+  <section class:list={['text-plum-deep', col.panel]}>
+    <div class="container-site flex flex-col gap-6 py-10 lg:py-14">
+      <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: '/series/', label: 'Book Series' }, { label: series.data.title }]} onColor />
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div class="flex max-w-3xl flex-col gap-3">
+          <p class="text-sm font-extrabold uppercase tracking-[0.12em]">Series</p>
+          <h1 class="text-5xl sm:text-6xl !text-plum-deep">{series.data.title}</h1>
+          <p class="font-display text-2xl font-medium">{series.data.tagline}</p>
+        </div>
+        <Sparkle size={64} color="#FFF5E6" class="hidden sm:block" />
+      </div>
+    </div>
+  </section>
+
+  <div class="container-site grid gap-12 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+    <div class="prose-tt max-w-[62ch]"><Content /></div>
+    <div class="flex flex-col gap-4 self-start rounded-[var(--radius-card)] bg-white p-6">
+      <h2 class="text-2xl">In this series</h2>
+      <p><strong class="text-plum-deep">{published.length}</strong> published {published.length === 1 ? 'book' : 'books'}{upcoming.length > 0 && <> · <strong class="text-plum-deep">{upcoming.length}</strong> coming soon</>}</p>
+      <a href={`/books/?series=${series.id}`} class="btn btn-secondary self-start">Filter in the full catalogue</a>
+    </div>
+  </div>
+
+  <div class="container-site flex flex-col gap-14 pb-20">
+    <section aria-labelledby="books-in-series" class="flex flex-col gap-6">
+      <h2 id="books-in-series" class="text-[2.25rem]">Books</h2>
+      {published.length > 0
+        ? <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{published.map((b) => <BookCard book={b} showSeries={false} />)}</div>
+        : <p class="rounded-[var(--radius-card)] bg-white p-6 text-lg">The first books in this series are on their way.</p>}
+    </section>
+    {upcoming.length > 0 && (
+      <section aria-labelledby="upcoming" class="flex flex-col gap-6">
+        <h2 id="upcoming" class="text-[2.25rem]">Coming soon</h2>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{upcoming.map((b) => <BookCard book={b} showSeries={false} />)}</div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

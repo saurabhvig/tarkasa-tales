@@ -1,0 +1,19 @@
+---
+import { Image } from 'astro:assets';
+import ExampleBadge from './ExampleBadge.astro';
+import { type Book, ageLabel, bookUrl, coverAlt, seriesOf } from '../lib/books';
+interface Props { book: Book; headingLevel?: 'h2' | 'h3' }
+const { book, headingLevel = 'h3' } = Astro.props;
+const s = await seriesOf(book);
+const H = headingLevel;
+---
+<article class="relative flex items-center gap-4 rounded-[var(--radius-card)] bg-white p-4">
+  <Image src={book.data.cover} alt={coverAlt(book)} widths={[120, 240]} sizes="120px" class="w-[6.5rem] sm:w-[7.5rem] shrink-0 aspect-[4/5] rounded-xl object-cover" />
+  <div class="flex min-w-0 flex-col items-start gap-1.5">
+    <div class="flex flex-wrap gap-1.5"><span class="pill bg-coral">Coming Soon</span>{book.data.example && <ExampleBadge />}</div>
+    <H class="text-xl"><a href={bookUrl(book)} class="no-underline after:absolute after:inset-0 after:rounded-[var(--radius-card)]">{book.data.title}</a></H>
+    <p class="text-[0.9375rem] text-ink-soft">{s.data.title} · {ageLabel(book)}</p>
+    {book.data.expectedRelease && <p class="text-[0.9375rem] font-bold text-plum">Expected: {book.data.expectedRelease}</p>}
+  </div>
+</article>
+<style>article:has(a:focus-visible) { outline: 3px solid var(--color-plum); outline-offset: 3px; } article a:focus-visible { outline: none; box-shadow: none; }</style>

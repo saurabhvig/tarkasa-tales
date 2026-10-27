@@ -1,0 +1,21 @@
+---
+/** "tarka + jijñāsā = Tarkasa" visual hook explaining the brand name. */
+interface Props { class?: string }
+---
+<p class:list={['flex flex-wrap items-stretch justify-center gap-2 sm:gap-3 font-display text-plum-deep', Astro.props.class]}>
+  <span class="flex flex-col items-center rounded-2xl bg-mint-soft px-4 py-2">
+    <span class="text-xl sm:text-2xl font-semibold"><em lang="sa-Latn">tarka</em> <span lang="sa">तर्क</span></span>
+    <span class="font-sans text-sm font-bold">reasoning</span>
+  </span>
+  <span class="self-center text-2xl font-semibold" aria-label="plus">+</span>
+  <span class="flex flex-col items-center rounded-2xl bg-lavender-soft px-4 py-2">
+    <span class="text-xl sm:text-2xl font-semibold"><em lang="sa-Latn">jijñāsā</em> <span lang="sa">जिज्ञासा</span></span>
+    <span class="font-sans text-sm font-bold">curiosity</span>
+  </span>
+  <span class="flex items-stretch gap-2 sm:gap-3">
+    <span class="self-center text-2xl font-semibold" aria-label="equals">=</span>
+    <span class="flex flex-col items-center justify-center rounded-2xl bg-yellow px-4 py-2">
+      <span class="text-xl sm:text-2xl font-bold">Tarkasa</span>
+    </span>
+  </span>
+</p>

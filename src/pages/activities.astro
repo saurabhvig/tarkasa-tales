@@ -1,0 +1,44 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sparkle from '../components/Sparkle.astro';
+
+const activities = (await getCollection('activities')).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+const items = await Promise.all(
+  activities.map(async (a) => ({ ...a.data, book: a.data.relatedBook ? await getEntry(a.data.relatedBook) : undefined })),
+);
+const tints = ['bg-mint-soft', 'bg-lavender-soft', 'bg-yellow-soft', 'bg-coral-soft'];
+---
+<BaseLayout title="Free Activities" description="Free printable colouring sheets, word searches and learning activities from Tarkasa Tales for children aged 4–8.">
+  <section class="bg-yellow text-plum-deep">
+    <div class="container-site flex flex-col gap-4 py-12 lg:py-16">
+      <p class="text-sm font-extrabold uppercase tracking-[0.12em] inline-flex items-center gap-2"><Sparkle size={16} color="#FFF5E6" /> Free printables</p>
+      <h1 class="text-5xl sm:text-6xl !text-plum-deep max-w-3xl">Free Activities</h1>
+      <p class="max-w-2xl text-lg sm:text-xl">Colouring sheets, word searches, science activities and reading worksheets to print and enjoy together. Free to download for home and classroom use.</p>
+    </div>
+  </section>
+
+  <div class="container-site flex flex-col gap-10 py-14">
+    {items.length > 0 ? (
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((a, i) => (
+          <li class="flex flex-col gap-3 rounded-[var(--radius-card)] bg-white p-6">
+            <span class:list={['pill self-start', tints[i % 4]]}>{a.type}</span>
+            <h2 class="text-2xl">{a.title}</h2>
+            <p>{a.description}</p>
+            {a.ageMin && a.ageMax && <p class="text-[0.9375rem] font-bold text-ink-soft">Ages {a.ageMin}–{a.ageMax}</p>}
+            {a.book && <p class="text-[0.9375rem]">Goes with: <a href={`/books/${a.book.id}/`} class="font-bold">{a.book.data.title}</a></p>}
+            <a href={a.file} download class="btn btn-primary mt-auto">Download PDF<span class="sr-only">: {a.title}</span></a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div class="flex flex-col items-start gap-4 rounded-[var(--radius-card)] bg-white p-8 sm:p-10">
+        <h2 class="text-3xl">New activities are on the way</h2>
+        <p class="max-w-2xl text-lg">We’re preparing printable activities to go with our books. They’ll appear here as soon as they’re ready.</p>
+        <a href="/books/" class="btn btn-secondary">Explore our books</a>
+      </div>
+    )}
+    <p class="text-ink-soft">Activities are for grown-ups to print and use with children. Downloads don’t require any sign-up and we don’t collect any information when you download them.</p>
+  </div>
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+import Logo from './Logo.astro';
+import { SITE } from '../site.config';
+const year = new Date().getFullYear();
+const socials = Object.entries(SITE.social).filter(([, url]) => !!url) as [string, string][];
+const label = (k: string) => k.charAt(0).toUpperCase() + k.slice(1);
+---
+<footer class="bg-plum text-cream mt-auto">
+  <div class="container-site pt-14 pb-8 flex flex-col gap-10">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div class="flex flex-col gap-3">
+        <Logo reversed />
+        <p class="text-[#E9E1F7] max-w-xs">{SITE.tagline}</p>
+      </div>
+      <nav aria-label="Footer — books" class="flex flex-col gap-2">
+        <h2 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] text-yellow">Books</h2>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/books/">Our Books</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/series/">Book Series</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/coming-soon/">Coming Soon</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/activities/">Free Activities</a>
+      </nav>
+      <nav aria-label="Footer — about" class="flex flex-col gap-2">
+        <h2 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] text-yellow">Tarkasa Tales</h2>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/about/">About</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/contact/">Contact</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/privacy/">Privacy &amp; Cookies</a>
+      </nav>
+      <div class="flex flex-col gap-2">
+        <h2 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] text-yellow">Say hello</h2>
+        {SITE.contactEmail
+          ? <a class="text-cream hover:text-cream break-all" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
+          : <a class="text-cream no-underline hover:underline hover:text-cream" href="/contact/">Contact page</a>}
+        {socials.map(([k, url]) => (
+          <a class="text-cream no-underline hover:underline hover:text-cream" href={url} rel="me noopener" target="_blank">{label(k)}<span class="sr-only"> (opens in a new tab)</span></a>
+        ))}
+      </div>
+    </div>
+    <div class="border-t border-[#7A6893] pt-6 flex flex-wrap justify-between gap-3 text-sm text-[#E9E1F7]">
+      <p>© {year} Tarkasa Tales. All rights reserved.</p>
+      <p>Books are sold and fulfilled by Amazon. Amazon is a trademark of Amazon.com, Inc. or its affiliates.</p>
+    </div>
+  </div>
+</footer>

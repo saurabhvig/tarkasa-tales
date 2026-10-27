@@ -1,0 +1,12 @@
+---
+interface Props { eyebrow?: string; title: string; id: string; linkHref?: string; linkLabel?: string; level?: 'h1' | 'h2' }
+const { eyebrow, title, id, linkHref, linkLabel, level = 'h2' } = Astro.props;
+const H = level;
+---
+<div class="flex flex-wrap items-end justify-between gap-4">
+  <div class="flex flex-col gap-2">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <H id={id} class="text-[2.25rem] sm:text-[2.75rem]">{title}</H>
+  </div>
+  {linkHref && <a href={linkHref} class="font-extrabold text-lg">{linkLabel} <span aria-hidden="true">→</span></a>}
+</div>

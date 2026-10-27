@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../site.config';
+const updated = new Date(SITE.privacyUpdated).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const email = SITE.contactEmail;
+---
+<BaseLayout title="Privacy & Cookies" description="How the Tarkasa Tales website handles personal data and cookies. No tracking, no analytics, no cookies set by this website.">
+  <div class="container-site py-14 lg:py-20">
+    <article class="mx-auto flex max-w-3xl flex-col gap-4">
+      <p class="eyebrow">Last updated {updated}</p>
+      <h1 class="text-5xl sm:text-6xl">Privacy &amp; Cookies</h1>
+      <div class="rounded-[var(--radius-card)] bg-mint-soft p-6 text-plum-deep">
+        <h2 class="text-2xl !text-plum-deep">The short version</h2>
+        <ul class="prose-tt mt-3">
+          <li>This website does not use analytics, advertising trackers or social media trackers.</li>
+          <li>This website does not set any cookies.</li>
+          <li>We do not ask for or collect information from children.</li>
+          <li>If you email us, we use your email only to reply to you.</li>
+          <li>Books are bought on Amazon, where Amazon’s own privacy notice applies.</li>
+        </ul>
+      </div>
+
+      <div class="prose-tt">
+        <h2>Who is responsible for this website</h2>
+        <p>This website is run by Tarkasa Tales{SITE.privacyController ? <>: {SITE.privacyController}</> : ''}.{email && <> You can contact us about privacy at <a href={`mailto:${email}`}>{email}</a>.</>}</p>
+
+        <h2>Information collected when you visit</h2>
+        <p>This website is a set of static pages. It has no user accounts, sign-up forms, comment boxes, newsletter or contact form, and it does not run analytics or advertising tools.</p>
+        <p>The website is hosted on Cloudflare Pages. Like any web host, Cloudflare necessarily processes technical information — such as your IP address, browser type and the page requested — in order to deliver pages to you and to protect the website against abuse and attacks. Cloudflare processes this information on our behalf. You can read more in <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener" target="_blank">Cloudflare’s privacy policy<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+        <p>Fonts and images are served from this website itself, so your browser does not contact font or image services run by other companies when you read our pages.</p>
+
+        <h2>Cookies</h2>
+        <p>This website does not set cookies and does not use similar technologies such as tracking pixels or local storage for tracking. Because of this, we do not show a cookie banner. If that ever changes, we will update this page and ask for your consent where the law requires it.</p>
+
+        <h2>When you email us</h2>
+        <p>If you choose to email us, we receive your email address, your name if you include it, and whatever you write. We use this only to read and reply to your message, and we keep it only as long as needed for that conversation. We do not add you to mailing lists or share your email with anyone else. Our legal basis is our legitimate interest in replying to messages people send us.</p>
+
+        <h2>Links to Amazon and other websites</h2>
+        <p>Our “Buy on Amazon” buttons take you to Amazon’s website, where purchases, payment, delivery and customer service are handled entirely by Amazon. Amazon’s privacy notice applies there. We do not receive your personal or payment details from Amazon. We do not currently use Amazon affiliate links; if we start to, we will say so on this page and next to the links.</p>
+
+        <h2>Children’s privacy</h2>
+        <p>Our books are for children, but this website is designed for parents, grandparents, teachers and librarians. We do not knowingly collect personal information from children. If you are a child, please ask a parent, carer or teacher to contact us for you.</p>
+
+        <h2>Your rights</h2>
+        <p>Under the EU General Data Protection Regulation (GDPR) you have the right to ask for access to, correction of, or deletion of personal data we hold about you, and to object to how we use it. To make a request, please contact us{email ? <> at <a href={`mailto:${email}`}>{email}</a></> : ' using the details on our contact page'}. You also have the right to complain to a data protection authority. In the Netherlands this is the <a href="https://www.autoriteitpersoonsgegevens.nl/" rel="noopener" target="_blank">Autoriteit Persoonsgegevens<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+
+        <h2>Changes to this policy</h2>
+        <p>If we change how this website works — for example by adding a contact form, newsletter or visitor statistics — we will update this page first and change the date at the top.</p>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Planet from '../components/Planet.astro';
+import Sparkle from '../components/Sparkle.astro';
+---
+<BaseLayout title="Page not found" description="Sorry, we couldn’t find that page." noindex>
+  <div class="container-site flex flex-col items-center gap-6 py-20 text-center lg:py-28">
+    <div class="relative"><Planet size={200} /><Sparkle size={36} color="#F39A9D" class="absolute -left-6 -top-4" /></div>
+    <p class="eyebrow">Error 404</p>
+    <h1 class="text-5xl sm:text-6xl">This page has drifted off into space</h1>
+    <p class="max-w-xl text-lg sm:text-xl">That’s a good question — but we couldn’t find the page you were looking for. It may have moved, or the address may have a typo.</p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="/" class="btn btn-primary">Back to the homepage</a>
+      <a href="/books/" class="btn btn-secondary">Explore Our Books</a>
+    </div>
+  </div>
+</BaseLayout>

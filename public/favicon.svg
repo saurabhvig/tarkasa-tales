@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Tarkasa Tales">
+<title>Tarkasa Tales</title><rect width="64" height="64" rx="14" fill="#53406C"/>
+  <ellipse cx="32" cy="36" rx="29" ry="11" transform="rotate(-18 32 36)" fill="none" stroke="#F6BD60" stroke-width="5"/>
+  <path d="M11 49 C19.5 43 26 43 32 48 L32 24 C26 19 19.5 19 11 25 Z" fill="#80C9C3"/>
+  <path d="M53 49 C44.5 43 38 43 32 48 L32 24 C38 19 44.5 19 53 25 Z" fill="#F39A9D"/>
+  <circle cx="56" cy="28" r="6.5" fill="#F6BD60"/>
+</svg>

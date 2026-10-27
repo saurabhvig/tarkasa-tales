@@ -1,0 +1,14 @@
+---
+/** The Tarkasa Tales mark (open book + orbit + planet + star). Decorative unless `label` is given. */
+interface Props { size?: number; reversed?: boolean; label?: string; class?: string }
+const { size = 48, reversed = false, label, class: cls } = Astro.props;
+const line = reversed ? '#FFF5E6' : '#53406C';
+---
+<svg width={size} height={size} viewBox="0 0 64 64" class={cls} {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true', focusable: 'false' })}>
+  <ellipse cx="32" cy="36" rx="29" ry="11" transform="rotate(-18 32 36)" fill="none" stroke="#B6A5E3" stroke-width="3.5"></ellipse>
+  <path d="M11 47 C19.5 41.5 26 41.5 32 46 L32 26 C26 21 19.5 21 11 26.5 Z" fill="#80C9C3" stroke={line} stroke-width="2.4" stroke-linejoin="round"></path>
+  <path d="M53 47 C44.5 41.5 38 41.5 32 46 L32 26 C38 21 44.5 21 53 26.5 Z" fill="#F39A9D" stroke={line} stroke-width="2.4" stroke-linejoin="round"></path>
+  <path d="M4.4 45 A29 11 -18 0 0 59.6 27" fill="none" stroke="#B6A5E3" stroke-width="3.5" stroke-linecap="round"></path>
+  <circle cx="58.5" cy="27.5" r="4.5" fill="#F6BD60" stroke={line} stroke-width="2"></circle>
+  <path d="M14 4 L15.8 9.2 L21 11 L15.8 12.8 L14 18 L12.2 12.8 L7 11 L12.2 9.2 Z" fill="#F6BD60" stroke={line} stroke-width="1.6" stroke-linejoin="round"></path>
+</svg>

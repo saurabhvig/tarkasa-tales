@@ -1,0 +1,5 @@
+---
+/** Shown on placeholder books so nobody mistakes them for real listings. */
+interface Props { class?: string }
+---
+<span class:list={['pill bg-yellow text-plum-deep border-2 border-plum-deep border-dashed', Astro.props.class]}>Example listing</span>

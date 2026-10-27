@@ -1,0 +1,169 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import AmazonButtons from '../../components/AmazonButtons.astro';
+import BookCard from '../../components/BookCard.astro';
+import ExampleBadge from '../../components/ExampleBadge.astro';
+import { type Book, getAllBooks, getBooksInSeries, seriesOf, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
+import { SITE } from '../../site.config';
+
+export async function getStaticPaths() {
+  const books = await getAllBooks();
+  return books.map((book) => ({ params: { slug: book.id }, props: { book } }));
+}
+
+interface Props { book: Book }
+const { book } = Astro.props;
+const d = book.data;
+const series = await seriesOf(book);
+const col = SERIES_COLORS[series.data.color];
+const { Content } = await render(book);
+const related = (await getBooksInSeries(series.id)).filter((b) => b.id !== book.id).slice(0, 4);
+const soon = d.status === 'coming-soon';
+const ogImg = await getImage({ src: d.cover, width: 800, format: 'jpg' });
+
+const details: [string, string | undefined][] = [
+  ['Series', series.data.title + (d.seriesNumber ? ` · Book ${d.seriesNumber}` : '')],
+  ['Author', d.author],
+  ['Illustrator', d.illustrator],
+  ['Recommended age', ageLabel(book).replace(/^Ages? /, '')],
+  ['Language', d.language],
+  ['Pages', d.pageCount?.toString()],
+  ['Formats', d.formats.length ? d.formats.join(', ') : undefined],
+  ['Published', formatDate(d.publicationDate)],
+  ['Expected release', soon ? d.expectedRelease : undefined],
+  ['ISBN', d.isbn],
+  ['ASIN', d.asin],
+  ['Status', soon ? 'Coming soon' : 'Published'],
+];
+
+const bookLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: d.title,
+  ...(d.subtitle ? { alternativeHeadline: d.subtitle } : {}),
+  author: { '@type': 'Person', name: d.author },
+  ...(d.illustrator ? { illustrator: { '@type': 'Person', name: d.illustrator } } : {}),
+  publisher: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+  isPartOf: { '@type': 'BookSeries', name: series.data.title, url: new URL(seriesUrl(series), SITE.url).href },
+  inLanguage: d.language,
+  typicalAgeRange: `${d.ageMin}-${d.ageMax}`,
+  description: d.shortDescription,
+  image: new URL(ogImg.src, SITE.url).href,
+  url: new URL(`/books/${book.id}/`, SITE.url).href,
+  ...(d.pageCount ? { numberOfPages: d.pageCount } : {}),
+  ...(d.isbn ? { isbn: d.isbn } : {}),
+  ...(d.publicationDate ? { datePublished: d.publicationDate.toISOString().slice(0, 10) } : {}),
+  ...(amazonLinks(book).length ? { sameAs: amazonLinks(book).map((l) => l.url) } : {}),
+};
+const crumbsLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Our Books', item: SITE.url + '/books/' },
+    { '@type': 'ListItem', position: 3, name: d.title },
+  ],
+};
+---
+<BaseLayout
+  title={d.subtitle ? `${d.title}: ${d.subtitle}` : d.title}
+  description={d.shortDescription}
+  image={ogImg.src}
+  imageAlt={coverAlt(book)}
+  type="book"
+  noindex={d.example}
+  jsonLd={d.example ? undefined : [bookLd, crumbsLd]}
+>
+  <div class="container-site flex flex-col gap-14 py-8 lg:py-10">
+    <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: '/books/', label: 'Our Books' }, { label: d.title }]} />
+
+    {d.example && (
+      <p class="rounded-2xl border-2 border-dashed border-plum-deep bg-yellow-soft p-4 font-bold text-plum-deep">
+        This is an example listing used to preview the design. It will be replaced with real book details before launch, and search engines are told not to index it.
+      </p>
+    )}
+
+    <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-16">
+      <div class="flex flex-col gap-5">
+        <div class="relative">
+          <div class:list={['absolute inset-[1.5rem_-1rem_-1rem_1.5rem] rounded-[2rem]', col.panel]} aria-hidden="true"></div>
+          <Image src={d.cover} alt={coverAlt(book)} widths={[360, 540, 720, 900]} sizes="(min-width: 1024px) 416px, 90vw" loading="eager" fetchpriority="high" class="relative w-full rounded-2xl shadow-[0_24px_40px_rgba(46,33,64,0.18)]" />
+        </div>
+        {d.samples.length > 0 && (
+          <section aria-labelledby="inside" class="mt-6 flex flex-col gap-3">
+            <h2 id="inside" class="eyebrow !font-sans">Inside the book</h2>
+            <ul class="grid grid-cols-3 gap-3">
+              {d.samples.map((s) => (
+                <li>
+                  <a href={s.src.src} target="_blank" rel="noopener" class="block overflow-hidden rounded-xl">
+                    <Image src={s.src} alt={s.alt} widths={[160, 320]} sizes="130px" class="aspect-square w-full object-cover" />
+                    <span class="sr-only"> (open larger image in a new tab)</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
+
+      <div class="flex min-w-0 flex-col gap-6">
+        <div class="flex flex-wrap gap-2">
+          <a href={seriesUrl(series)} class:list={['pill no-underline', col.panel]}>{series.data.title}</a>
+          {soon ? <span class="pill bg-coral">Coming Soon</span> : <span class="pill bg-white">Published</span>}
+          {d.example && <ExampleBadge />}
+        </div>
+        <div class="flex flex-col gap-2">
+          <h1 class="text-[2.6rem] sm:text-[3.4rem]">{d.title}</h1>
+          {d.subtitle && <p class="font-display text-2xl font-medium text-plum">{d.subtitle}</p>}
+          <p class="text-lg">by <strong class="text-plum-deep">{d.author}</strong>{d.illustrator && <> · illustrated by <strong class="text-plum-deep">{d.illustrator}</strong></>}</p>
+        </div>
+        <dl class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Ages</dt><dd class="text-lg font-extrabold text-plum-deep">{d.ageMin}–{d.ageMax}</dd></div>
+          {d.pageCount && <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Pages</dt><dd class="text-lg font-extrabold text-plum-deep">{d.pageCount}</dd></div>}
+          {d.formats.length > 0 && <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Format</dt><dd class="text-lg font-extrabold text-plum-deep">{d.formats.join(' · ')}</dd></div>}
+          <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Language</dt><dd class="text-lg font-extrabold text-plum-deep">{d.language}</dd></div>
+        </dl>
+        <p class="text-xl leading-relaxed">{d.shortDescription}</p>
+        <AmazonButtons book={book} />
+      </div>
+    </div>
+
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+      <section aria-labelledby="about-book" class="flex flex-col gap-4">
+        <h2 id="about-book" class="text-[2.1rem]">About this book</h2>
+        <div class="prose-tt max-w-[65ch]"><Content /></div>
+        {d.themes.length > 0 && (
+          <>
+            <h3 class="mt-4 text-2xl">What children will explore</h3>
+            <ul class="flex flex-wrap gap-2.5">
+              {d.themes.map((t, i) => <li class:list={['rounded-full px-4 py-2 font-bold text-plum-deep', ['bg-mint-soft', 'bg-lavender-soft', 'bg-yellow-soft', 'bg-coral-soft'][i % 4]]}>{t}</li>)}
+            </ul>
+          </>
+        )}
+      </section>
+      <aside aria-labelledby="details" class="self-start rounded-[var(--radius-card)] bg-white p-6">
+        <h2 id="details" class="text-2xl">Book details</h2>
+        <dl class="mt-3 divide-y divide-line">
+          {details.filter(([, v]) => !!v).map(([k, v]) => (
+            <div class="flex justify-between gap-4 py-2.5"><dt class="text-ink-soft">{k}</dt><dd class="text-right font-bold text-plum-deep">{v}</dd></div>
+          ))}
+        </dl>
+      </aside>
+    </div>
+
+    {related.length > 0 && (
+      <section aria-labelledby="related" class="flex flex-col gap-6">
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 id="related" class="text-[2.1rem]">More {series.data.title}</h2>
+          <a href={seriesUrl(series)} class="font-extrabold">View the whole series <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {related.map((b) => <BookCard book={b} showSeries={false} />)}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

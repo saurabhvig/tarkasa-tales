@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ComingSoonCard from '../components/ComingSoonCard.astro';
+import Planet from '../components/Planet.astro';
+import { getComingSoon } from '../lib/books';
+const books = await getComingSoon();
+---
+<BaseLayout title="Coming Soon" description="Upcoming Tarkasa Tales children’s books. See what’s on the way.">
+  <div class="container-site flex flex-col gap-10 py-12 lg:py-16">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div class="flex max-w-2xl flex-col gap-3">
+        <p class="eyebrow">On the way</p>
+        <h1 class="text-5xl sm:text-6xl">Coming Soon</h1>
+        <p class="text-lg sm:text-xl">New stories in the making. Release dates are only shown once they are confirmed.</p>
+      </div>
+      <Planet size={150} class="hidden sm:block" />
+    </div>
+    {books.length > 0
+      ? <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{books.map((b) => <ComingSoonCard book={b} headingLevel="h2" />)}</div>
+      : <p class="rounded-[var(--radius-card)] bg-white p-8 text-lg">No upcoming titles are announced right now. <a href="/books/" class="font-extrabold">Browse our published books</a>.</p>}
+  </div>
+</BaseLayout>

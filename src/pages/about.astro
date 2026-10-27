@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Mark from '../components/Mark.astro';
+import Sparkle from '../components/Sparkle.astro';
+import NameEquation from '../components/NameEquation.astro';
+const values = [
+  ['Curiosity', 'Every book starts with a question worth asking.', 'bg-mint-soft'],
+  ['Reasoning', 'We invite children to wonder why and how, and to think things through.', 'bg-lavender-soft'],
+  ['Imagination', 'Beautiful illustrations open the door to new worlds and ideas.', 'bg-yellow-soft'],
+  ['Respect', 'Real lives are told truthfully, and traditional stories are retold with care.', 'bg-coral-soft'],
+];
+---
+<BaseLayout title="About" description="Tarkasa Tales publishes illustrated children’s books that nurture curiosity, critical thinking, imagination and a lifelong love of learning.">
+  <div class="container-site grid items-center gap-12 py-14 lg:grid-cols-[1.3fr_1fr] lg:py-20">
+    <div class="flex flex-col gap-5">
+      <p class="eyebrow">About us</p>
+      <h1 class="text-5xl sm:text-6xl">About Tarkasa Tales</h1>
+      <p class="text-xl leading-relaxed">Tarkasa Tales is a children’s educational publishing brand. Our mission is to nurture curiosity, critical thinking, imagination and a lifelong love of learning through beautifully illustrated children’s books.</p>
+      <p class="text-lg leading-relaxed">Our books bring together scientific curiosity and discovery, logical reasoning and questioning, world history and cultures, and traditional stories — written for children aged 4–8 and the grown-ups who read with them.</p>
+    </div>
+    <div class="relative mx-auto flex aspect-square w-full max-w-sm items-center justify-center rounded-full bg-yellow">
+      <Mark size={220} />
+      <Sparkle size={44} color="#F39A9D" class="absolute left-4 top-6" />
+      <Sparkle size={28} color="#53406C" class="absolute bottom-8 right-6" />
+    </div>
+  </div>
+
+  <section aria-labelledby="name" class="bg-white/70">
+    <div class="container-site grid gap-10 py-16 lg:grid-cols-2">
+      <div class="flex flex-col gap-4">
+        <h2 id="name" class="text-[2.4rem]">The meaning behind our name</h2>
+        <NameEquation class="justify-start" />
+        <p class="text-lg leading-relaxed">Tarkasa brings together two Sanskrit words: <em lang="sa-Latn">tarka</em> (<span lang="sa">तर्क</span>), reasoning and logical thinking, and <em lang="sa-Latn">jijñāsā</em> (<span lang="sa">जिज्ञासा</span>), the desire to know. Together they describe what we hope every book sparks: the curiosity to ask questions, and the thinking that helps answer them.</p>
+        <p class="text-lg leading-relaxed">“Tarkasa” is our own blend of these two words rather than a dictionary word — a reminder that every good story, like every good discovery, begins with a question.</p>
+      </div>
+      <div class="flex flex-col gap-4">
+        <h2 class="text-[2.4rem]">Our storytelling promise</h2>
+        <ul class="prose-tt">
+          <li>True stories stay true: we don’t invent facts, events or quotations.</li>
+          <li>Traditional stories are retold respectfully and in an age-appropriate way.</li>
+          <li>Language is clear and warm, so children can enjoy reading with a grown-up or on their own.</li>
+          <li>Illustrations invite children to look closely, ask questions and imagine.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="values" class="container-site flex flex-col gap-8 py-16">
+    <h2 id="values" class="text-[2.4rem]">What we care about</h2>
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {values.map(([t, d, c]) => (
+        <li class:list={['flex flex-col gap-2 rounded-[var(--radius-card)] p-6', c]}>
+          <h3 class="text-2xl !text-plum-deep">{t}</h3>
+          <p class="text-plum-deep">{d}</p>
+        </li>
+      ))}
+    </ul>
+    <div class="flex flex-wrap gap-3 pt-4">
+      <a href="/books/" class="btn btn-primary">Explore Our Books</a>
+      <a href="/contact/" class="btn btn-secondary">Get in touch</a>
+    </div>
+  </section>
+</BaseLayout>

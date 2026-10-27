@@ -1,0 +1,37 @@
+---
+import { type Book, amazonLinks, canBuy } from '../lib/books';
+interface Props { book: Book }
+const { book } = Astro.props;
+const links = amazonLinks(book);
+const buy = canBuy(book);
+const soon = book.data.status === 'coming-soon';
+---
+<section aria-labelledby="buy-heading" class="rounded-[var(--radius-card)] border-2 border-yellow bg-white p-6 flex flex-col gap-4">
+  {buy ? (
+    <>
+      <h2 id="buy-heading" class="text-2xl">{soon ? 'Preorder on Amazon' : 'Buy on Amazon'}</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {links.map((l, i) => (
+          <li>
+            <a href={l.url} target="_blank" rel="noopener noreferrer" class:list={['btn w-full', i === 0 ? 'btn-primary' : 'btn-secondary']}>
+              {l.label}<span class="sr-only"> ({l.region}, opens in a new tab)</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="text-sm text-ink-soft">Choose the Amazon store for your country. Prices, availability and delivery are shown on Amazon.</p>
+    </>
+  ) : soon ? (
+    <>
+      <h2 id="buy-heading" class="text-2xl">Coming soon</h2>
+      <p>This book isn’t available to order yet.{book.data.expectedRelease && <> Expected: <strong>{book.data.expectedRelease}</strong>.</>} Check back soon, or explore our published books in the meantime.</p>
+      <a href="/books/?status=published" class="btn btn-secondary self-start">See available books</a>
+    </>
+  ) : (
+    <>
+      <h2 id="buy-heading" class="text-2xl">Buy on Amazon</h2>
+      <p class="font-bold text-plum">Amazon links will appear here once they are added to this book’s file.</p>
+    </>
+  )}
+</section>

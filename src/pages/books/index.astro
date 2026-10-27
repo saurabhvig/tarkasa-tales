@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookCard from '../../components/BookCard.astro';
+import Planet from '../../components/Planet.astro';
+import { getAllBooks, getAllSeries } from '../../lib/books';
+
+const books = await getAllBooks();
+const series = await getAllSeries();
+const ages = [...new Set(books.flatMap((b) => Array.from({ length: b.data.ageMax - b.data.ageMin + 1 }, (_, i) => b.data.ageMin + i)))].sort((a, b) => a - b);
+const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
+---
+<BaseLayout
+  title="Our Books"
+  description="Browse every Tarkasa Tales children’s book. Search by title and filter by series, age and availability."
+>
+  <div class="container-site flex flex-col gap-8 py-12 lg:py-16">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div class="flex max-w-2xl flex-col gap-3">
+        <h1 class="text-5xl sm:text-6xl">Our Books</h1>
+        <p class="text-lg sm:text-xl">Every Tarkasa Tales book in one place. Search by title or narrow down by series, age and availability.</p>
+      </div>
+      <Planet size={150} class="hidden sm:block" />
+    </div>
+
+    <form id="book-filters" role="search" aria-label="Filter books" class="js-only grid gap-4 rounded-[1.75rem] bg-white p-5 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr]">
+      <div class="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-1">
+        <label for="f-q" class="text-sm font-extrabold text-plum-deep">Search by title</label>
+        <input id="f-q" name="q" type="search" autocomplete="off" placeholder="e.g. Marie Curie" class="min-h-12 w-full rounded-full border-2 border-[#9C8DB0] bg-cream px-5 text-base text-plum-deep placeholder:text-ink-soft" />
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="f-series" class="text-sm font-extrabold text-plum-deep">Series</label>
+        <select id="f-series" name="series" class="min-h-12 rounded-full border-2 border-[#9C8DB0] bg-cream px-4 text-base text-plum-deep">
+          <option value="">All series</option>
+          {series.map((s) => <option value={s.id}>{s.data.title}</option>)}
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="f-age" class="text-sm font-extrabold text-plum-deep">Child’s age</label>
+        <select id="f-age" name="age" class="min-h-12 rounded-full border-2 border-[#9C8DB0] bg-cream px-4 text-base text-plum-deep">
+          <option value="">Any age</option>
+          {ages.map((a) => <option value={a}>{a} years</option>)}
+        </select>
+      </div>
+      <fieldset class="flex flex-wrap items-center gap-2 sm:col-span-2 lg:col-span-3">
+        <legend class="mb-2 text-sm font-extrabold text-plum-deep">Availability</legend>
+        {[['', 'All'], ['published', 'Published'], ['coming-soon', 'Coming Soon']].map(([v, l]) => (
+          <label class="status-chip">
+            <input type="radio" name="status" value={v} checked={v === ''} class="sr-only" />
+            <span>{l}</span>
+          </label>
+        ))}
+        <button type="reset" id="f-reset" class="ml-auto min-h-11 rounded-full px-4 font-extrabold text-plum underline underline-offset-4">Clear filters</button>
+      </fieldset>
+    </form>
+
+    <p id="result-count" class="js-only font-bold text-ink-soft" role="status" aria-live="polite">Showing {books.length} {books.length === 1 ? 'book' : 'books'}</p>
+
+    <ul id="book-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {books.map((b, i) => (
+        <li
+          class="flex"
+          data-title={`${b.data.title} ${b.data.subtitle ?? ''} ${seriesNames[b.data.series.id] ?? ''}`.toLowerCase()}
+          data-series={b.data.series.id}
+          data-status={b.data.status}
+          data-age-min={b.data.ageMin}
+          data-age-max={b.data.ageMax}
+        >
+          <BookCard book={b} headingLevel="h2" loading={i < 4 ? 'eager' : 'lazy'} />
+        </li>
+      ))}
+    </ul>
+    <div id="no-results" hidden class="rounded-[1.75rem] bg-white p-10 text-center">
+      <h2 class="text-2xl">No books match those filters</h2>
+      <p class="mt-2">Try another search, or <button type="button" id="no-results-reset" class="font-extrabold text-plum underline underline-offset-4">clear all filters</button>.</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  :global(.no-js) .js-only { display: none; }
+  #book-grid > li > :global(article) { width: 100%; }
+  .status-chip span {
+    display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1.25rem; border-radius: 999px;
+    border: 2px solid var(--color-plum); background: #fff; color: var(--color-plum); font-weight: 800; cursor: pointer;
+  }
+  .status-chip input:checked + span { background: var(--color-plum); color: var(--color-cream); }
+  .status-chip input:focus-visible + span { outline: 3px solid var(--color-plum); outline-offset: 3px; box-shadow: 0 0 0 6px var(--color-yellow); }
+</style>
+
+<script>
+  const form = document.getElementById('book-filters') as HTMLFormElement | null;
+  const items = Array.from(document.querySelectorAll<HTMLLIElement>('#book-grid > li'));
+  const count = document.getElementById('result-count');
+  const empty = document.getElementById('no-results');
+
+  function apply(updateUrl = true) {
+    if (!form) return;
+    const fd = new FormData(form);
+    const q = String(fd.get('q') ?? '').trim().toLowerCase();
+    const series = String(fd.get('series') ?? '');
+    const age = String(fd.get('age') ?? '');
+    const status = String(fd.get('status') ?? '');
+    let shown = 0;
+    for (const li of items) {
+      const d = li.dataset;
+      const ok =
+        (!q || (d.title ?? '').includes(q)) &&
+        (!series || d.series === series) &&
+        (!status || d.status === status) &&
+        (!age || (Number(d.ageMin) <= Number(age) && Number(age) <= Number(d.ageMax)));
+      li.hidden = !ok;
+      if (ok) shown++;
+    }
+    if (count) count.textContent = `Showing ${shown} ${shown === 1 ? 'book' : 'books'}`;
+    if (empty) empty.hidden = shown !== 0;
+    if (updateUrl) {
+      const params = new URLSearchParams();
+      if (q) params.set('q', q);
+      if (series) params.set('series', series);
+      if (age) params.set('age', age);
+      if (status) params.set('status', status);
+      const qs = params.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    }
+  }
+
+  if (form) {
+    // Restore filters from the address bar, e.g. /books/?series=little-scientists
+    const p = new URLSearchParams(location.search);
+    (form.elements.namedItem('q') as HTMLInputElement).value = p.get('q') ?? '';
+    const sel = (name: string) => form.elements.namedItem(name) as HTMLSelectElement;
+    if ([...sel('series').options].some((o) => o.value === p.get('series'))) sel('series').value = p.get('series')!;
+    if ([...sel('age').options].some((o) => o.value === p.get('age'))) sel('age').value = p.get('age')!;
+    const st = p.get('status') ?? '';
+    form.querySelectorAll<HTMLInputElement>('input[name="status"]').forEach((r) => (r.checked = r.value === st));
+    apply(false);
+
+    form.addEventListener('submit', (e) => e.preventDefault());
+    form.addEventListener('input', () => apply());
+    form.addEventListener('change', () => apply());
+    form.addEventListener('reset', () => setTimeout(() => apply(), 0));
+    document.getElementById('no-results-reset')?.addEventListener('click', () => { form.reset(); (form.elements.namedItem('q') as HTMLInputElement).focus(); });
+  }
+</script>

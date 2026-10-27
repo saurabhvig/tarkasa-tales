@@ -1,0 +1,14 @@
+---
+interface Props { items: { href?: string; label: string }[]; onColor?: boolean }
+const { items, onColor = false } = Astro.props;
+---
+<nav aria-label="Breadcrumb" class:list={['text-[0.9375rem]', onColor ? 'text-plum-deep' : 'text-ink-soft']}>
+  <ol class="flex flex-wrap items-center gap-2">
+    {items.map((it, i) => (
+      <li class="flex items-center gap-2">
+        {i > 0 && <span aria-hidden="true">/</span>}
+        {it.href ? <a href={it.href} class:list={['font-bold', onColor && 'text-plum-deep']}>{it.label}</a> : <span aria-current="page">{it.label}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>

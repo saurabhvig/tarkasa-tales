@@ -1,0 +1,107 @@
+@import '@fontsource/fredoka/latin-500.css';
+@import '@fontsource/fredoka/latin-600.css';
+@import '@fontsource/fredoka/latin-700.css';
+@import '@fontsource-variable/nunito-sans/wght.css';
+@import 'tailwindcss';
+
+/* Brand tokens — change colours here and they update across the whole site. */
+@theme {
+  --color-cream: #fff5e6;
+  --color-cream-deep: #f7e9d2;
+  --color-plum: #53406c;
+  --color-plum-deep: #2e2140;
+  --color-ink: #3f3354;
+  --color-ink-soft: #5c4f70;
+  --color-yellow: #f6bd60;
+  --color-yellow-soft: #fdefd6;
+  --color-mint: #80c9c3;
+  --color-mint-soft: #ddf1ef;
+  --color-coral: #f39a9d;
+  --color-coral-soft: #fce3e4;
+  --color-lavender: #b6a5e3;
+  --color-lavender-soft: #ece6f8;
+  --color-line: #eadfcb;
+
+  --font-display: 'Fredoka', 'Baloo 2', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --font-sans: 'Nunito Sans Variable', 'Nunito Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --radius-card: 1.5rem;
+  --radius-panel: 2.25rem;
+}
+
+@layer base {
+  html {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 1rem;
+  }
+  body {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    /* very soft paper grain */
+    background-image: radial-gradient(rgba(83, 64, 108, 0.035) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--color-plum);
+    font-weight: 600;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+  a { color: var(--color-plum); text-underline-offset: 0.18em; }
+  a:hover { color: var(--color-plum-deep); }
+  :focus-visible {
+    outline: 3px solid var(--color-plum);
+    outline-offset: 3px;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 6px var(--color-yellow);
+  }
+  [hidden] { display: none !important; }
+  ::selection { background: var(--color-yellow); color: var(--color-plum-deep); }
+}
+
+@layer components {
+  .container-site { width: 100%; max-width: 76rem; margin-inline: auto; padding-inline: 1rem; }
+  @media (min-width: 640px) { .container-site { padding-inline: 1.5rem; } }
+
+  .eyebrow {
+    font-size: 0.875rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 3rem; padding: 0 1.6rem; border-radius: 999px;
+    font-weight: 800; font-size: 1rem; text-decoration: none; transition: transform .15s ease, background-color .15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--color-plum); color: var(--color-cream); }
+  .btn-primary:hover { background: var(--color-plum-deep); color: var(--color-cream); }
+  .btn-secondary { background: #fff; color: var(--color-plum); border: 2px solid var(--color-plum); }
+  .btn-secondary:hover { background: var(--color-lavender-soft); color: var(--color-plum-deep); }
+  .btn-dark { background: var(--color-plum-deep); color: var(--color-cream); }
+  .btn-dark:hover { background: #000; color: var(--color-cream); }
+
+  .pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 0.25rem 0.75rem; font-size: 0.8125rem; font-weight: 800; color: var(--color-plum-deep); }
+
+  .prose-tt { font-size: 1.125rem; line-height: 1.75; }
+  .prose-tt > * + * { margin-top: 1rem; }
+  .prose-tt h2 { font-size: 1.75rem; margin-top: 2rem; }
+  .prose-tt h3 { font-size: 1.35rem; margin-top: 1.5rem; }
+  .prose-tt ul, ul.prose-tt { list-style: none; padding: 0; }
+  .prose-tt ul li, ul.prose-tt li { position: relative; padding-left: 1.75rem; }
+  .prose-tt ul li + li, ul.prose-tt li + li { margin-top: 0.5rem; }
+  .prose-tt ul li::before, ul.prose-tt li::before {
+    content: ''; position: absolute; left: 0.25rem; top: 0.55em; width: 0.7rem; height: 0.7rem;
+    background: var(--color-yellow); border-radius: 2px; transform: rotate(45deg);
+  }
+  .prose-tt a { font-weight: 700; }
+  .prose-tt strong { color: var(--color-plum-deep); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .btn:hover { transform: none; }
+}

@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import ExampleBadge from './ExampleBadge.astro';
+import { type Book, ageLabel, bookUrl, coverAlt, seriesOf, SERIES_COLORS } from '../lib/books';
+interface Props { book: Book; headingLevel?: 'h2' | 'h3'; showSeries?: boolean; loading?: 'lazy' | 'eager' }
+const { book, headingLevel = 'h3', showSeries = true, loading = 'lazy' } = Astro.props;
+const s = await seriesOf(book);
+const col = SERIES_COLORS[s.data.color];
+const H = headingLevel;
+const soon = book.data.status === 'coming-soon';
+---
+<article class="group relative flex flex-col gap-3 rounded-[var(--radius-card)] bg-white p-4 shadow-[0_1px_0_#eadfcb] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(46,33,64,0.12)] motion-reduce:hover:translate-y-0">
+  <div class:list={['relative overflow-hidden rounded-2xl aspect-[4/5]', col.soft]}>
+    <Image src={book.data.cover} alt={coverAlt(book)} widths={[280, 420, 560]} sizes="(min-width: 1024px) 270px, (min-width: 640px) 45vw, 90vw" class="h-full w-full object-cover" loading={loading} />
+    <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">
+      {soon && <span class="pill bg-coral">Coming Soon</span>}
+      {book.data.example && <ExampleBadge />}
+    </div>
+  </div>
+  {showSeries && <p class="text-[0.8125rem] font-extrabold uppercase tracking-[0.06em] text-ink-soft">{s.data.title}</p>}
+  <H class="text-[1.4rem]">
+    <a href={bookUrl(book)} class="no-underline after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none">{book.data.title}</a>
+  </H>
+  <p class="text-[0.9375rem] font-bold text-ink-soft">{ageLabel(book)}</p>
+  <p class="text-base text-ink">{book.data.shortDescription}</p>
+  <span class="btn btn-primary mt-auto w-full pointer-events-none" aria-hidden="true">{soon ? 'Learn More' : 'View Book'}</span>
+</article>
+<style>
+  /* Whole card is clickable; show the focus ring on the card when its link is focused. */
+  article:has(a:focus-visible) { outline: 3px solid var(--color-plum); outline-offset: 3px; box-shadow: 0 0 0 7px var(--color-yellow); }
+</style>
