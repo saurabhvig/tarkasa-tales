@@ -13,11 +13,8 @@ language: English
 pageCount: 40
 formats: [Paperback]
 asin: "B0HN84T8MQ"
-amazon:
-  amazonNl: "https://www.amazon.nl/dp/B0HN84T8MQ"
-  amazonCom: "https://www.amazon.com/dp/B0HN84T8MQ"
-  amazonCoUk: "https://www.amazon.co.uk/dp/B0HN84T8MQ"
-  amazonDe: "https://www.amazon.de/dp/B0HN84T8MQ"
+# Amazon links for every store are created automatically from the asin above.
+# To use a different link for one store, add e.g.:  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }
 status: published
 featured: true
 themes: ["Feeling nervous", "Frustration", "Sadness and loss", "Jealousy", "Friendship", "Helping others"]

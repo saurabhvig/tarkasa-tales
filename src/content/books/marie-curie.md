@@ -14,11 +14,8 @@ pageCount: 24
 formats: [Paperback]
 isbn: "9798164891602"
 asin: "B0HP78VF2B"
-amazon:
-  amazonNl: "https://www.amazon.nl/dp/B0HP78VF2B"
-  amazonCom: "https://www.amazon.com/dp/B0HP78VF2B"
-  amazonCoUk: "https://www.amazon.co.uk/dp/B0HP78VF2B"
-  amazonDe: "https://www.amazon.de/dp/B0HP78VF2B"
+# Amazon links for every store are created automatically from the asin above.
+# To use a different link for one store, add e.g.:  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }
 status: published
 featured: true
 themes: ["Curiosity", "Persistence", "Science and discovery", "Girls in science", "Helping others"]

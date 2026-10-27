@@ -7,6 +7,9 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { AMAZON_STORES } from './site.config';
+
+const storeKeys = AMAZON_STORES.map((s) => s.key) as [string, ...string[]];
 
 const amazonUrl = (host: string) =>
   z
@@ -55,15 +58,13 @@ const books = defineCollection({
         formats: z.preprocess((v) => v ?? [], z.array(z.enum(['Paperback', 'Hardcover', 'Kindle eBook']))),
         isbn: z.string().optional(),
         asin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
+        /** Optional: a different link for a particular store, e.g.  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" } */
         amazon: z.preprocess(
           (v) => v ?? {},
-          z.object({
-            amazonCom: amazonUrl('amazon.com'),
-            amazonCoUk: amazonUrl('amazon.co.uk'),
-            amazonDe: amazonUrl('amazon.de'),
-            amazonNl: amazonUrl('amazon.nl'),
-          }),
+          z.object(Object.fromEntries(AMAZON_STORES.map((st) => [st.key, amazonUrl(st.host)]))).strict(),
         ),
+        /** Optional: only link these stores (default: every store in site.config.ts). */
+        amazonStores: z.array(z.enum(storeKeys)).optional(),
         status: z.enum(['published', 'coming-soon']),
         /** True only if Amazon has a real preorder page for a coming-soon book. */
         preorder: z.boolean().default(false),
@@ -82,12 +83,12 @@ const books = defineCollection({
       .superRefine((b, ctx) => {
         if (b.ageMin > b.ageMax)
           ctx.addIssue({ code: 'custom', path: ['ageMin'], message: 'ageMin cannot be larger than ageMax' });
-        const hasLink = Object.values(b.amazon).some(Boolean);
+        const hasLink = !!b.asin || Object.values(b.amazon).some(Boolean);
         if (b.status === 'published' && !hasLink && !b.example)
           ctx.addIssue({
             code: 'custom',
             path: ['amazon'],
-            message: 'A published book needs at least one Amazon link',
+            message: 'A published book needs an asin or at least one Amazon link',
           });
         if (b.status === 'coming-soon' && hasLink && !b.preorder)
           ctx.addIssue({

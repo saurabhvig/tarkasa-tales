@@ -42,12 +42,7 @@ language: English
 pageCount: 32
 formats: [Paperback, Kindle eBook]          # Paperback, Hardcover, Kindle eBook
 isbn: "978-..."                             # optional
-asin: "B0XXXXXXXX"                          # optional, 10 characters
-amazon:
-  amazonCom: "https://www.amazon.com/dp/B0XXXXXXXX"
-  amazonCoUk: "https://www.amazon.co.uk/dp/B0XXXXXXXX"
-  amazonDe: "https://www.amazon.de/dp/B0XXXXXXXX"
-  amazonNl: "https://www.amazon.nl/dp/B0XXXXXXXX"
+asin: "B0XXXXXXXX"                          # 10 characters, from KDP or the Amazon page
 status: published                           # published  or  coming-soon
 publicationDate: 2026-11-15
 featured: true                              # true = shown on the homepage
@@ -74,7 +69,17 @@ Open the book's `.md` file → click the **pencil icon** → edit the text → *
 Upload the new image to `src/assets/covers/`. Either give it **exactly the same file name**, which replaces the old one, or use a new name and update the `cover:` line in the book file.
 
 ## 4. Add or change an Amazon link
-In the book file, add or replace the matching line under `amazon:`. Only stores you fill in show a button. The short form `https://www.amazon.com/dp/ASIN` is the cleanest link. Always open each link once to check it shows the right book.
+Just fill in `asin:` in the book file. The website then creates a Buy link for **every Amazon store** listed in `src/site.config.ts`:
+- **Main buttons:** .com, .co.uk, .de, .nl
+- **"More Amazon stores" list:** .in, .fr, .es, .it, .ie, .com.be, .pl, .se, .ca, .com.au, .co.jp
+
+The ASIN is the 10-character code after `/dp/` in the Amazon address. KDP books normally use the same ASIN in every store.
+
+- **Only some stores:** add for example `amazonStores: [com, couk, de, nl]`.
+- **A store uses a different link:** add for example `amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }`.
+- **Add another Amazon store:** add one line to the list in `src/site.config.ts`.
+
+Always open each new link once to check it shows the right book.
 
 ## 5. Change a book from Coming Soon to Published
 In the book file:

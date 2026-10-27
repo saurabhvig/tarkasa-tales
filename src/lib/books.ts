@@ -43,9 +43,12 @@ export const bookUrl = (b: Book) => `/books/${b.id}/`;
 export const seriesUrl = (s: Series | string) => `/series/${typeof s === 'string' ? s : s.id}/`;
 
 export function amazonLinks(b: Book) {
-  return AMAZON_STORES.map((s) => ({ ...s, url: b.data.amazon[s.key] })).filter((s) => !!s.url) as Array<
-    (typeof AMAZON_STORES)[number] & { url: string }
-  >;
+  const { asin, amazon, amazonStores } = b.data;
+  const custom = amazon as Record<string, string | undefined>;
+  return AMAZON_STORES.map((s) => {
+    const auto = asin && (!amazonStores || amazonStores.includes(s.key)) ? `https://www.${s.host}/dp/${asin}` : undefined;
+    return { ...s, url: custom[s.key] ?? auto };
+  }).filter((s) => !!s.url) as Array<(typeof AMAZON_STORES)[number] & { url: string }>;
 }
 
 /** A coming-soon book may only show Amazon buttons when a real preorder page exists. */

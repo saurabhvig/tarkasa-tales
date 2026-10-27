@@ -14,11 +14,8 @@ pageCount: 24
 formats: [Paperback]
 isbn: "9798165504198"
 asin: "B0HPCSBCCJ"
-amazon:
-  amazonNl: "https://www.amazon.nl/dp/B0HPCSBCCJ"
-  amazonCom: "https://www.amazon.com/dp/B0HPCSBCCJ"
-  amazonCoUk: "https://www.amazon.co.uk/dp/B0HPCSBCCJ"
-  amazonDe: "https://www.amazon.de/dp/B0HPCSBCCJ"
+# Amazon links for every store are created automatically from the asin above.
+# To use a different link for one store, add e.g.:  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }
 status: published
 featured: true
 themes: ["Curiosity", "Imagination", "Checking ideas", "Persistence", "Light and energy"]
