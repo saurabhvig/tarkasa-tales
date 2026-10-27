@@ -1,6 +1,6 @@
 # Tarkasa Tales website: owner's guide
 
-This guide covers everything you need to run the website without programming knowledge. Most updates involve **one text file and one image**, uploaded through the GitHub website. Cloudflare then rebuilds and publishes the site automatically, usually within 1–2 minutes.
+This guide covers everything you need to run the website without programming knowledge. Most updates involve **one text file and one image**, uploaded through the GitHub website. Cloudflare (Workers & Pages) then rebuilds and publishes the site automatically, usually within 1–2 minutes.
 
 ---
 

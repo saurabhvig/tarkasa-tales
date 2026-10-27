@@ -1,0 +1,13 @@
+// Cloudflare hosting settings for the Tarkasa Tales website (static files only — no server code).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tarkasa-tales",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // Show our friendly custom page for addresses that don't exist
+    "not_found_handling": "404-page",
+    // /books and /books/ both open the same page
+    "html_handling": "auto-trailing-slash"
+  }
+}
