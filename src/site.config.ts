@@ -16,7 +16,7 @@ export const SITE = {
    * Who is responsible for this website (required in the Privacy Policy under EU GDPR).
    * Fill in before launch, e.g. 'Saurabh [Surname], Capelle aan den IJssel, the Netherlands'.
    */
-  privacyController: '',
+  privacyController: 'Saurabh Vig, the Netherlands',
 
   /** Social media profile links. Leave empty ('') to hide. */
   social: {

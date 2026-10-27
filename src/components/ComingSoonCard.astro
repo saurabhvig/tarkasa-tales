@@ -8,7 +8,7 @@ const s = await seriesOf(book);
 const H = headingLevel;
 ---
 <article class="relative flex items-center gap-4 rounded-[var(--radius-card)] bg-white p-4">
-  <Image src={book.data.cover} alt={coverAlt(book)} widths={[120, 240]} sizes="120px" class="w-[6.5rem] sm:w-[7.5rem] shrink-0 aspect-[4/5] rounded-xl object-cover" />
+  <Image src={book.data.cover} alt={coverAlt(book)} widths={[120, 240]} sizes="120px" class="w-[6.5rem] sm:w-[7.5rem] shrink-0 aspect-square rounded-xl object-cover" />
   <div class="flex min-w-0 flex-col items-start gap-1.5">
     <div class="flex flex-wrap gap-1.5"><span class="pill bg-coral">Coming Soon</span>{book.data.example && <ExampleBadge />}</div>
     <H class="text-xl"><a href={bookUrl(book)} class="no-underline after:absolute after:inset-0 after:rounded-[var(--radius-card)]">{book.data.title}</a></H>

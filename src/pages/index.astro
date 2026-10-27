@@ -9,14 +9,19 @@ import Sparkle from '../components/Sparkle.astro';
 import Planet from '../components/Planet.astro';
 import Mark from '../components/Mark.astro';
 import NameEquation from '../components/NameEquation.astro';
-import { getFeatured, getPublished, getComingSoon, getAllSeries, coverAlt } from '../lib/books';
+import { getFeatured, getPublished, getComingSoon, getAllBooks, getAllSeries } from '../lib/books';
 import { SITE } from '../site.config';
 
+// Featured: published books marked featured → any published → (before launch) any book marked featured.
 const featured = await getFeatured();
 const published = await getPublished();
-const featuredBooks = (featured.length ? featured : published).slice(0, 4);
-const heroBooks = [...featuredBooks, ...(await getComingSoon())].slice(0, 3);
-const soon = (await getComingSoon()).slice(0, 3);
+const anyFeatured = (await getAllBooks()).filter((b) => b.data.featured);
+const featuredBooks = (featured.length ? featured : published.length ? published : anyFeatured).slice(0, 4);
+const featuredIds = new Set(featuredBooks.map((b) => b.id));
+const heroBooks = [...featuredBooks, ...(await getComingSoon())].filter((b, i, a) => a.indexOf(b) === i).slice(0, 3);
+// Coming-soon section skips books already shown above, so nothing appears twice.
+const soon = (await getComingSoon()).filter((b) => !featuredIds.has(b.id)).slice(0, 3);
+const featuredTitle = published.length ? 'Featured books' : 'Our first books';
 const series = await getAllSeries();
 
 const orgLd = {
@@ -63,7 +68,7 @@ const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SIT
             sizes="(min-width: 640px) 220px, 40vw"
             loading="eager"
             class:list={[
-              'absolute aspect-[4/5] rounded-xl object-cover border-[5px] border-white shadow-[0_22px_36px_rgba(46,33,64,0.25)]',
+              'absolute aspect-square rounded-xl object-cover border-[5px] border-white shadow-[0_22px_36px_rgba(46,33,64,0.25)]',
               i === 0 && 'left-[30%] top-[6%] w-[40%] z-20',
               i === 1 && 'left-[5%] top-[22%] w-[35%] -rotate-[8deg] z-10',
               i === 2 && 'right-[3%] top-[26%] w-[33%] rotate-[7deg] z-10',
@@ -78,8 +83,8 @@ const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SIT
   {featuredBooks.length > 0 && (
     <section aria-labelledby="featured" class="rounded-t-[3rem] bg-white/70">
       <div class="container-site flex flex-col gap-9 py-16 lg:py-20">
-        <SectionHeading eyebrow="Reader favourites" title="Featured books" id="featured" linkHref="/books/" linkLabel="See all books" />
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <SectionHeading eyebrow="From our bookshelf" title={featuredTitle} id="featured" linkHref="/books/" linkLabel="See all books" />
+        <div class:list={['grid gap-6 sm:grid-cols-2', featuredBooks.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4']}>
           {featuredBooks.map((b) => <BookCard book={b} />)}
         </div>
       </div>

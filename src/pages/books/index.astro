@@ -125,7 +125,7 @@ const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
   }
 
   if (form) {
-    // Restore filters from the address bar, e.g. /books/?series=little-scientists
+    // Restore filters from the address bar, e.g. /books/?series=big-questions
     const p = new URLSearchParams(location.search);
     (form.elements.namedItem('q') as HTMLInputElement).value = p.get('q') ?? '';
     const sel = (name: string) => form.elements.namedItem(name) as HTMLSelectElement;

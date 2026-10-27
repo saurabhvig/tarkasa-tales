@@ -30,7 +30,7 @@ The **file name** of a book becomes its web address. For example, `marie-curie.m
 ```yaml
 title: "Ada Lovelace"
 subtitle: "The First Computer Programmer"   # delete the line if there is no subtitle
-series: little-scientists                   # or: hindu-mythology-stories
+series: big-questions                       # or: big-feelings, hindu-mythology-stories
 seriesNumber: 2                             # optional: sets the order within the series
 author: "Name exactly as on Amazon"
 cover: ../../assets/covers/ada-lovelace.jpg
@@ -88,7 +88,7 @@ For a real **Amazon preorder**, keep `status: coming-soon`, add `preorder: true`
 You can add `expectedRelease: "Spring 2027"` to a coming-soon book, but only once you're sure of the date.
 
 ## 6. Add a new book series
-1. In `src/content/series/`, copy `little-scientists.md` to a new file, for example `great-inventors.md`.
+1. In `src/content/series/`, copy `big-questions.md` to a new file, for example `great-inventors.md`.
 2. Change `title`, `tagline`, `summary`, `color` and `order`. `color` can be `mint`, `lavender`, `yellow` or `coral`.
 3. Write the series introduction below the `---` lines.
 4. Commit the file.
