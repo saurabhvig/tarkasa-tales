@@ -13,12 +13,13 @@ language: English
 pageCount: 24
 formats: [Paperback]
 isbn: "9798164891602"
+asin: "B0HP78VF2B"
 amazon:
-  # amazonCom: "https://www.amazon.com/dp/XXXXXXXXXX"
-  # amazonCoUk: "https://www.amazon.co.uk/dp/XXXXXXXXXX"
-  # amazonDe: "https://www.amazon.de/dp/XXXXXXXXXX"
-  # amazonNl: "https://www.amazon.nl/dp/XXXXXXXXXX"
-status: coming-soon        # change to: published  (and add the Amazon links above)
+  amazonNl: "https://www.amazon.nl/dp/B0HP78VF2B"
+  # amazonCom: "https://www.amazon.com/dp/B0HP78VF2B"     # add once checked
+  # amazonCoUk: "https://www.amazon.co.uk/dp/B0HP78VF2B"  # add once checked
+  # amazonDe: "https://www.amazon.de/dp/B0HP78VF2B"       # add once checked
+status: published
 featured: true
 themes: ["Curiosity", "Persistence", "Science and discovery", "Girls in science", "Helping others"]
 samples:
