@@ -11,9 +11,10 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 24
-formats: [Paperback]
+formats: [Paperback, Kindle eBook]
 isbn: "9798164891602"
-asin: "B0HP78VF2B"
+asin: "B0HP78VF2B"            # paperback
+kindleAsin: "B0HP6XLFKD"      # Kindle eBook (used for Amazon.in)
 # Amazon links for every store are created automatically from the asin above.
 # To use a different link for one store, add e.g.:  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }
 status: published

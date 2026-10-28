@@ -73,7 +73,9 @@ Just fill in `asin:` in the book file. The website then creates a Buy link for *
 - **Main buttons:** .com, .co.uk, .de, .nl
 - **"More Amazon stores" list:** .in, .fr, .es, .it, .ie, .com.be, .pl, .se, .ca, .com.au, .co.jp
 
-The ASIN is the 10-character code after `/dp/` in the Amazon address. KDP books normally use the same ASIN in every store.
+The ASIN is the 10-character code after `/dp/` in the Amazon address.
+
+**Kindle editions:** Amazon.in only sells KDP books as Kindle eBooks. Add `kindleAsin: "B0XXXXXXXX"` (the Kindle edition's code) and add `Kindle eBook` to `formats`. The Amazon.in button appears only for books that have a `kindleAsin`. KDP books normally use the same ASIN in every store.
 
 - **Only some stores:** add for example `amazonStores: [com, couk, de, nl]`.
 - **A store uses a different link:** add for example `amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }`.

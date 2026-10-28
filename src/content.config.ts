@@ -58,6 +58,8 @@ const books = defineCollection({
         formats: z.preprocess((v) => v ?? [], z.array(z.enum(['Paperback', 'Hardcover', 'Kindle eBook']))),
         isbn: z.string().optional(),
         asin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
+        /** ASIN of the Kindle eBook edition (used for Kindle-only stores such as Amazon.in). */
+        kindleAsin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
         /** Optional: a different link for a particular store, e.g.  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" } */
         amazon: z.preprocess(
           (v) => v ?? {},
