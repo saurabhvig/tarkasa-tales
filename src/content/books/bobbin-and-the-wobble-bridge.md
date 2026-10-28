@@ -11,8 +11,9 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 40
-formats: [Paperback]
-asin: "B0HN84T8MQ"
+formats: [Paperback, Kindle eBook]
+asin: "B0HN84T8MQ"            # paperback
+kindleAsin: "B0HN821JFN"      # Kindle eBook (used for Amazon.in)
 # Amazon links for every store are created automatically from the asin above.
 # To use a different link for one store, add e.g.:  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }
 status: published
