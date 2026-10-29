@@ -13,9 +13,9 @@ language: English
 pageCount: 24
 formats: [Paperback]
 isbn: "9798166135001"
-# When Amazon approves the book: add  asin: "B0XXXXXXXX"  (and kindleAsin for the Kindle edition)
-# and change status to: published
-status: coming-soon
+asin: "B0HPNVY58W"            # paperback
+# kindleAsin: "B0XXXXXXXX"    # add the Kindle edition's code to show the Amazon.in button
+status: published
 featured: true
 themes: ["Patience", "Observation", "Curiosity", "Caring for animals", "Protecting nature"]
 samples:
