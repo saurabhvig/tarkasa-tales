@@ -109,7 +109,7 @@ The new series automatically gets its own page (`/series/great-inventors/`), a c
 ```yaml
 ---
 title: "Ada Lovelace colouring sheet"
-type: Colouring sheet      # Colouring sheet, Word search, Science activity, Worksheet, Reading activity, Puzzle
+type: Colouring sheet      # Activity pack, Colouring sheet, Word search, Science activity, Worksheet, Reading activity, Puzzle
 description: "Two pages to colour, featuring scenes from the book."
 file: /activities/ada-lovelace-colouring.pdf
 ageMin: 4

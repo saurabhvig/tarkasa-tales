@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import { statSync } from 'node:fs';
+import type { CollectionEntry } from 'astro:content';
+interface Props { activity: CollectionEntry<'activities'>['data']; book?: CollectionEntry<'books'>; headingLevel?: 'h2' | 'h3'; showBook?: boolean }
+const { activity: a, book, headingLevel = 'h2', showBook = true } = Astro.props;
+const H = headingLevel;
+let size = '';
+try { size = `${Math.max(0.1, statSync(`./public${a.file}`).size / 1024 / 1024).toFixed(1)} MB`; } catch {}
+const tint = a.type === 'Word search' ? 'bg-lavender-soft' : a.type === 'Activity pack' ? 'bg-mint-soft' : 'bg-yellow-soft';
+---
+<article class="flex h-full flex-col gap-3 rounded-[var(--radius-card)] bg-white p-5">
+  <div class="flex items-start gap-4">
+    {book && <Image src={book.data.cover} alt="" widths={[96, 192]} sizes="80px" class="h-20 w-20 shrink-0 rounded-xl object-cover" />}
+    <div class="flex min-w-0 flex-col items-start gap-1.5">
+      <span class:list={['pill', tint]}>{a.type}</span>
+      <H class="text-[1.4rem]">{a.title}</H>
+    </div>
+  </div>
+  <p>{a.description}</p>
+  <p class="text-[0.9375rem] font-bold text-ink-soft">
+    {a.ageMin && a.ageMax && <>Ages {a.ageMin}–{a.ageMax} · </>}PDF, A4{size && <> · {size}</>}
+  </p>
+  {showBook && book && <p class="text-[0.9375rem]">Goes with: <a href={`/books/${book.id}/`} class="font-bold">{book.data.title}</a></p>}
+  <a href={a.file} download class="btn btn-primary mt-auto">
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    Download PDF<span class="sr-only">: {a.title}</span>
+  </a>
+</article>

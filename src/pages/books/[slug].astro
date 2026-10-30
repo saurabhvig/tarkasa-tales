@@ -4,6 +4,8 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import AmazonButtons from '../../components/AmazonButtons.astro';
+import ActivityCard from '../../components/ActivityCard.astro';
+import { getCollection } from 'astro:content';
 import BookCard from '../../components/BookCard.astro';
 import ExampleBadge from '../../components/ExampleBadge.astro';
 import { type Book, getAllBooks, getBooksInSeries, seriesOf, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
@@ -22,6 +24,7 @@ const col = SERIES_COLORS[series.data.color];
 const { Content } = await render(book);
 const related = (await getBooksInSeries(series.id)).filter((b) => b.id !== book.id).slice(0, 4);
 const soon = d.status === 'coming-soon';
+const activities = (await getCollection('activities', (a) => a.data.relatedBook?.id === book.id)).sort((a, b) => a.data.order - b.data.order);
 const ogImg = await getImage({ src: d.cover, width: 800, format: 'jpg' });
 
 const details: [string, string | undefined][] = [
@@ -153,6 +156,21 @@ const crumbsLd = {
         </dl>
       </aside>
     </div>
+
+    {activities.length > 0 && (
+      <section aria-labelledby="printables" class="flex flex-col gap-6 rounded-[var(--radius-panel)] bg-yellow p-6 sm:p-10">
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+          <div class="flex flex-col gap-1">
+            <p class="text-sm font-extrabold uppercase tracking-[0.12em] text-plum-deep">Free printables</p>
+            <h2 id="printables" class="text-[2.1rem] !text-plum-deep">Activities for this book</h2>
+          </div>
+          <a href="/activities/" class="font-extrabold text-plum-deep">All free activities <span aria-hidden="true">→</span></a>
+        </div>
+        <ul class="grid gap-5 md:grid-cols-2">
+          {activities.map((a) => <li><ActivityCard activity={a.data} headingLevel="h3" showBook={false} /></li>)}
+        </ul>
+      </section>
+    )}
 
     {related.length > 0 && (
       <section aria-labelledby="related" class="flex flex-col gap-6">
