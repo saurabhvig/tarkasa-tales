@@ -47,7 +47,11 @@ export function amazonLinks(b: Book) {
   const custom = amazon as Record<string, string | undefined>;
   return AMAZON_STORES.map((s) => {
     const id = s.kindleOnly ? kindleAsin : asin;
-    const auto = id && (!amazonStores || amazonStores.includes(s.key)) ? `https://www.${s.host}/dp/${id}` : undefined;
+    const allowed = !amazonStores || amazonStores.includes(s.key);
+    let auto = id && allowed ? `https://www.${s.host}/dp/${id}` : undefined;
+    // Kindle-only store without a Kindle code yet: link to a Kindle search for the book instead.
+    if (!auto && s.kindleOnly && asin && allowed)
+      auto = `https://www.${s.host}/s?k=${encodeURIComponent(`${b.data.title} ${b.data.subtitle ?? ''} ${b.data.author}`.trim())}&i=digital-text`;
     return { ...s, url: custom[s.key] ?? auto };
   }).filter((s) => !!s.url) as Array<(typeof AMAZON_STORES)[number] & { url: string }>;
 }

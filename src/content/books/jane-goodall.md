@@ -7,7 +7,7 @@ author: "Saurabh Vig"
 cover: ../../assets/covers/jane-goodall.jpg
 coverAlt: "Cover of Jane Goodall: The Girl Who Learned to Wait, showing young Jane hugging a toy chimpanzee, with grown-up Jane and two chimpanzees in a green forest behind her"
 shortDescription: "A little girl waits hours in a henhouse to see an egg laid, then grows up to make a discovery about wild chimpanzees that changed science."
-ageMin: 5
+ageMin: 4
 ageMax: 7
 language: English
 pageCount: 24

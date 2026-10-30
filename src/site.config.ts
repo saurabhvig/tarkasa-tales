@@ -42,7 +42,7 @@ export const AMAZON_STORES = [
   { key: 'de', label: 'Amazon.de', region: 'Germany', host: 'amazon.de', main: true, kindleOnly: false },
   { key: 'nl', label: 'Amazon.nl', region: 'Netherlands', host: 'amazon.nl', main: true, kindleOnly: false },
   // Amazon.in sells KDP books as Kindle eBooks only, so it uses the book's kindleAsin.
-  { key: 'in', label: 'Amazon.in', region: 'India · Kindle', host: 'amazon.in', main: false, kindleOnly: true },
+  { key: 'in', label: 'Amazon.in · Kindle only', region: 'India', host: 'amazon.in', main: false, kindleOnly: true },
   { key: 'fr', label: 'Amazon.fr', region: 'France', host: 'amazon.fr', main: false, kindleOnly: false },
   { key: 'es', label: 'Amazon.es', region: 'Spain', host: 'amazon.es', main: false, kindleOnly: false },
   { key: 'it', label: 'Amazon.it', region: 'Italy', host: 'amazon.it', main: false, kindleOnly: false },
