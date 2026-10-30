@@ -70,8 +70,7 @@ Upload the new image to `src/assets/covers/`. Either give it **exactly the same 
 
 ## 4. Add or change an Amazon link
 Just fill in `asin:` in the book file. The website then creates a Buy link for **every Amazon store** listed in `src/site.config.ts`:
-- **Main buttons:** .com, .co.uk, .de, .nl
-- **"More Amazon stores" list:** .in, .fr, .es, .it, .ie, .com.be, .pl, .se, .ca, .com.au, .co.jp
+Visitors click one **Buy on Amazon** button and choose their country from the list: .com, .co.uk, .de, .nl, .in (Kindle), .fr, .es, .it, .ie, .com.be, .pl, .se, .ca, .com.au and .co.jp. Their likely store, based on their browser language, is marked "Suggested for you".
 
 The ASIN is the 10-character code after `/dp/` in the Amazon address.
 

@@ -32,7 +32,7 @@ export const SITE = {
 
 /**
  * Amazon stores we link to, in the order buttons appear.
- * `main: true` stores are shown as big buttons; the rest appear under "More Amazon stores".
+ * All stores appear in the list under the single "Buy on Amazon" button, sorted by country name.
  * A book with an `asin` gets a link to every store below automatically
  * (unless its file lists `amazonStores` to limit them).
  */
