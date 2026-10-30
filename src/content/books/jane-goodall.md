@@ -11,10 +11,10 @@ ageMin: 4
 ageMax: 7
 language: English
 pageCount: 24
-formats: [Paperback]
+formats: [Paperback, Kindle eBook]
 isbn: "9798166135001"
 asin: "B0HPNVY58W"            # paperback
-# kindleAsin: "B0XXXXXXXX"    # add the Kindle edition's code to show the Amazon.in button
+kindleAsin: "B0HPR3HS64"      # Kindle eBook (used for Amazon.in)
 status: published
 featured: true
 themes: ["Patience", "Observation", "Curiosity", "Caring for animals", "Protecting nature"]
