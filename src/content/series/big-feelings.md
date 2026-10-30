@@ -3,7 +3,7 @@ title: Big Feelings
 tagline: Gentle stories for wobbly moments.
 summary: Warm, funny animal stories that help little ones name and handle big feelings, together with a grown-up.
 color: yellow
-order: 3
+order: 2
 seoDescription: Big Feelings — warm picture-book stories that help children aged 4–8 understand nervousness, frustration, sadness and jealousy.
 ---
 

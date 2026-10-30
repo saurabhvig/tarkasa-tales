@@ -33,6 +33,8 @@ const series = defineCollection({
     summary: z.string().describe('One or two sentences shown on cards'),
     color: z.enum(['mint', 'lavender', 'yellow', 'coral']),
     order: z.number().default(10),
+    /** true = the series is announced but has no books yet; shows a Coming Soon label. */
+    comingSoon: z.boolean().default(false),
     seoDescription: z.string().max(170).optional(),
   }),
 });

@@ -55,7 +55,7 @@ const ld = {
       <h2 id="books-in-series" class="text-[2.25rem]">Books</h2>
       {published.length > 0
         ? <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{published.map((b) => <BookCard book={b} showSeries={false} />)}</div>
-        : <p class="rounded-[var(--radius-card)] bg-white p-6 text-lg">The first books in this series are on their way.</p>}
+        : <p class="rounded-[var(--radius-card)] bg-white p-6 text-lg"><span class="pill bg-coral mr-2">Coming Soon</span> The first books in this series are on their way. <a href="/books/" class="font-extrabold">Explore our published books</a> in the meantime.</p>}
     </section>
     {upcoming.length > 0 && (
       <section aria-labelledby="upcoming" class="flex flex-col gap-6">

@@ -30,7 +30,7 @@ The **file name** of a book becomes its web address. For example, `marie-curie.m
 ```yaml
 title: "Ada Lovelace"
 subtitle: "The First Computer Programmer"   # delete the line if there is no subtitle
-series: big-questions                       # or: big-feelings, hindu-mythology-stories
+series: big-questions                       # or: big-feelings, timeless-tales
 seriesNumber: 2                             # optional: sets the order within the series
 author: "Name exactly as on Amazon"
 cover: ../../assets/covers/ada-lovelace.jpg
@@ -140,9 +140,6 @@ Every **Commit** in GitHub publishes automatically through Cloudflare Pages. The
 - **Instant rollback:** in Cloudflare → **Deployments**, find an earlier working deployment → **⋯ → Rollback to this deployment**.
 
 ---
-
-## Before launch: remove the examples
-The three files marked `example: true` are design placeholders: `marie-curie.md`, `example-hindu-mythology.md` and `example-coming-soon.md`. For each one, either replace its contents with a real book and delete the `example: true` line, or delete the file. Also delete the `example-*.png` covers once nothing uses them.
 
 ## First-time setup: GitHub + Cloudflare Pages (free)
 1. **GitHub:** create a free account at github.com, then click **New repository**. Name it `tarkasa-tales` and choose **Private**. Upload the contents of this project folder. Don't upload the `node_modules`, `dist` or `.astro` folders.
