@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import AmazonButtons from '../../components/AmazonButtons.astro';
 import ActivityCard from '../../components/ActivityCard.astro';
+import Lightbox from '../../components/Lightbox.astro';
 import { getCollection } from 'astro:content';
 import BookCard from '../../components/BookCard.astro';
 import ExampleBadge from '../../components/ExampleBadge.astro';
@@ -26,6 +27,10 @@ const related = (await getBooksInSeries(series.id)).filter((b) => b.id !== book.
 const soon = d.status === 'coming-soon';
 const activities = (await getCollection('activities', (a) => a.data.relatedBook?.id === book.id)).sort((a, b) => a.data.order - b.data.order);
 const ogImg = await getImage({ src: d.cover, width: 800, format: 'jpg' });
+// Large versions for the picture viewer (cover first, then inside pages).
+const big = (src: ImageMetadata) => getImage({ src, width: 1400, format: 'webp', quality: 82 });
+const coverBig = await big(d.cover);
+const samplesBig = await Promise.all(d.samples.map((s) => big(s.src)));
 
 const details: [string, string | undefined][] = [
   ['Series', series.data.title + (d.seriesNumber ? ` · Book ${d.seriesNumber}` : '')],
@@ -93,17 +98,21 @@ const crumbsLd = {
       <div class="flex flex-col gap-5">
         <div class="relative">
           <div class:list={['absolute inset-[1.5rem_-1rem_-1rem_1.5rem] rounded-[2rem]', col.panel]} aria-hidden="true"></div>
-          <Image src={d.cover} alt={coverAlt(book)} widths={[360, 540, 720, 900]} sizes="(min-width: 1024px) 416px, 90vw" loading="eager" fetchpriority="high" class="relative w-full rounded-2xl shadow-[0_24px_40px_rgba(46,33,64,0.18)]" />
+          <a href={coverBig.src} data-lightbox="book-pictures" data-alt={coverAlt(book)} class="group relative block rounded-2xl cursor-zoom-in">
+            <Image src={d.cover} alt={coverAlt(book)} widths={[360, 540, 720, 900]} sizes="(min-width: 1024px) 416px, 90vw" loading="eager" fetchpriority="high" class="relative w-full rounded-2xl shadow-[0_24px_40px_rgba(46,33,64,0.18)]" />
+            <span class="absolute bottom-3 right-3 rounded-full bg-white/95 px-3 py-1.5 text-sm font-extrabold text-plum shadow" aria-hidden="true">Look inside</span>
+            <span class="sr-only"> (view larger pictures)</span>
+          </a>
         </div>
         {d.samples.length > 0 && (
           <section aria-labelledby="inside" class="mt-6 flex flex-col gap-3">
-            <h2 id="inside" class="eyebrow !font-sans">Inside the book</h2>
+            <h2 id="inside" class="eyebrow !font-sans">Inside the book <span class="normal-case tracking-normal font-bold">· tap a page to look closer</span></h2>
             <ul class="grid grid-cols-3 gap-3">
-              {d.samples.map((s) => (
+              {d.samples.map((s, n) => (
                 <li>
-                  <a href={s.src.src} target="_blank" rel="noopener" class="block overflow-hidden rounded-xl">
+                  <a href={samplesBig[n].src} data-lightbox="book-pictures" data-alt={s.alt} class="block overflow-hidden rounded-xl cursor-zoom-in transition hover:-translate-y-0.5 hover:shadow-[0_8px_18px_rgba(46,33,64,0.18)]">
                     <Image src={s.src} alt={s.alt} widths={[160, 320]} sizes="130px" class="aspect-square w-full object-cover" />
-                    <span class="sr-only"> (open larger image in a new tab)</span>
+                    <span class="sr-only"> (view larger)</span>
                   </a>
                 </li>
               ))}
@@ -184,4 +193,5 @@ const crumbsLd = {
       </section>
     )}
   </div>
+  <Lightbox id="book-pictures" title={d.title} />
 </BaseLayout>

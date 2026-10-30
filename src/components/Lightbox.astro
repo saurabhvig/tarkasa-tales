@@ -1,0 +1,86 @@
+---
+/**
+ * Picture viewer: opens a book's cover and inside pages in a pop-up,
+ * with previous/next buttons, keyboard arrows, swipe and a page counter.
+ * Links still open the image directly if JavaScript is off.
+ */
+interface Props { id: string; title: string }
+const { id, title } = Astro.props;
+---
+<dialog id={id} class="lightbox" aria-label={`Pictures from ${title}`}>
+  <div class="lb-inner">
+    <div class="lb-top">
+      <p class="lb-count" aria-live="polite"></p>
+      <button type="button" class="lb-btn lb-close" aria-label="Close">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"></path></svg>
+      </button>
+    </div>
+    <figure class="lb-figure">
+      <img class="lb-img" alt="" />
+      <figcaption class="lb-caption"></figcaption>
+    </figure>
+    <button type="button" class="lb-btn lb-prev" aria-label="Previous picture">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+    </button>
+    <button type="button" class="lb-btn lb-next" aria-label="Next picture">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+    </button>
+  </div>
+</dialog>
+
+<style>
+  .lightbox { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; }
+  .lightbox::backdrop { background: rgba(30, 20, 44, 0.95); }
+  .lb-inner { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4.5rem 4.5rem 1.5rem; }
+  .lb-top { position: absolute; top: 0.75rem; left: 1rem; right: 1rem; display: flex; justify-content: space-between; align-items: center; }
+  .lb-count { color: #fff5e6; font-weight: 800; }
+  .lb-figure { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; max-height: 100%; min-height: 0; }
+  .lb-img { max-width: min(92vw, 1100px); max-height: calc(100dvh - 9rem); width: auto; height: auto; border-radius: 1rem; background: #fff5e6; box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+  .lb-caption { color: #fff5e6; text-align: center; max-width: 60ch; font-size: 0.95rem; }
+  .lb-btn { display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border-radius: 999px; background: #fff5e6; color: #53406c; border: 0; cursor: pointer; }
+  .lb-btn:hover { background: #f6bd60; color: #2e2140; }
+  .lb-prev, .lb-next { position: absolute; top: 50%; transform: translateY(-50%); }
+  .lb-prev { left: 0.75rem; } .lb-next { right: 0.75rem; }
+  .lightbox[data-single] .lb-prev, .lightbox[data-single] .lb-next { display: none; }
+  @media (max-width: 640px) {
+    .lb-inner { padding: 4rem 0.75rem 5.5rem; }
+    .lb-prev, .lb-next { top: auto; bottom: 1rem; transform: none; }
+    .lb-prev { left: calc(50% - 4rem); } .lb-next { right: calc(50% - 4rem); }
+    .lb-img { max-height: calc(100dvh - 12rem); }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLDialogElement>('dialog.lightbox').forEach((dlg) => {
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(`a[data-lightbox="${dlg.id}"]`));
+    if (!links.length || typeof dlg.showModal !== 'function') return;
+    const img = dlg.querySelector<HTMLImageElement>('.lb-img')!;
+    const cap = dlg.querySelector<HTMLElement>('.lb-caption')!;
+    const count = dlg.querySelector<HTMLElement>('.lb-count')!;
+    let i = 0, opener: HTMLElement | null = null;
+    if (links.length < 2) dlg.dataset.single = '';
+    const show = (n: number) => {
+      i = (n + links.length) % links.length;
+      const a = links[i];
+      img.src = a.href;
+      img.alt = a.dataset.alt ?? '';
+      cap.textContent = a.dataset.alt ?? '';
+      count.textContent = `${i + 1} / ${links.length}`;
+      const next = links[(i + 1) % links.length];
+      if (next) new Image().src = next.href; // preload the next picture
+    };
+    links.forEach((a, n) => a.addEventListener('click', (e) => { e.preventDefault(); opener = a; show(n); dlg.showModal(); dlg.querySelector<HTMLButtonElement>(links.length > 1 ? '.lb-next' : '.lb-close')?.focus(); }));
+    dlg.querySelector('.lb-prev')!.addEventListener('click', () => show(i - 1));
+    dlg.querySelector('.lb-next')!.addEventListener('click', () => show(i + 1));
+    dlg.querySelector('.lb-close')!.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg || e.target === dlg.querySelector('.lb-inner')) dlg.close(); });
+    dlg.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') show(i + 1); if (e.key === 'ArrowLeft') show(i - 1); });
+    dlg.addEventListener('close', () => opener?.focus());
+    let x0: number | null = null;
+    dlg.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    dlg.addEventListener('touchend', (e) => {
+      if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 50) show(dx < 0 ? i + 1 : i - 1);
+    });
+  });
+</script>
