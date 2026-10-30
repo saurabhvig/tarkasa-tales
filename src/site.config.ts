@@ -10,7 +10,7 @@ export const SITE = {
     'Tarkasa Tales publishes beautifully illustrated children’s books for ages 4–8 about inspiring scientists, timeless stories and wonderful discoveries.',
 
   /** Public contact email. Leave empty ('') until the mailbox exists — the site then hides email links. */
-  contactEmail: '',
+  contactEmail: 'hello@tarkasatales.com',
 
   /**
    * Who is responsible for this website (required in the Privacy Policy under EU GDPR).
