@@ -7,6 +7,7 @@ const links = amazonLinks(book);
 const sorted = [...links].sort((a, b) => a.region.localeCompare(b.region));
 const buy = canBuy(book);
 const soon = book.data.status === 'coming-soon';
+const kindleOnly = book.data.formats.length === 1 && book.data.formats[0] === 'Kindle eBook';
 ---
 <section aria-labelledby="buy-heading" class="rounded-[var(--radius-card)] border-2 border-yellow bg-white p-6 flex flex-col gap-4">
   {buy ? (
@@ -33,7 +34,7 @@ const soon = book.data.status === 'coming-soon';
           </ul>
         </div>
       </details>
-      <p class="text-sm text-ink-soft">You’ll be taken to Amazon, where prices, availability and delivery are shown.</p>
+      <p class="text-sm text-ink-soft">{kindleOnly && <><strong class="text-plum-deep">Kindle eBook edition.</strong> </>}You’ll be taken to Amazon, where prices, availability and delivery are shown.</p>
     </>
   ) : soon ? (
     <>

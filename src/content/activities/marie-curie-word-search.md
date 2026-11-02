@@ -6,5 +6,5 @@ file: /activities/marie-curie-word-search.pdf
 ageMin: 4
 ageMax: 8
 relatedBook: marie-curie
-order: 4
+order: 5
 ---

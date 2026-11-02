@@ -6,5 +6,5 @@ file: /activities/albert-einstein-word-search.pdf
 ageMin: 4
 ageMax: 8
 relatedBook: albert-einstein
-order: 5
+order: 6
 ---
