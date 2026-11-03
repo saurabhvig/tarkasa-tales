@@ -11,13 +11,15 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 24
-formats: [Paperback]
-isbn: "9798167386389"
-# When Amazon approves the book:
-#   1. add  asin: "B0XXXXXXXX"        (paperback code, from the Amazon address after /dp/)
-#   2. add  kindleAsin: "B0XXXXXXXX"  (Kindle code, for Amazon.in) and add Kindle eBook to formats
-#   3. change status to: published
-status: coming-soon
+formats: [Kindle eBook]          # add Paperback when the paperback is live
+isbn: "9798167386389"         # paperback ISBN
+# Kindle edition only for now. When the paperback is approved, put its code in asin,
+# keep the Kindle code in kindleAsin, and delete the amazonStores line.
+asin: "B0HQ5HWYQR"
+kindleAsin: "B0HQ5HWYQR"
+# Kindle eBooks are sold only in these Amazon stores:
+amazonStores: [com, couk, de, nl, fr, es, it, ca, au, jp, in]
+status: published
 featured: true
 themes: ["Loving numbers", "Never giving up", "Checking your work", "Fairness", "Space"]
 samples:

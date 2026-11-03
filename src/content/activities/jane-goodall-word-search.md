@@ -6,5 +6,5 @@ file: /activities/jane-goodall-word-search.pdf
 ageMin: 4
 ageMax: 8
 relatedBook: jane-goodall
-order: 7
+order: 8
 ---
