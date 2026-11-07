@@ -183,6 +183,10 @@ relatedBook: ada-lovelace  # optional: the book's file name without .md
    ```
 6. Commit. A "Watch the story in 30 seconds" box then appears under the Buy button. The video loads only when someone presses play, so pages stay fast.
 
+## 7c. Gift ideas page and read-aloud guides
+- **Gift ideas page** (`tarkasatales.com/gifts/`): the "For the child who…" text for each book is at the top of `src/pages/gifts.astro`. To add a new book, copy one line in the `IDEAS` list and change the `id` (the book's file name), `who` and `why`.
+- **Read-aloud guides** are one-page PDFs in `public/activities/` named `book-name-reading-guide.pdf`, listed in `src/content/activities/`. Ask Claude to make one for each new book, or add your own as in section 7, with `type: Reading guide`.
+
 ## 8. Update homepage content
 - **Featured books:** set `featured: true` in up to four published book files. The hero picture uses the same covers.
 - **Coming Soon:** filled automatically from books with `status: coming-soon`.

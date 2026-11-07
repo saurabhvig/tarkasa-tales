@@ -111,7 +111,7 @@ const activities = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/activities' }),
   schema: z.object({
     title: z.string(),
-    type: z.enum(['Activity pack', 'Colouring sheet', 'Word search', 'Science activity', 'Worksheet', 'Reading activity', 'Puzzle']),
+    type: z.enum(['Activity pack', 'Colouring sheet', 'Word search', 'Science activity', 'Worksheet', 'Reading activity', 'Reading guide', 'Puzzle']),
     description: z.string(),
     /** Path of the PDF inside the public/activities folder, e.g. /activities/marie-curie-colouring.pdf */
     file: z.string().startsWith('/activities/').endsWith('.pdf'),

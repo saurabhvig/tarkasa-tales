@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sparkle from '../components/Sparkle.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { bookUrl, coverAlt, type Book } from '../lib/books';
+
+// "For the child who…" — one gift idea per book. Edit the wording here.
+const IDEAS: Array<{ id: string; who: string; why: string; tint: string }> = [
+  { id: 'marie-curie', who: 'asks “why?” about everything', why: 'Manya never stopped asking questions, and her questions led to two Nobel Prizes. A story that tells curious children their questions matter.', tint: 'bg-mint-soft' },
+  { id: 'albert-einstein', who: 'loves to imagine and daydream', why: 'Albert wondered about a compass needle and imagined riding on a beam of light. Perfect for dreamers who think in pictures.', tint: 'bg-lavender-soft' },
+  { id: 'jane-goodall', who: 'loves animals and the outdoors', why: 'Jane waited hours to see a hen lay an egg, then months for wild chimpanzees to trust her. A gentle lesson in patience and kindness to animals.', tint: 'bg-yellow-soft' },
+  { id: 'isaac-newton', who: 'loves building, rainbows and how things work', why: 'Isaac built a mouse-powered windmill, split sunlight into a rainbow and wondered why apples fall. For little builders and testers.', tint: 'bg-coral-soft' },
+  { id: 'katherine-johnson', who: 'loves numbers, rockets and space', why: 'Katherine counted everything, then checked the numbers that sent astronauts around the Earth. For children who love maths and space.', tint: 'bg-mint-soft' },
+  { id: 'bobbin-and-the-wobble-bridge', who: 'is learning about big feelings', why: 'Five gentle bedtime stories about worry, frustration, sadness, jealousy and courage, with a small fox called Bobbin and her friends.', tint: 'bg-lavender-soft' },
+  { id: 'george-washington-carver', who: 'loves plants and gardening', why: 'The boy neighbours called the Plant Doctor walked miles to find a school, then helped farmers bring tired soil back to life.', tint: 'bg-yellow-soft' },
+];
+
+const ideas = (await Promise.all(IDEAS.map(async (i) => ({ ...i, book: (await getEntry('books', i.id)) as Book | undefined })))).filter((i) => i.book);
+const guide = (id: string) => `/activities/${id}-reading-guide.pdf`;
+const description = 'Gift ideas for curious kids aged 4–8: illustrated picture books about real scientists and big feelings, for Sinterklaas, Christmas and birthdays, plus free printables to tuck inside.';
+---
+<BaseLayout title="Gift Ideas for Curious Kids (Ages 4–8)" description={description}>
+  <section class="bg-coral-soft">
+    <div class="container-site flex flex-col gap-4 py-12 lg:py-16">
+      <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Gift ideas' }]} onColor />
+      <p class="text-sm font-extrabold uppercase tracking-[0.12em] inline-flex items-center gap-2 text-plum-deep"><Sparkle size={16} color="#C9575C" /> Gift guide</p>
+      <h1 class="text-5xl sm:text-6xl max-w-3xl">Gift ideas for curious kids</h1>
+      <p class="max-w-2xl text-lg sm:text-xl">Looking for a present for a child aged 4–8? Find the book that fits the questions they already ask, for Sinterklaas, Christmas, birthdays or just because.</p>
+    </div>
+  </section>
+
+  <div class="container-site flex flex-col gap-14 py-14">
+    <section aria-labelledby="by-child" class="flex flex-col gap-6">
+      <h2 id="by-child" class="text-[2.1rem]">Find a book for the child who…</h2>
+      <ul class="grid gap-6 md:grid-cols-2">
+        {ideas.map(({ book, who, why, tint }) => {
+          const b = book!;
+          const soon = b.data.status === 'coming-soon';
+          return (
+            <li class:list={['flex flex-col gap-5 rounded-[var(--radius-card)] p-5 sm:flex-row sm:p-6', tint]}>
+              <a href={bookUrl(b)} class="shrink-0 self-center sm:self-start" tabindex="-1" aria-hidden="true">
+                <Image src={b.data.cover} alt="" widths={[200, 320]} sizes="160px" class="w-40 rounded-xl shadow-[0_10px_22px_rgba(46,33,64,0.18)]" />
+              </a>
+              <div class="flex min-w-0 flex-col gap-2">
+                <p class="text-sm font-extrabold uppercase tracking-[0.08em] text-ink-soft">For the child who {who}</p>
+                <h3 class="text-[1.5rem]"><a href={bookUrl(b)}>{b.data.title}</a>{soon && <span class="pill bg-coral ml-2 align-middle">Coming Soon</span>}</h3>
+                {b.data.subtitle && <p class="font-display text-lg text-plum">{b.data.subtitle}</p>}
+                <p>{why}</p>
+                <div class="mt-2 flex flex-wrap gap-3">
+                  <a href={bookUrl(b)} class="btn btn-primary">{soon ? 'Learn more' : 'See the book'}<span class="sr-only">: {b.data.title}</span></a>
+                  <a href={guide(b.id)} class="btn btn-secondary" download>Free read-aloud guide<span class="sr-only"> for {b.data.title} (PDF)</span></a>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+
+    <section aria-labelledby="set" class="flex flex-col gap-4 rounded-[var(--radius-panel)] bg-white p-6 sm:p-10">
+      <h2 id="set" class="text-[2.1rem]">A bigger gift: the Big Questions set</h2>
+      <p class="max-w-3xl text-lg">Each Big Questions book tells the true childhood of a famous scientist and stands on its own, so they can be read in any order. Together they make a lovely shelf of curious minds: Marie Curie, Albert Einstein, Jane Goodall, Isaac Newton and Katherine Johnson, with George Washington Carver coming soon.</p>
+      <a href="/series/big-questions/" class="btn btn-dark self-start">See the Big Questions series</a>
+    </section>
+
+    <section aria-labelledby="tips" class="flex flex-col gap-5">
+      <h2 id="tips" class="text-[2.1rem]">Little touches that make it special</h2>
+      <ul class="grid gap-5 md:grid-cols-3">
+        <li class="flex flex-col gap-2 rounded-[var(--radius-card)] bg-yellow-soft p-6">
+          <h3 class="text-xl">Tuck in a free printable</h3>
+          <p>Print the matching activity pack or word search and slip it inside the book. It’s free, with no sign-up.</p>
+          <a href="/activities/" class="font-extrabold">Free activities <span aria-hidden="true">→</span></a>
+        </li>
+        <li class="flex flex-col gap-2 rounded-[var(--radius-card)] bg-mint-soft p-6">
+          <h3 class="text-xl">Write a note inside</h3>
+          <p>Try: <em>“For all your big questions. Never stop wondering.”</em> Children love finding a message just for them.</p>
+        </li>
+        <li class="flex flex-col gap-2 rounded-[var(--radius-card)] bg-lavender-soft p-6">
+          <h3 class="text-xl">Order in good time</h3>
+          <p>Buying for Sinterklaas (5 December) or Christmas? Check the delivery date Amazon shows for your country before you order.</p>
+        </li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

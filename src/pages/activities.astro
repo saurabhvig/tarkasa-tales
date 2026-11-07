@@ -9,12 +9,12 @@ const items = await Promise.all(
   activities.map(async (a) => ({ data: a.data, book: a.data.relatedBook ? await getEntry(a.data.relatedBook) : undefined })),
 );
 ---
-<BaseLayout title="Free Activities" description="Free printable activity packs and word searches for Marie Curie, Albert Einstein, Jane Goodall and Bobbin — for children aged 4–8.">
+<BaseLayout title="Free Activities" description="Free printable activity packs, word searches and read-aloud guides for parents and teachers, to go with Tarkasa Tales picture books for ages 4–8.">
   <section class="bg-yellow text-plum-deep">
     <div class="container-site flex flex-col gap-4 py-12 lg:py-16">
       <p class="text-sm font-extrabold uppercase tracking-[0.12em] inline-flex items-center gap-2"><Sparkle size={16} color="#FFF5E6" /> Free printables</p>
       <h1 class="text-5xl sm:text-6xl !text-plum-deep max-w-3xl">Free Activities</h1>
-      <p class="max-w-2xl text-lg sm:text-xl">Activity packs and word searches to go with our books, to print and enjoy together. Free to download for home and classroom use, with no sign-up.</p>
+      <p class="max-w-2xl text-lg sm:text-xl">Activity packs, word searches and read-aloud guides for parents and teachers, to go with our books. Free to download for home and classroom use, with no sign-up.</p>
     </div>
   </section>
 
