@@ -19,6 +19,8 @@ kindleAsin: "B0HPCHFRTX"      # Kindle eBook (used for Amazon.in)
 # To use a different link for one store, add e.g.:  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }
 status: published
 featured: true
+video: /videos/albert-einstein.mp4
+videoDescription: "Pictures from the book show young Albert wondering about a compass and a beam of light, and how an eclipse proved his idea right, ending with Wonder. Imagine. Check!"
 themes: ["Curiosity", "Imagination", "Checking ideas", "Persistence", "Light and energy"]
 samples:
   - src: ../../assets/samples/albert-einstein-1.jpg

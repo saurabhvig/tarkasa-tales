@@ -18,6 +18,8 @@ kindleAsin: "B0HN821JFN"      # Kindle eBook (used for Amazon.in)
 # To use a different link for one store, add e.g.:  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }
 status: published
 featured: true
+video: /videos/bobbin-and-the-wobble-bridge.mp4
+videoDescription: "Pictures from the book show Bobbin the fox feeling wobbly on the bridge, cross with her kite, and brave with her friends, ending with One toe, then the next."
 themes: ["Feeling nervous", "Frustration", "Sadness and loss", "Jealousy", "Friendship", "Helping others"]
 samples:
   - src: ../../assets/samples/bobbin-1.jpg

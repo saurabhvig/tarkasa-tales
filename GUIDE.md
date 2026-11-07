@@ -171,6 +171,18 @@ relatedBook: ada-lovelace  # optional: the book's file name without .md
 
 3. Commit. The Free Activities page then lists it with a download button. Only upload activities you created or have the rights to share.
 
+## 7b. Add a book video (trailer)
+1. Make the video vertical (9:16), about 30 seconds, **without music**. Music licensed through Instagram or TikTok may not be used on your own website.
+2. Name it after the book file, for example `ada-lovelace.mp4`. Keep it under about 10 MB. Exports at 720p work well.
+3. Make a still picture with the **same name**, `ada-lovelace.jpg`. It shows before the visitor presses play.
+4. Upload both to `public/videos/`.
+5. In the book's file, add these two lines below `featured:`:
+   ```yaml
+   video: /videos/ada-lovelace.mp4
+   videoDescription: "One sentence describing what the video shows."
+   ```
+6. Commit. A "Watch the story in 30 seconds" box then appears under the Buy button. The video loads only when someone presses play, so pages stay fast.
+
 ## 8. Update homepage content
 - **Featured books:** set `featured: true` in up to four published book files. The hero picture uses the same covers.
 - **Coming Soon:** filled automatically from books with `status: coming-soon`.

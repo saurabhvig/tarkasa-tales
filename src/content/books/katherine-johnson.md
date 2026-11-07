@@ -21,6 +21,8 @@ kindleAsin: "B0HQ5HWYQR"
 amazonStores: [com, couk, de, nl, fr, es, it, ca, au, jp, in]
 status: published
 featured: true
+video: /videos/katherine-johnson.mp4
+videoDescription: "Pictures from the book show Katherine counting everything, then checking the numbers for astronaut John Glenn’s flight around the Earth, ending with Count it. Check it. Check again!"
 themes: ["Loving numbers", "Never giving up", "Checking your work", "Fairness", "Space"]
 samples:
   - src: ../../assets/samples/katherine-johnson-p4.jpg

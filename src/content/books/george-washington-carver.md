@@ -14,6 +14,8 @@ pageCount: 24
 formats: [Paperback]
 status: coming-soon
 featured: true
+video: /videos/george-washington-carver.mp4
+videoDescription: "Pictures from the book show young George, the Plant Doctor, walking miles to school and growing up to help farmers and their soil, ending with Notice. Care. Share."
 themes: ["Noticing nature", "Caring for plants", "Sharing what you learn", "Never giving up", "Farming and soil"]
 samples:
   - src: ../../assets/samples/george-washington-carver-p5.jpg

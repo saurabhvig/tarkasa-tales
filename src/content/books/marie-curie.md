@@ -19,6 +19,8 @@ kindleAsin: "B0HP6XLFKD"      # Kindle eBook (used for Amazon.in)
 # To use a different link for one store, add e.g.:  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }
 status: published
 featured: true
+video: /videos/marie-curie.mp4
+videoDescription: "Pictures from the book tell how little Manya, full of questions, grew up to discover radium and win two Nobel Prizes, ending with the words Why? How? What’s inside?"
 themes: ["Curiosity", "Persistence", "Science and discovery", "Girls in science", "Helping others"]
 samples:
   - src: ../../assets/samples/marie-curie-1.jpg

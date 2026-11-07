@@ -16,6 +16,8 @@ asin: "B0HQ6MH9CV"            # paperback
 kindleAsin: "B0HQ5DFHRV"      # Kindle eBook (used for Amazon.in)
 status: published
 featured: true
+video: /videos/isaac-newton.mp4
+videoDescription: "Pictures from the book show young Isaac’s mouse-powered windmill, a glowing kite, a rainbow from sunlight and a falling apple, ending with Look. Ask. Test."
 themes: ["Noticing everyday things", "Asking questions", "Testing ideas", "Gravity", "Light and colour"]
 samples:
   - src: ../../assets/samples/isaac-newton-p5.jpg

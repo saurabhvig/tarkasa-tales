@@ -81,6 +81,10 @@ const books = defineCollection({
           .array(z.object({ src: image(), alt: z.string() }))
           .max(6)
           .default([]),
+        /** Optional short video (trailer). Put the MP4 and a JPG still with the same name in public/videos/. */
+        video: z.string().regex(/^\/videos\/[a-z0-9-]+\.mp4$/, 'video must look like /videos/book-name.mp4').optional(),
+        /** One sentence describing the video, for visitors who use screen readers. */
+        videoDescription: z.string().optional(),
         /** Placeholder entry used for design only. Shows a visible “Example” label and is hidden from search engines. */
         example: z.boolean().default(false),
       })

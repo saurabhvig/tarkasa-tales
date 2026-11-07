@@ -1,0 +1,33 @@
+---
+// Book trailer: self-hosted, silent, loads nothing until the visitor presses play.
+import { existsSync } from 'node:fs';
+import type { Book } from '../lib/books';
+interface Props { book: Book }
+const { book } = Astro.props;
+const d = book.data;
+const src = d.video!;
+const poster = src.replace(/\.mp4$/, '.jpg');
+if (!existsSync(`public${src}`)) throw new Error(`Book "${book.id}": video file public${src} was not found. Upload it to public/videos/.`);
+const hasPoster = existsSync(`public${poster}`);
+const descId = `video-desc-${book.id}`;
+---
+<section aria-labelledby="trailer" class="flex flex-col gap-4 rounded-[var(--radius-card)] bg-white p-5 sm:flex-row sm:items-center sm:gap-6">
+  <video
+    class="mx-auto aspect-[9/16] w-48 shrink-0 rounded-2xl bg-cream shadow-[0_12px_24px_rgba(46,33,64,0.18)] sm:mx-0 sm:w-44"
+    controls
+    playsinline
+    preload="none"
+    muted
+    width="720"
+    height="1280"
+    poster={hasPoster ? poster : undefined}
+    aria-describedby={descId}
+  >
+    <source src={src} type="video/mp4" />
+  </video>
+  <div class="flex flex-col gap-2 text-center sm:text-left">
+    <h2 id="trailer" class="text-2xl">Watch the story in 30 seconds</h2>
+    <p id={descId}>{d.videoDescription ?? `A short trailer for ${d.title}, using pictures from the book.`}</p>
+    <p class="text-sm text-ink-soft">No sound. Press play to watch.</p>
+  </div>
+</section>

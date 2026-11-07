@@ -6,6 +6,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import AmazonButtons from '../../components/AmazonButtons.astro';
 import ActivityCard from '../../components/ActivityCard.astro';
 import Lightbox from '../../components/Lightbox.astro';
+import BookVideo from '../../components/BookVideo.astro';
 import { getCollection } from 'astro:content';
 import BookCard from '../../components/BookCard.astro';
 import ExampleBadge from '../../components/ExampleBadge.astro';
@@ -140,6 +141,7 @@ const crumbsLd = {
         </dl>
         <p class="text-xl leading-relaxed">{d.shortDescription}</p>
         <AmazonButtons book={book} />
+        {d.video && <BookVideo book={book} />}
       </div>
     </div>
 
