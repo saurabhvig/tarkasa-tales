@@ -1,5 +1,7 @@
 ---
-// Book trailer: self-hosted, silent, loads nothing until the visitor presses play.
+// Book trailer: a still with a play button; clicking opens the video in a pop-up and starts it.
+// Self-hosted and silent; nothing is downloaded until the visitor presses play.
+// Without JavaScript the link simply opens the video file.
 import { existsSync } from 'node:fs';
 import type { Book } from '../lib/books';
 interface Props { book: Book }
@@ -8,26 +10,63 @@ const d = book.data;
 const src = d.video!;
 const poster = src.replace(/\.mp4$/, '.jpg');
 if (!existsSync(`public${src}`)) throw new Error(`Book "${book.id}": video file public${src} was not found. Upload it to public/videos/.`);
-const hasPoster = existsSync(`public${poster}`);
-const descId = `video-desc-${book.id}`;
+if (!existsSync(`public${poster}`)) throw new Error(`Book "${book.id}": still picture public${poster} was not found. Upload a JPG with the same name as the video.`);
+const desc = d.videoDescription ?? `A short trailer for ${d.title}, using pictures from the book.`;
+const dlgId = `video-${book.id}`;
 ---
 <section aria-labelledby="trailer" class="flex flex-col gap-4 rounded-[var(--radius-card)] bg-white p-5 sm:flex-row sm:items-center sm:gap-6">
-  <video
-    class="mx-auto aspect-[9/16] w-48 shrink-0 rounded-2xl bg-cream shadow-[0_12px_24px_rgba(46,33,64,0.18)] sm:mx-0 sm:w-44"
-    controls
-    playsinline
-    preload="none"
-    muted
-    width="720"
-    height="1280"
-    poster={hasPoster ? poster : undefined}
-    aria-describedby={descId}
-  >
-    <source src={src} type="video/mp4" />
-  </video>
+  <a href={src} class="video-open group relative mx-auto block w-48 shrink-0 overflow-hidden rounded-2xl shadow-[0_12px_24px_rgba(46,33,64,0.18)] sm:mx-0 sm:w-44" data-video-dialog={dlgId}>
+    <img src={poster} alt="" width="540" height="960" loading="lazy" decoding="async" class="aspect-[9/16] w-full object-cover transition group-hover:scale-[1.03] motion-reduce:group-hover:scale-100" />
+    <span class="play absolute inset-0 flex items-center justify-center bg-plum-deep/15 transition group-hover:bg-plum-deep/25" aria-hidden="true">
+      <span class="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-cream/95 text-plum shadow-[0_8px_20px_rgba(0,0,0,0.3)] transition group-hover:scale-110 group-hover:bg-yellow motion-reduce:group-hover:scale-100">
+        <svg width="34" height="34" viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" fill="currentColor"></path></svg>
+      </span>
+    </span>
+    <span class="sr-only">Play the video: {d.title} trailer</span>
+  </a>
   <div class="flex flex-col gap-2 text-center sm:text-left">
     <h2 id="trailer" class="text-2xl">Watch the story in 30 seconds</h2>
-    <p id={descId}>{d.videoDescription ?? `A short trailer for ${d.title}, using pictures from the book.`}</p>
-    <p class="text-sm text-ink-soft">No sound. Press play to watch.</p>
+    <p>{desc}</p>
+    <p class="text-sm text-ink-soft">No sound. Tap the picture to play.</p>
   </div>
 </section>
+
+<dialog id={dlgId} class="video-lightbox" aria-label={`${d.title} trailer`}>
+  <div class="vl-inner">
+    <button type="button" class="vl-close" aria-label="Close video">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"></path></svg>
+    </button>
+    <video class="vl-video" controls playsinline muted preload="none" poster={poster} width="720" height="1280" aria-description={desc}>
+      <source data-src={src} type="video/mp4" />
+    </video>
+  </div>
+</dialog>
+
+<style>
+  .video-lightbox { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; }
+  .video-lightbox::backdrop { background: rgba(30, 20, 44, 0.95); }
+  .vl-inner { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; padding: 4.25rem 1rem 1.5rem; }
+  .vl-video { height: auto; width: auto; max-height: calc(100dvh - 6rem); max-width: min(92vw, 560px); aspect-ratio: 9 / 16; border-radius: 1rem; background: #fff5e6; box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+  .vl-close { position: absolute; top: 0.75rem; right: 1rem; display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border-radius: 999px; background: #fff5e6; color: #53406c; border: 0; cursor: pointer; }
+  .vl-close:hover { background: #f6bd60; color: #2e2140; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('a[data-video-dialog]').forEach((link) => {
+    const dlg = document.getElementById(link.dataset.videoDialog!) as HTMLDialogElement | null;
+    if (!dlg || typeof dlg.showModal !== 'function') return;
+    const video = dlg.querySelector<HTMLVideoElement>('video')!;
+    const source = video.querySelector<HTMLSourceElement>('source')!;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!source.src) { source.src = source.dataset.src!; video.load(); }
+      dlg.showModal();
+      video.currentTime = 0;
+      video.play().catch(() => { /* if autoplay is blocked, the visitor can press play */ });
+      dlg.querySelector<HTMLButtonElement>('.vl-close')!.focus();
+    });
+    dlg.querySelector('.vl-close')!.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg || e.target === dlg.querySelector('.vl-inner')) dlg.close(); });
+    dlg.addEventListener('close', () => { video.pause(); link.focus(); });
+  });
+</script>

@@ -12,7 +12,8 @@ ageMax: 8
 language: English
 pageCount: 24
 formats: [Paperback]
-status: coming-soon
+asin: "B0HR321WJC"
+status: published
 featured: true
 video: /videos/george-washington-carver.mp4
 videoDescription: "Pictures from the book show young George, the Plant Doctor, walking miles to school and growing up to help farmers and their soil, ending with Notice. Care. Share."
