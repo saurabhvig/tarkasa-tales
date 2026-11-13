@@ -20,14 +20,14 @@ export const SITE = {
 
   /** Social media profile links. Leave empty ('') to hide. */
   social: {
-    instagram: '',
+    instagram: 'https://www.instagram.com/tarkasatales/',
     pinterest: '',
     facebook: '',
     youtube: '',
   },
 
   /** The date the Privacy Policy was last updated. */
-  privacyUpdated: '2026-10-27',
+  privacyUpdated: '2026-11-14',
 };
 
 /**

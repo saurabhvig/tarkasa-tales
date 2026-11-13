@@ -32,7 +32,7 @@ const label = (k: string) => k.charAt(0).toUpperCase() + k.slice(1);
           ? <a class="text-cream hover:text-cream break-all" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
           : <a class="text-cream no-underline hover:underline hover:text-cream" href="/contact/">Contact page</a>}
         {socials.map(([k, url]) => (
-          <a class="text-cream no-underline hover:underline hover:text-cream" href={url} rel="me noopener" target="_blank">{label(k)}<span class="sr-only"> (opens in a new tab)</span></a>
+          <a class="inline-flex items-center gap-2 text-cream no-underline hover:underline hover:text-cream" href={url} rel="me noopener" target="_blank">{k === 'instagram' && <Fragment set:html={`<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" class="shrink-0"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"></rect><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"></circle><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"></circle></svg>`} />}{k === 'instagram' ? '@tarkasatales on Instagram' : label(k)}<span class="sr-only"> (opens in a new tab)</span></a>
         ))}
       </div>
     </div>
