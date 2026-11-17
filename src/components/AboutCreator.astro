@@ -1,0 +1,17 @@
+---
+/** Short "Meet the creator" box. Text lives in site.config.ts → creator. */
+import Mark from './Mark.astro';
+import { SITE } from '../site.config';
+interface Props { heading?: 'h2' | 'h3' }
+const { heading = 'h2' } = Astro.props;
+const H = heading;
+---
+<section aria-labelledby="creator" class="flex flex-col items-start gap-5 rounded-[var(--radius-card)] bg-white p-6 sm:flex-row sm:p-8">
+  <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-yellow" aria-hidden="true"><Mark size={64} /></div>
+  <div class="flex flex-col gap-2">
+    <p class="eyebrow">Meet the creator</p>
+    <H id="creator" class="text-[1.9rem]">{SITE.creator.name}</H>
+    <p class="text-lg leading-relaxed">{SITE.creator.short}</p>
+    <a href="/about/" class="font-extrabold">More about how the books are made <span aria-hidden="true">→</span></a>
+  </div>
+</section>

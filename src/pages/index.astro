@@ -9,6 +9,10 @@ import Sparkle from '../components/Sparkle.astro';
 import Planet from '../components/Planet.astro';
 import Mark from '../components/Mark.astro';
 import NameEquation from '../components/NameEquation.astro';
+import WhatsInside from '../components/WhatsInside.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import AboutCreator from '../components/AboutCreator.astro';
+import { bookUrl } from '../lib/books';
 import { getFeatured, getPublished, getComingSoon, getAllBooks, getAllSeries } from '../lib/books';
 import { SITE } from '../site.config';
 
@@ -16,13 +20,29 @@ import { SITE } from '../site.config';
 const featured = await getFeatured();
 const published = await getPublished();
 const anyFeatured = (await getAllBooks()).filter((b) => b.data.featured);
-const featuredBooks = (featured.length ? featured : published.length ? published : anyFeatured).slice(0, 8);
+const featuredBooks = (featured.length ? featured : published.length ? published : anyFeatured).slice(0, 4);
 const featuredIds = new Set(featuredBooks.map((b) => b.id));
 const heroBooks = [...featuredBooks, ...(await getComingSoon())].filter((b, i, a) => a.indexOf(b) === i).slice(0, 3);
 // Coming-soon section skips books already shown above, so nothing appears twice.
 const soon = (await getComingSoon()).filter((b) => !featuredIds.has(b.id)).slice(0, 3);
 const featuredTitle = published.length ? 'Featured books' : 'Our first books';
 const series = await getAllSeries();
+
+// SHOP BY INTEREST — edit the groups or book lists here (use the book's file name without .md).
+const all = await getAllBooks();
+const byId = new Map(all.map((b) => [b.id, b]));
+const INTERESTS: Array<{ title: string; ids: string[]; tint: string }> = [
+  { title: 'Space and stars', ids: ['mae-jemison', 'galileo-galilei', 'katherine-johnson'], tint: 'bg-lavender-soft' },
+  { title: 'Animals and nature', ids: ['jane-goodall', 'george-washington-carver'], tint: 'bg-mint-soft' },
+  { title: 'Numbers and patterns', ids: ['katherine-johnson', 'ada-lovelace'], tint: 'bg-yellow-soft' },
+  { title: 'How things work', ids: ['isaac-newton', 'albert-einstein'], tint: 'bg-coral-soft' },
+  { title: 'Medicine and discovery', ids: ['marie-curie', 'alexander-fleming'], tint: 'bg-mint-soft' },
+  { title: 'Big feelings', ids: ['bobbin-and-the-wobble-bridge'], tint: 'bg-lavender-soft' },
+  { title: 'Stories from India', ids: ['hanuman-ocean-leap'], tint: 'bg-coral-soft' },
+];
+const interests = INTERESTS.map((g) => ({ ...g, books: g.ids.map((id) => byId.get(id)).filter((b) => !!b) })).filter((g) => g.books.length);
+// The one printable offered right on the homepage (no signup needed).
+const homePrintable = { title: 'Marie Curie activity pack', file: '/activities/marie-curie-activity-pack.pdf', note: 'Words to know, four simple science activities and a “My big question” page. 4 pages, PDF.' };
 
 const orgLd = {
   '@context': 'https://schema.org',
@@ -46,13 +66,13 @@ const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SIT
         </p>
         <h1 id="hero-title" class="text-[2.9rem] sm:text-6xl lg:text-[4.4rem] leading-[1.02]">Little Questions.<br />Big Discoveries.</h1>
         <p class="max-w-xl text-lg sm:text-xl leading-relaxed">
-          Explore inspiring scientists, timeless stories and wonderful discoveries through beautifully illustrated books that spark curiosity and imagination.
+          True stories of real scientists for ages 4–8. Every Big Questions book comes with a grown-ups’ biography, a picture glossary and science activities to try at home.
         </p>
         <div class="flex flex-wrap gap-3">
           <a href="/books/" class="btn btn-primary text-[1.0625rem] min-h-[3.4rem] px-8">Explore Our Books</a>
-          <a href="/series/" class="btn btn-secondary text-[1.0625rem] min-h-[3.4rem] px-8">Discover Our Series</a>
+          <a href="/activities/" class="btn btn-secondary text-[1.0625rem] min-h-[3.4rem] px-8">Discover Free Activities</a>
         </div>
-        <p class="text-[0.9375rem] text-ink-soft">Picture books for ages 4–8 · Available on Amazon</p>
+        <p class="text-[0.9375rem] text-ink-soft">Picture books · Paperback and Kindle on Amazon · Created by a scientist</p>
         <a href="/gifts/" class="inline-flex items-center gap-2 self-start rounded-full bg-coral-soft px-4 py-2 font-extrabold text-plum-deep no-underline hover:underline"><Sparkle size={16} color="#C9575C" /> Looking for a gift? See gift ideas for curious kids <span aria-hidden="true">→</span></a>
       </div>
 
@@ -78,6 +98,22 @@ const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SIT
         ))}
       </div>
     </div>
+  </section>
+
+  <!-- WHAT'S INSIDE -->
+  <div class="container-site pb-16"><WhatsInside /></div>
+
+  <!-- SHOP BY INTEREST -->
+  <section aria-labelledby="interests" class="container-site flex flex-col gap-6 pb-16">
+    <SectionHeading eyebrow="Find the right book" title="Shop by interest" id="interests" linkHref="/books/" linkLabel="See all books" />
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {interests.map((g) => (
+        <li class:list={['flex flex-col gap-2 rounded-[var(--radius-card)] p-5 text-plum-deep', g.tint]}>
+          <h3 class="text-xl !text-plum-deep">{g.title}</h3>
+          <p>{g.books.map((b, i) => <>{i > 0 && ' · '}<a href={bookUrl(b)} class="font-bold">{b.data.title}</a>{b.data.status === 'coming-soon' && <span class="text-ink-soft"> (soon)</span>}</>)}</p>
+        </li>
+      ))}
+    </ul>
   </section>
 
   <!-- FEATURED -->
@@ -121,7 +157,12 @@ const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SIT
         <p class="text-sm font-extrabold uppercase tracking-[0.12em]">Free printables</p>
         <h2 id="activities" class="text-[2.1rem] sm:text-[2.6rem] !text-plum-deep">Keep the curiosity going after the last page</h2>
         <p class="text-lg">Colouring sheets, word searches and simple science activities for grown-ups to print and enjoy with young readers.</p>
-        <a href="/activities/" class="btn btn-dark self-start">Browse Free Activities</a>
+        <div class="flex flex-wrap gap-3">
+          <a href={homePrintable.file} download data-umami-event="download" data-umami-event-file="marie-curie-activity-pack" class="btn btn-dark">Download the {homePrintable.title}<span class="sr-only"> (PDF)</span></a>
+          <a href="/activities/" class="btn btn-secondary">Browse all free activities</a>
+        </div>
+        <p class="text-[0.9375rem]">{homePrintable.note} No signup needed.</p>
+        <p class="font-bold">Teaching ages 4–8? Every activity is free to print and share with your class.</p>
       </div>
       <ul class="grid flex-1 min-w-[16rem] grid-cols-3 gap-3 sm:gap-4">
         <li class="flex flex-col items-center gap-2 rounded-3xl bg-cream px-2 py-5 text-center font-extrabold"><Sparkle size={40} color="#F39A9D" />Colouring</li>
@@ -134,6 +175,12 @@ const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SIT
       </ul>
     </div>
   </section>
+
+  <!-- EMAIL SIGNUP (hidden until brevoFormAction is set in site.config.ts) -->
+  {SITE.brevoFormAction && <div class="container-site pb-16"><NewsletterSignup id="home-signup" source="home" /></div>}
+
+  <!-- CREATOR -->
+  <div class="container-site pb-16"><AboutCreator /></div>
 
   <!-- ABOUT -->
   <section aria-labelledby="why" class="container-site pb-24">

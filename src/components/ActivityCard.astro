@@ -22,7 +22,7 @@ const tint = a.type === 'Word search' ? 'bg-lavender-soft' : a.type === 'Activit
     {a.ageMin && a.ageMax && <>Ages {a.ageMin}–{a.ageMax} · </>}PDF, A4{size && <> · {size}</>}
   </p>
   {showBook && book && <p class="text-[0.9375rem]">Goes with: <a href={`/books/${book.id}/`} class="font-bold">{book.data.title}</a></p>}
-  <a href={a.file} download class="btn btn-primary mt-auto">
+  <a href={a.file} download data-umami-event="download" data-umami-event-file={a.file.replace(/^\/activities\//, '').replace(/\.pdf$/, '')} class="btn btn-primary mt-auto">
     <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     Download PDF<span class="sr-only">: {a.title}</span>
   </a>
