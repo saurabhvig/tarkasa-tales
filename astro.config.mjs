@@ -19,7 +19,7 @@ export default defineConfig({
   build: { format: 'directory' },
   integrations: [
     sitemap({
-      filter: (page) => !exampleBookPaths.some((p) => page.endsWith(p)) && !page.includes('/404') && !page.includes('/thanks/'),
+      filter: (page) => !exampleBookPaths.some((p) => page.endsWith(p)) && !page.includes('/404') && !page.includes('/thanks/') && !page.includes('/confirmed/'),
     }),
   ],
   vite: { plugins: [tailwindcss()] },
