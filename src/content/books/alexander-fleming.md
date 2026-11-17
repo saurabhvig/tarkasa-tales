@@ -11,8 +11,9 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 24
-formats: [Paperback]
-asin: "B0HRX8YML3"
+formats: [Paperback, Kindle eBook]
+asin: "B0HRX8YML3"            # paperback
+kindleAsin: "B0HRXSVCWP"      # Kindle eBook (used for Amazon.in)
 status: published
 featured: true
 video: /videos/alexander-fleming.mp4

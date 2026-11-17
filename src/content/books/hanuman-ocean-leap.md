@@ -11,8 +11,9 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 26
-formats: [Paperback]
-asin: "B0HRXD24JN"
+formats: [Paperback, Kindle eBook]
+asin: "B0HRXD24JN"            # paperback
+kindleAsin: "B0HRWWPT48"      # Kindle eBook (used for Amazon.in)
 status: published
 featured: true
 video: /videos/hanuman-ocean-leap.mp4
