@@ -42,7 +42,7 @@ export const SITE = {
    * e.g. 'https://a1b2c3.sibforms.com/serve/MUIFAB...'.
    * Leave empty ('') and every signup box is hidden.
    */
-  brevoFormAction: '',
+  brevoFormAction: 'https://c12d850b.sibforms.com/serve/MUIFALcZ_2tyt73eOob648d9vJ1i-_OKRsxAFgWTSkqnGg0Jijr0aDjb2l00Gahr7eNNWazTAlvXI9zcHD0jIYP_O-whos6bLzAJdcxqfBP2ZIa6QeyjFuR2NnLYhMxHEf2fi55GDQwPN3Xo3IBO9gweLh2n53ELU0s5iVUjIgHDRE2NNo5AtTXjIQckGII9zKoKakccraXymGJXOA==',
 
   /** The person behind Tarkasa Tales, shown on the About page, homepage and book pages. */
   creator: {
