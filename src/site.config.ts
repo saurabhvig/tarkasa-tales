@@ -27,7 +27,32 @@ export const SITE = {
   },
 
   /** The date the Privacy Policy was last updated. */
-  privacyUpdated: '2026-11-14',
+  privacyUpdated: '2026-11-17',
+
+  /**
+   * VISITOR STATISTICS (Umami Cloud, EU region, no cookies).
+   * Paste the "Website ID" from Umami → Settings → Websites → Edit.
+   * Leave empty ('') and no statistics script is loaded at all.
+   */
+  umamiWebsiteId: '',
+
+  /**
+   * EMAIL NEWSLETTER (Brevo).
+   * Paste the form "action" address from Brevo → Marketing → Forms → your form → Share → Simple HTML,
+   * e.g. 'https://a1b2c3.sibforms.com/serve/MUIFAB...'.
+   * Leave empty ('') and every signup box is hidden.
+   */
+  brevoFormAction: '',
+
+  /** The person behind Tarkasa Tales, shown on the About page, homepage and book pages. */
+  creator: {
+    name: 'Saurabh Vig',
+    short: 'Saurabh Vig is a biomedical scientist (PhD) in the Netherlands. He chooses each scientist, researches their life from reliable sources, shapes the story and checks every fact.',
+    long: [
+      'Tarkasa Tales is created by Saurabh Vig, a biomedical scientist (PhD) who works in medical research in the Netherlands.',
+      'Every day at work starts with a question, and so does every book. Saurabh chooses each scientist, researches their life from biographies and reliable sources, shapes the story so a four-year-old can follow it, and checks every fact before a book is published. He works with digital writing and illustration tools to bring each story to life, and the sources are listed in the “For grown-ups” pages of every Big Questions book.',
+    ],
+  },
 };
 
 /**

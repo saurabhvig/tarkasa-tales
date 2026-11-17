@@ -77,6 +77,8 @@ const books = defineCollection({
         expectedRelease: z.string().optional(),
         featured: z.boolean().default(false),
         themes: z.preprocess((v) => v ?? [], z.array(z.string())),
+        /** Up to three short sentences: what a child takes away from the book. Shown as "What your child will learn". */
+        learningOutcomes: z.preprocess((v) => v ?? [], z.array(z.string()).max(3)),
         samples: z
           .array(z.object({ src: image(), alt: z.string() }))
           .max(6)
