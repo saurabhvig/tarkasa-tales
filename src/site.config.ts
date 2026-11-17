@@ -34,7 +34,7 @@ export const SITE = {
    * Paste the "Website ID" from Umami → Settings → Websites → Edit.
    * Leave empty ('') and no statistics script is loaded at all.
    */
-  umamiWebsiteId: '',
+  umamiWebsiteId: '653625b0-8936-4013-8fa4-7e1bc41afffc',
 
   /**
    * EMAIL NEWSLETTER (Brevo).
