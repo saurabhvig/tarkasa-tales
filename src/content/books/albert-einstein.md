@@ -22,6 +22,10 @@ featured: true
 video: /videos/albert-einstein.mp4
 videoDescription: "Pictures from the book show young Albert wondering about a compass and a beam of light, and how an eclipse proved his idea right, ending with Wonder. Imagine. Check!"
 themes: ["Curiosity", "Imagination", "Checking ideas", "Persistence", "Light and energy"]
+learningOutcomes:
+  - "Wondering about everyday things, like a compass needle, is how science begins."
+  - "Imagining is a way of thinking, and good ideas still need checking."
+  - "Who Albert Einstein was, and why people still talk about his ideas about light and energy."
 samples:
   - src: ../../assets/samples/albert-einstein-1.jpg
     alt: "Inside page: Albert, sick in bed, is given a small compass by his father"

@@ -22,6 +22,10 @@ featured: true
 video: /videos/marie-curie.mp4
 videoDescription: "Pictures from the book tell how little Manya, full of questions, grew up to discover radium and win two Nobel Prizes, ending with the words Why? How? What’s inside?"
 themes: ["Curiosity", "Persistence", "Science and discovery", "Girls in science", "Helping others"]
+learningOutcomes:
+  - "Big discoveries start with small questions, like “What’s inside a stone?”"
+  - "When a door is closed, you can keep learning and wait for your turn."
+  - "Who Marie Curie was, and why she is the first person to win two Nobel Prizes."
 samples:
   - src: ../../assets/samples/marie-curie-1.jpg
     alt: "Inside page: Manya presses her nose to her father’s glass cabinet full of science instruments"

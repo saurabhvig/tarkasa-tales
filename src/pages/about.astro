@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Mark from '../components/Mark.astro';
 import Sparkle from '../components/Sparkle.astro';
 import NameEquation from '../components/NameEquation.astro';
+import { SITE } from '../site.config';
 const values = [
   ['Curiosity', 'Every book starts with a question worth asking.', 'bg-mint-soft'],
   ['Reasoning', 'We invite children to wonder why and how, and to think things through.', 'bg-lavender-soft'],
@@ -41,6 +42,17 @@ const values = [
           <li>Language is clear and warm, so children can enjoy reading with a grown-up or on their own.</li>
           <li>Illustrations invite children to look closely, ask questions and imagine.</li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="creator" class="container-site py-16">
+    <div class="grid gap-10 rounded-[var(--radius-panel)] bg-white p-7 sm:p-12 lg:grid-cols-[auto_1fr] lg:items-start">
+      <div class="flex h-36 w-36 items-center justify-center rounded-full bg-yellow" aria-hidden="true"><Mark size={96} /></div>
+      <div class="flex flex-col gap-4">
+        <p class="eyebrow">Meet the creator</p>
+        <h2 id="creator" class="text-[2.4rem]">{SITE.creator.name}</h2>
+        {SITE.creator.long.map((para) => <p class="text-lg leading-relaxed max-w-[65ch]">{para}</p>)}
       </div>
     </div>
   </section>

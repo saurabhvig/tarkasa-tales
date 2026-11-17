@@ -49,6 +49,10 @@ const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     {ld.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
+    {/* Cookieless visitor statistics (Umami Cloud, EU region). Only loads when umamiWebsiteId is set. See /privacy/. */}
+    {SITE.umamiWebsiteId && (
+      <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={SITE.umamiWebsiteId} data-domains="tarkasatales.com,www.tarkasatales.com" data-do-not-track="true"></script>
+    )}
   </head>
   <body class="min-h-dvh flex flex-col">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 btn btn-primary">Skip to main content</a>

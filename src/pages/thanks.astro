@@ -1,0 +1,19 @@
+---
+// Shown by Brevo after someone submits the signup form (set this address as the form's redirect in Brevo).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sparkle from '../components/Sparkle.astro';
+---
+<BaseLayout title="Please check your email" description="Confirm your Tarkasa Tales email subscription." noindex>
+  <div class="container-site py-16 lg:py-24">
+    <div class="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
+      <Sparkle size={48} color="#F39A9D" />
+      <h1 class="text-5xl">Almost there!</h1>
+      <p class="text-xl leading-relaxed">We’ve sent you an email. Please click the button in it to confirm, and your free printables will follow.</p>
+      <p class="text-ink-soft">Nothing arrived? Check your spam or promotions folder. If you didn’t mean to sign up, simply ignore the email and you won’t hear from us.</p>
+      <div class="flex flex-wrap justify-center gap-3 pt-2">
+        <a href="/activities/" class="btn btn-primary">Browse free activities</a>
+        <a href="/books/" class="btn btn-secondary">Explore our books</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

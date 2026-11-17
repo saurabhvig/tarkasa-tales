@@ -24,7 +24,7 @@ const kindleOnly = book.data.formats.length === 1 && book.data.formats[0] === 'K
           <ul class="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {sorted.map((l) => (
               <li>
-                <a href={l.url} target="_blank" rel="noopener noreferrer" data-store={l.key} class="store-link flex min-h-14 flex-col justify-center rounded-xl border-2 border-transparent bg-white px-3 py-2 no-underline hover:border-plum hover:bg-lavender-soft">
+                <a href={l.url} target="_blank" rel="noopener noreferrer" data-store={l.key} data-umami-event="amazon-click" data-umami-event-book={book.id} data-umami-event-store={l.key} class="store-link flex min-h-14 flex-col justify-center rounded-xl border-2 border-transparent bg-white px-3 py-2 no-underline hover:border-plum hover:bg-lavender-soft">
                   <span class="font-extrabold text-plum-deep">{l.region}</span>
                   <span class="text-sm text-ink-soft">{l.label}</span>
                   <span class="sr-only"> (opens in a new tab)</span>

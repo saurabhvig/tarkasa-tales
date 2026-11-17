@@ -10,6 +10,9 @@ import BookVideo from '../../components/BookVideo.astro';
 import { getCollection } from 'astro:content';
 import BookCard from '../../components/BookCard.astro';
 import ExampleBadge from '../../components/ExampleBadge.astro';
+import WhatsInside from '../../components/WhatsInside.astro';
+import AboutCreator from '../../components/AboutCreator.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { type Book, getAllBooks, getBooksInSeries, seriesOf, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
 import { SITE } from '../../site.config';
 
@@ -140,6 +143,12 @@ const crumbsLd = {
           <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Language</dt><dd class="text-lg font-extrabold text-plum-deep">{d.language}</dd></div>
         </dl>
         <p class="text-xl leading-relaxed">{d.shortDescription}</p>
+        {d.learningOutcomes.length > 0 && (
+          <section aria-labelledby="outcomes" class="rounded-[var(--radius-card)] bg-mint-soft p-5 text-plum-deep">
+            <h2 id="outcomes" class="text-xl !text-plum-deep">What your child will take away</h2>
+            <ul class="prose-tt mt-2">{d.learningOutcomes.map((o) => <li>{o}</li>)}</ul>
+          </section>
+        )}
         <AmazonButtons book={book} />
         {d.video && <BookVideo book={book} />}
       </div>
@@ -168,6 +177,8 @@ const crumbsLd = {
       </aside>
     </div>
 
+    {series.id === 'big-questions' && <WhatsInside heading="h2" title="What’s inside this book" />}
+
     {activities.length > 0 && (
       <section aria-labelledby="printables" class="flex flex-col gap-6 rounded-[var(--radius-panel)] bg-yellow p-6 sm:p-10">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
@@ -194,6 +205,8 @@ const crumbsLd = {
         </div>
       </section>
     )}
+    <NewsletterSignup id="book-signup" compact source={`book:${book.id}`} />
+    <AboutCreator />
   </div>
   <Lightbox id="book-pictures" title={d.title} />
 </BaseLayout>

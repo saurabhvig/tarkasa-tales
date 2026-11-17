@@ -1,0 +1,24 @@
+---
+/** "What's inside every book" strip — the back-matter every Big Questions book includes. */
+interface Props { heading?: 'h2' | 'h3'; title?: string }
+const { heading = 'h2', title = 'What’s inside every Big Questions book' } = Astro.props;
+const H = heading;
+const items = [
+  ['A true story', 'The real life of a real scientist, starting with the child they once were.', 'bg-mint-soft'],
+  ['For grown-ups', 'A short biography and timeline, with the sources used.', 'bg-lavender-soft'],
+  ['Words to know', 'A picture glossary of new words, like “experiment” or “orbit”.', 'bg-yellow-soft'],
+  ['Be a curious scientist', 'Simple activities to try at home, plus a “My big question” page.', 'bg-coral-soft'],
+];
+---
+<section aria-labelledby="whats-inside" class="flex flex-col gap-6">
+  <H id="whats-inside" class="text-[2.1rem] sm:text-[2.4rem]">{title}</H>
+  <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {items.map(([t, d, c]) => (
+      <li class:list={['flex flex-col gap-2 rounded-[var(--radius-card)] p-5 text-plum-deep', c]}>
+        <p class="font-display text-xl font-semibold">{t}</p>
+        <p>{d}</p>
+      </li>
+    ))}
+  </ul>
+  <p class="text-lg">Read it at bedtime, then keep exploring together.</p>
+</section>
