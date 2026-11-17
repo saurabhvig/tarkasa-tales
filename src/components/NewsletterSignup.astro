@@ -1,8 +1,8 @@
 ---
 /**
  * Optional email signup (Brevo). Hidden until SITE.brevoFormAction is filled in.
- * The form posts straight to Brevo; no script runs on this site. Brevo sends the
- * confirmation email (double opt-in) and then shows our /thanks/ page.
+ * A small script sends the form to Brevo in the background and then opens our /thanks/ page,
+ * so visitors never see Brevo's raw reply. Brevo sends the confirmation email (double opt-in).
  * Field names (EMAIL, FIRSTNAME, OPT_IN, email_address_check, locale) match Brevo's "Simple HTML" form code.
  */
 import { SITE } from '../site.config';
@@ -19,7 +19,7 @@ const action = SITE.brevoFormAction;
         <h2 id={`${id}-title`} class:list={['!text-plum-deep', compact ? 'text-[1.9rem]' : 'text-[2.1rem] sm:text-[2.6rem]']}>A free printable every month</h2>
         <p class="text-lg">One short email a month: a new activity sheet, a scientist story to share, and news when a book comes out. Unsubscribe any time.</p>
       </div>
-      <form action={action} method="post" class="flex flex-col gap-4" data-umami-event="signup-submit" data-umami-event-source={source}>
+      <form action={action} method="post" class="flex flex-col gap-4" data-brevo-signup>
         <div class="flex flex-col gap-1.5">
           <label for={`${id}-email`} class="font-extrabold">Email address</label>
           <input id={`${id}-email`} name="EMAIL" type="email" required autocomplete="email" class="min-h-12 rounded-xl border-2 border-plum/40 bg-white px-4 text-lg focus:border-plum" />
@@ -35,9 +35,35 @@ const action = SITE.brevoFormAction;
         {/* Spam trap for bots: people never see or fill this. */}
         <input type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
         <input type="hidden" name="locale" value="en" />
-        <button type="submit" class="btn btn-primary self-start">Send me the printables</button>
+        <button type="submit" class="btn btn-primary self-start" data-umami-event="signup-submit" data-umami-event-source={source}>Send me the printables</button>
+        <p class="rounded-lg border-l-4 border-coral bg-white px-3 py-2 font-bold text-plum-deep" role="alert" aria-live="polite" data-signup-error hidden></p>
         <p class="text-sm text-ink-soft">We use Brevo to send our emails and you’ll get one email to confirm. We never ask for children’s details. See our <a href="/privacy/">Privacy Policy</a>.</p>
       </form>
     </div>
   </section>
 )}
+
+<script>
+  // Send the signup to Brevo in the background, then show our own thank-you page.
+  document.querySelectorAll<HTMLFormElement>('form[data-brevo-signup]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const error = form.querySelector<HTMLElement>('[data-signup-error]');
+      if (button) { button.disabled = true; button.textContent = 'Sending…'; }
+      if (error) error.hidden = true;
+      const data = new FormData(form);
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: data });
+        const reply = await res.json().catch(() => ({ success: res.ok }));
+        if (reply.success) { window.location.href = '/thanks/'; return; }
+        if (error) { error.textContent = reply.message || 'Something went wrong. Please check your email address and try again.'; error.hidden = false; }
+      } catch {
+        // Brevo did not allow us to read its reply; send it anyway and continue.
+        try { await fetch(form.action, { method: 'POST', body: data, mode: 'no-cors' }); window.location.href = '/thanks/'; return; }
+        catch { if (error) { error.textContent = 'We couldn’t reach our email service. Please try again in a minute.'; error.hidden = false; } }
+      }
+      if (button) { button.disabled = false; button.textContent = 'Send me the printables'; }
+    });
+  });
+</script>
