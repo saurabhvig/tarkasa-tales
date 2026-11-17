@@ -188,7 +188,7 @@ relatedBook: ada-lovelace  # optional: the book's file name without .md
 - **Read-aloud guides** are one-page PDFs in `public/activities/` named `book-name-reading-guide.pdf`, listed in `src/content/activities/`. Ask Claude to make one for each new book, or add your own as in section 7, with `type: Reading guide`.
 
 ## 8. Update homepage content
-- **Featured books:** set `featured: true` in up to four published book files. The hero picture uses the same covers.
+- **Featured books:** the homepage shows the first four published books marked `featured: true`. The hero picture uses the same covers.
 - **Coming Soon:** filled automatically from books with `status: coming-soon`.
 - **Contact email and social links:** edit `src/site.config.ts`. Fill in `contactEmail` and `privacyController`, your name and town, before launch. These are required for the Privacy Policy under EU GDPR.
 - **Larger text changes** to the homepage, About page and others are in `src/pages/`. Ask Claude for help if you're unsure.
@@ -207,6 +207,50 @@ Every **Commit** in GitHub publishes automatically through Cloudflare Pages. The
 - **Instant rollback:** in Cloudflare → **Deployments**, find an earlier working deployment → **⋯ → Rollback to this deployment**.
 
 ---
+
+## 11. Visitor statistics, newsletter and learning outcomes
+
+These features are built in but **switched off** until you paste one value into `src/site.config.ts`. The Privacy page updates itself to match whatever is switched on.
+
+### Visitor statistics (Umami, free, no cookies)
+1. Sign up at cloud.umami.is (free **Hobby** plan) and choose the **EU** data region.
+2. **Settings → Websites → Add website**: name `Tarkasa Tales`, domain `tarkasatales.com`.
+3. Click **Edit** on the website and copy the **Website ID**.
+4. Paste it into `umamiWebsiteId: '...'` in `src/site.config.ts`, then publish.
+5. Counted automatically: page views, where visitors came from (including `utm_` campaign links), and three events: **amazon-click** (with the book and store), **download** (with the file name) and **signup-submit**.
+6. After publishing, open the site with the browser's developer console open (F12). If you see a red "Content Security Policy" error mentioning Umami, tell Claude the exact address it names, so it can be added to `public/_headers`.
+
+An Amazon click is not a sale. Check actual sales in **KDP → Reports**, and sales per channel in **Amazon Attribution**.
+
+### Newsletter signup (Brevo, free)
+1. Sign up at brevo.com (free plan). Accept the data processing agreement under **Settings → Security & GDPR** (or similar).
+2. **Settings → Senders, domains → Domains**: add `tarkasatales.com` and add the DNS records Brevo shows in Cloudflare → DNS.
+3. **Contacts → Lists**: create a list called `Newsletter`.
+4. **Marketing → Forms → Create sign-up form → Full page/embedded**. Add **Email** and **First name** fields and a **GDPR/opt-in** checkbox. Turn on **Double confirmation** (double opt-in), set the final confirmation page to redirect to `https://tarkasatales.com/thanks/`, and pick the `Newsletter` list.
+5. **Share → Simple HTML**: in the code, find `<form ... action="https://....sibforms.com/serve/...">` and copy just the address inside `action="..."`.
+6. Paste it into `brevoFormAction: '...'` in `src/site.config.ts`, then publish. Signup boxes appear on the homepage and every book page.
+7. Test it yourself with your own email before announcing it. If Brevo says a field is missing, compare its Simple HTML field names with `src/components/NewsletterSignup.astro` (EMAIL, FIRSTNAME, OPT_IN, email_address_check, locale).
+
+Never pre-tick the checkbox, never add children's details, and delete people within 30 days of an unsubscribe or a request, as the Privacy page promises.
+
+### Creator text
+The "Meet the creator" text is under `creator` in `src/site.config.ts`: `short` appears on the homepage and book pages, `long` on the About page.
+
+### Learning outcomes on a book page
+Add up to three lines to a book file, under `themes`:
+```
+learningOutcomes:
+  - "Watching quietly and patiently helps you notice things others miss."
+  - "..."
+  - "..."
+```
+They appear as "What your child will take away" next to the Buy button.
+
+### Shop by interest (homepage)
+Edit the `INTERESTS` list near the top of `src/pages/index.astro`. Use book file names without `.md`.
+
+### Checking Amazon links
+Run `npm run amazon-links` (on your computer, see "Running the site on your own computer"), then open `amazon-links.html` in your browser and click through each link. If a store doesn't sell a book, add `amazonStores: [com, couk, de, nl]` (only the working stores) to that book's file.
 
 ## First-time setup: GitHub + Cloudflare Pages (free)
 1. **GitHub:** create a free account at github.com, then click **New repository**. Name it `tarkasa-tales` and choose **Private**. Upload the contents of this project folder. Don't upload the `node_modules`, `dist` or `.astro` folders.
