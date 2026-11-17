@@ -1,0 +1,21 @@
+---
+// Shown by Brevo after someone clicks the confirmation link in their email
+// (Brevo form → Confirmation → "Confirmation page after clicking on the validation link").
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sparkle from '../components/Sparkle.astro';
+---
+<BaseLayout title="You’re in!" description="Your Tarkasa Tales email subscription is confirmed." noindex>
+  <div class="container-site py-16 lg:py-24">
+    <div class="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
+      <Sparkle size={48} color="#F39A9D" />
+      <h1 class="text-5xl">You’re in!</h1>
+      <p class="text-xl leading-relaxed">Thank you for confirming. About once a month you’ll get a new free printable, a scientist story to share and news when a book comes out.</p>
+      <p class="text-lg">While you wait for the first one, every activity on the website is free to download right now.</p>
+      <div class="flex flex-wrap justify-center gap-3 pt-2">
+        <a href="/activities/" class="btn btn-primary">Get free activities</a>
+        <a href="/books/" class="btn btn-secondary">Explore our books</a>
+      </div>
+      <p class="text-ink-soft pt-4">Changed your mind? Every email has an unsubscribe link at the bottom.</p>
+    </div>
+  </div>
+</BaseLayout>
