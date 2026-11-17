@@ -12,7 +12,8 @@ ageMax: 8
 language: English
 pageCount: 24
 formats: [Paperback]
-status: coming-soon
+asin: "B0HRX8YML3"
+status: published
 featured: true
 video: /videos/alexander-fleming.mp4
 videoDescription: "Pictures from the book show young Alec exploring the Scottish moors, his messy laboratory and the dish of mould that led to penicillin, ending with Notice. Wonder. Find out."

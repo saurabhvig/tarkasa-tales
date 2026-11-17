@@ -12,7 +12,8 @@ ageMax: 8
 language: English
 pageCount: 26
 formats: [Paperback]
-status: coming-soon
+asin: "B0HRXD24JN"
+status: published
 featured: true
 video: /videos/hanuman-ocean-leap.mp4
 videoDescription: "Pictures from the book show Hanuman leaping over the ocean, outwitting Surasa by shrinking as tiny as a thumb, and giving Sita Rama’s ring, ending with Be strong. Be clever. Be kind!"
