@@ -11,4 +11,4 @@ Long before books, people told stories: of brave heroes, clever animals, wise te
 
 **Timeless Tales** will retell some of these classic stories for young readers, with gentle language and warm, colourful illustrations. Each retelling will be age-appropriate and written with care and respect for the traditions the stories come from, so they can be enjoyed both by families who already know them and by children hearing them for the first time.
 
-The first Timeless Tale, **Hanuman and the Ocean Leap**, a tale from the Ramayana, is out now, with more tales in the making.
+The first Timeless Tale, **Hanuman and the Ocean Leap**, a tale from the Ramayana, is out now. Tale 2, **Shiva and the River from the Sky**, is coming soon, with more tales in the making.
