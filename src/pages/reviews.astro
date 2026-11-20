@@ -1,0 +1,132 @@
+---
+// REVIEWS: real reviews from families (src/content/testimonials/) and a form to send one.
+// The form posts to /api/review, which the Cloudflare worker (worker/index.js) emails to you.
+// Nothing is published automatically: you choose which reviews to add.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sparkle from '../components/Sparkle.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import { SITE } from '../site.config';
+
+const reviews = (await getCollection('testimonials')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const books = (await getCollection('books', (b) => b.data.status === 'published')).sort((a, b) => a.data.title.localeCompare(b.data.title));
+const email = SITE.contactEmail;
+---
+<BaseLayout title="Reviews" description="What families and teachers say about Tarkasa Tales picture books, and how to share your own review.">
+  <div class="container-site flex flex-col gap-14 py-14 lg:py-20">
+    <header class="flex max-w-3xl flex-col gap-5">
+      <p class="eyebrow">Reviews</p>
+      <h1 class="text-5xl sm:text-6xl">Kind words from families</h1>
+      <p class="text-xl leading-relaxed">We love hearing which stories your children ask for again and again, which questions they asked, and what we could do better. Every message is read by the author.</p>
+    </header>
+
+    <section aria-labelledby="what-families-say" class="flex flex-col gap-6">
+      <h2 id="what-families-say" class="sr-only">What families say</h2>
+      {reviews.length > 0 ? (
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {reviews.map((t) => <li><TestimonialCard t={t} /></li>)}
+        </ul>
+      ) : (
+        <div class="flex items-center gap-4 rounded-[var(--radius-card)] bg-yellow-soft p-6">
+          <Sparkle size={36} color="#F39A9D" />
+          <p class="text-lg font-bold text-plum-deep">No reviews here yet. Has your family read one of our books? Be the first to tell us what you thought!</p>
+        </div>
+      )}
+    </section>
+
+    <section id="write" aria-labelledby="write-heading" class="grid scroll-mt-24 gap-10 rounded-[var(--radius-panel)] bg-lavender-soft p-6 sm:p-10 lg:grid-cols-[1fr_1.4fr]">
+      <div class="flex flex-col gap-4">
+        <h2 id="write-heading" class="text-4xl">Share your review</h2>
+        <p class="text-lg leading-relaxed">Tell us about a book, our free activities or Tarkasa Tales in general. If you tick the box, we may share your words here with your first name. We read every review first, so it won’t appear straight away.</p>
+        <p class="leading-relaxed">Bought a book on Amazon? A review there helps other families find it too. You’ll find a <strong>Leave a review on Amazon</strong> button on each book’s page.</p>
+        <p class="text-sm text-ink-soft">For grown-ups only (16 and over), please. See our <a href="/privacy/#reviews">privacy policy</a>.</p>
+      </div>
+
+      <div>
+        <div id="review-sent" hidden class="mb-6 rounded-2xl bg-mint-soft p-5 font-bold text-plum-deep" role="status">Thank you! Your review is on its way to us. We read every one.</div>
+        <div id="review-error" hidden class="mb-6 rounded-2xl bg-coral-soft p-5 font-bold text-plum-deep" role="alert">Sorry, something went wrong and your review wasn’t sent.{email && <> Please try again, or email it to <a href={`mailto:${email}`}>{email}</a>.</>}</div>
+
+        <form method="post" action="/api/review" class="review-form flex flex-col gap-5 rounded-[var(--radius-card)] bg-white p-6">
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="flex flex-col gap-1">
+              <span class="font-extrabold text-plum-deep">First name <span class="text-ink-soft font-bold">(required)</span></span>
+              <input name="name" required maxlength="40" autocomplete="given-name" class="field" />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="font-extrabold text-plum-deep">Town or country</span>
+              <input name="place" maxlength="60" class="field" placeholder="e.g. Rotterdam, Netherlands" />
+            </label>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="flex flex-col gap-1">
+              <span class="font-extrabold text-plum-deep">I am a…</span>
+              <select name="role" class="field">
+                <option>Parent</option><option>Grandparent</option><option>Teacher</option><option>Librarian</option><option value="Reader">Something else</option>
+              </select>
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="font-extrabold text-plum-deep">My review is about</span>
+              <select name="book" id="review-book" class="field">
+                <option value="">Tarkasa Tales in general</option>
+                {books.map((b) => <option value={b.id}>{b.data.title}</option>)}
+              </select>
+            </label>
+          </div>
+          <fieldset class="flex flex-col gap-2">
+            <legend class="font-extrabold text-plum-deep">Your rating</legend>
+            <div class="stars flex flex-row-reverse justify-end gap-1">
+              {[5, 4, 3, 2, 1].map((n) => (
+                <>
+                  <input type="radio" name="rating" value={n} id={`star-${n}`} class="sr-only" />
+                  <label for={`star-${n}`} class="cursor-pointer text-lavender" title={`${n} star${n > 1 ? 's' : ''}`}>
+                    <span class="sr-only">{n} star{n > 1 ? 's' : ''}</span>
+                    <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"></path></svg>
+                  </label>
+                </>
+              ))}
+            </div>
+          </fieldset>
+          <label class="flex flex-col gap-1">
+            <span class="font-extrabold text-plum-deep">Your review <span class="text-ink-soft font-bold">(required)</span></span>
+            <textarea name="review" required minlength="10" maxlength="1200" rows="6" class="field" placeholder="What did your child enjoy? Which questions did they ask?"></textarea>
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="font-extrabold text-plum-deep">Your email <span class="text-ink-soft font-bold">(optional, only if you’d like a reply)</span></span>
+            <input name="email" type="email" maxlength="120" autocomplete="email" class="field" />
+          </label>
+          <label class="flex items-start gap-3">
+            <input type="checkbox" name="share" value="yes" class="mt-1 h-5 w-5 shrink-0 accent-plum" />
+            <span>You may share my review on the Tarkasa Tales website with my first name, town or country and rating (never my email).</span>
+          </label>
+          <label class="flex items-start gap-3">
+            <input type="checkbox" name="adult" value="yes" required class="mt-1 h-5 w-5 shrink-0 accent-plum" />
+            <span>I am 16 or older. <span class="text-ink-soft">(required)</span></span>
+          </label>
+          <div class="hp" aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off" /></label></div>
+          <input type="hidden" name="t" value="" />
+          <button type="submit" class="btn btn-primary self-start" data-umami-event="review-submit">Send my review</button>
+        </form>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .field { border: 2px solid var(--color-lavender); border-radius: 0.9rem; padding: 0.7rem 0.9rem; background: #fff; font: inherit; color: var(--color-ink); }
+  .field:focus { outline: none; border-color: var(--color-plum); box-shadow: 0 0 0 4px var(--color-yellow); }
+  .stars input:checked ~ label, .stars label:hover, .stars label:hover ~ label { color: var(--color-yellow); }
+  .stars input:focus-visible + label { outline: 3px solid var(--color-plum); border-radius: 6px; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+</style>
+
+<script>
+  // Show a thank-you or error message after sending, pre-select a book from ?book=, and note when the form was opened (simple spam check).
+  const q = new URLSearchParams(location.search);
+  if (q.get('sent')) document.getElementById('review-sent')?.removeAttribute('hidden');
+  if (q.get('error')) document.getElementById('review-error')?.removeAttribute('hidden');
+  const book = q.get('book');
+  const sel = document.getElementById('review-book') as HTMLSelectElement | null;
+  if (book && sel && [...sel.options].some((o) => o.value === book)) sel.value = book;
+  const t = document.querySelector<HTMLInputElement>('.review-form input[name="t"]');
+  if (t) t.value = String(Date.now());
+</script>

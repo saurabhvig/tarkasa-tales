@@ -1,0 +1,24 @@
+---
+import { getEntry, type CollectionEntry } from 'astro:content';
+interface Props { t: CollectionEntry<'testimonials'>; showBook?: boolean }
+const { t, showBook = true } = Astro.props;
+const d = t.data;
+const book = d.book ? await getEntry(d.book) : undefined;
+const who = [d.role?.toLowerCase(), d.place].filter(Boolean).join(' · ');
+---
+<figure class="flex h-full flex-col gap-4 rounded-[var(--radius-card)] bg-white p-6">
+  {d.rating && (
+    <p class="flex gap-1 text-yellow" aria-label={`${d.rating} out of 5 stars`}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z" fill={i <= d.rating! ? 'currentColor' : 'none'} stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+      ))}
+    </p>
+  )}
+  <blockquote class="text-lg leading-relaxed text-ink">“{d.quote.trim()}”</blockquote>
+  <figcaption class="mt-auto flex flex-col gap-1">
+    <span class="font-extrabold text-plum-deep">{d.name}{who && <span class="font-bold text-ink-soft">, {who}</span>}</span>
+    {showBook && (book
+      ? <a href={`/books/${book.id}/`} class="text-sm font-bold">About {book.data.title}</a>
+      : <span class="text-sm font-bold text-ink-soft">About Tarkasa Tales</span>)}
+  </figcaption>
+</figure>

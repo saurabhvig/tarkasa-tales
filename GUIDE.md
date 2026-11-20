@@ -252,6 +252,17 @@ Edit the `INTERESTS` list near the top of `src/pages/index.astro`. Use book file
 ### Checking Amazon links
 Run `npm run amazon-links` (on your computer, see "Running the site on your own computer"), then open `amazon-links.html` in your browser and click through each link. If a store doesn't sell a book, add `amazonStores: [com, couk, de, nl]` (only the working stores) to that book's file.
 
+## 12. Reviews
+
+**Amazon reviews:** every published book page has a **Leave a review on Amazon** button that opens each store's "write a review" page. It appears by itself once a book has `status: published` and an `asin`. Clicks are counted in Umami as **amazon-review-click**.
+
+**Reviews on your own website** (tarkasatales.com/reviews/):
+1. **One-time setup.** In Cloudflare → **Workers & Pages → tarkasa-tales → Settings → Variables and Secrets**, click **Add**, choose type **Secret**, name it `REVIEW_TO` and enter the email address that should receive reviews (your Gmail that hello@tarkasatales.com forwards to; it is already verified in Email Routing). Click **Deploy**. Until this is done, the form shows a "something went wrong" message.
+2. **When a review arrives** you get an email "New review from …". Nothing appears on the website by itself.
+3. **To publish it** (only if the email says *May share on the website: YES*): the email contains a ready-made block of text and a file name. In GitHub, open `src/content/testimonials/`, click **Add file → Create new file**, paste the file name and the text, and commit. It appears on the Reviews page and, if it's about a book, on that book's page.
+4. You may shorten a review or remove personal details, but don't change its meaning. Never add made-up reviews, or reviews from family members.
+5. **To remove a review**, delete its file in `src/content/testimonials/` and commit.
+
 ## First-time setup: GitHub + Cloudflare Pages (free)
 1. **GitHub:** create a free account at github.com, then click **New repository**. Name it `tarkasa-tales` and choose **Private**. Upload the contents of this project folder. Don't upload the `node_modules`, `dist` or `.astro` folders.
 2. **Cloudflare:** create a free account at dash.cloudflare.com. Go to **Workers & Pages → Create → Pages → Connect to Git**, approve GitHub access in GitHub's own window, and pick the repository.

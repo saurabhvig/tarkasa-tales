@@ -124,4 +124,25 @@ const activities = defineCollection({
   }),
 });
 
-export const collections = { series, books, activities };
+/**
+ * REVIEWS FROM FAMILIES (shown on /reviews/ and on book pages)
+ * One file per review in src/content/testimonials/. Only add reviews that a real person sent you
+ * and agreed to share. The review form emails you a ready-made file for each one.
+ */
+const testimonials = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/testimonials' }),
+  schema: z.object({
+    name: z.string().max(40).describe('First name only, as the person gave it'),
+    place: z.string().max(60).optional(),
+    role: z.enum(['Parent', 'Grandparent', 'Teacher', 'Librarian', 'Reader']).optional(),
+    /** Which book the review is about. Leave out for a review of Tarkasa Tales in general. */
+    book: reference('books').optional(),
+    rating: z.number().int().min(1).max(5).optional(),
+    date: z.coerce.date(),
+    quote: z.string().min(5).max(1200),
+    /** Must be true: the person ticked "you may share this on the website". */
+    permission: z.literal(true, { message: 'Only publish reviews the person agreed to share (permission: true)' }),
+  }),
+});
+
+export const collections = { series, books, activities, testimonials };

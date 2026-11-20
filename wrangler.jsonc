@@ -1,8 +1,12 @@
-// Cloudflare hosting settings for the Tarkasa Tales website (static files only — no server code).
+// Cloudflare hosting settings for the Tarkasa Tales website (static files, plus a tiny script for the review form).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tarkasa-tales",
   "compatibility_date": "2026-10-01",
+  // A tiny script that serves the website and emails reviews sent from /reviews/ (see worker/index.js).
+  "main": "worker/index.js",
+  // Lets the script send email to your own verified address (Email Routing). The address itself is the REVIEW_TO secret.
+  "send_email": [{ "name": "SEB" }],
   // The web addresses this site answers on. Cloudflare creates the DNS records and HTTPS certificates.
   "routes": [
     { "pattern": "tarkasatales.com", "custom_domain": true },
@@ -10,6 +14,7 @@
   ],
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     // Show our friendly custom page for addresses that don't exist
     "not_found_handling": "404-page",
     // /books and /books/ both open the same page

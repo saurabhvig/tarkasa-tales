@@ -56,6 +56,20 @@ export function amazonLinks(b: Book) {
   }).filter((s) => !!s.url) as Array<(typeof AMAZON_STORES)[number] & { url: string }>;
 }
 
+/**
+ * "Write a review" pages on each Amazon store, for published books with an ASIN.
+ * Amazon.in uses the Kindle ASIN (it sells our books as Kindle eBooks only).
+ */
+export function reviewLinks(b: Book) {
+  if (b.data.status !== 'published') return [];
+  const { asin, kindleAsin, amazonStores } = b.data;
+  return AMAZON_STORES.flatMap((s) => {
+    const id = s.kindleOnly ? kindleAsin : asin;
+    const allowed = !amazonStores || amazonStores.includes(s.key);
+    return id && allowed ? [{ ...s, url: `https://www.${s.host}/review/create-review?asin=${id}` }] : [];
+  });
+}
+
 /** A coming-soon book may only show Amazon buttons when a real preorder page exists. */
 export const canBuy = (b: Book) =>
   (b.data.status === 'published' || b.data.preorder) && amazonLinks(b).length > 0;

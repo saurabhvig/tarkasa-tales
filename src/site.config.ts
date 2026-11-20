@@ -27,7 +27,7 @@ export const SITE = {
   },
 
   /** The date the Privacy Policy was last updated. */
-  privacyUpdated: '2026-11-17',
+  privacyUpdated: '2026-11-20',
 
   /**
    * VISITOR STATISTICS (Umami Cloud, EU region, no cookies).

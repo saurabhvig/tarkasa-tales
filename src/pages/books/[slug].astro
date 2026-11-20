@@ -4,6 +4,8 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import AmazonButtons from '../../components/AmazonButtons.astro';
+import AmazonReview from '../../components/AmazonReview.astro';
+import TestimonialCard from '../../components/TestimonialCard.astro';
 import ActivityCard from '../../components/ActivityCard.astro';
 import Lightbox from '../../components/Lightbox.astro';
 import BookVideo from '../../components/BookVideo.astro';
@@ -29,6 +31,7 @@ const col = SERIES_COLORS[series.data.color];
 const { Content } = await render(book);
 const related = (await getBooksInSeries(series.id)).filter((b) => b.id !== book.id).slice(0, 4);
 const soon = d.status === 'coming-soon';
+const bookReviews = (await getCollection('testimonials', (t) => t.data.book?.id === book.id)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const activities = (await getCollection('activities', (a) => a.data.relatedBook?.id === book.id)).sort((a, b) => a.data.order - b.data.order);
 const ogImg = await getImage({ src: d.cover, width: 800, format: 'jpg' });
 // Large versions for the picture viewer (cover first, then inside pages).
@@ -151,6 +154,7 @@ const crumbsLd = {
         )}
         <AmazonButtons book={book} />
         {d.video && <BookVideo book={book} />}
+        <AmazonReview book={book} />
       </div>
     </div>
 
@@ -178,6 +182,18 @@ const crumbsLd = {
     </div>
 
     {series.id === 'big-questions' && <WhatsInside heading="h2" title="What’s inside this book" />}
+
+    {bookReviews.length > 0 && (
+      <section aria-labelledby="book-reviews" class="flex flex-col gap-6">
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 id="book-reviews" class="text-[2.1rem]">What families say</h2>
+          <a href={`/reviews/?book=${book.id}#write`} class="font-extrabold">Share your review <span aria-hidden="true">→</span></a>
+        </div>
+        <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {bookReviews.map((t) => <li><TestimonialCard t={t} showBook={false} /></li>)}
+        </ul>
+      </section>
+    )}
 
     {activities.length > 0 && (
       <section aria-labelledby="printables" class="flex flex-col gap-6 rounded-[var(--radius-panel)] bg-yellow p-6 sm:p-10">
