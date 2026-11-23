@@ -11,8 +11,10 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 24
-formats: [Paperback]
-status: coming-soon
+formats: [Paperback, Kindle eBook]
+asin: "B0HSNWTKLG"            # paperback
+kindleAsin: "B0HSNM26SQ"      # Kindle eBook (used for Amazon.in)
+status: published
 featured: true
 video: /videos/galileo-galilei.mp4
 videoDescription: "Pictures from the book show Galileo timing a swinging lamp, rolling balls down ramps, and finding mountains on the Moon and moons around Jupiter, ending with Look. Measure. Look again!"

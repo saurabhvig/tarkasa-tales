@@ -11,8 +11,10 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 24
-formats: [Paperback]
-status: coming-soon
+formats: [Paperback, Kindle eBook]
+asin: "B0HSNJMR3L"            # paperback
+kindleAsin: "B0HS8LQ8SG"      # Kindle eBook (used for Amazon.in)
+status: published
 featured: true
 video: /videos/ada-lovelace.mp4
 videoDescription: "Pictures from the book show young Ada planning a flying machine, seeing Charles Babbage’s calculating machine, and writing step-by-step instructions, ending with Imagine it. Plan it. Step by step!"
