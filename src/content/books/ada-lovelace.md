@@ -17,7 +17,7 @@ kindleAsin: "B0HS8LQ8SG"      # Kindle eBook (used for Amazon.in)
 status: published
 featured: true
 video: /videos/ada-lovelace.mp4
-videoDescription: "Pictures from the book show young Ada planning a flying machine, seeing Charles Babbage’s calculating machine, and writing step-by-step instructions, ending with Imagine it. Plan it. Step by step!"
+videoDescription: "A play-along video: guess what 2 + 3 makes like Babbage’s calculating machine, find the punched cards on the loom, and follow Ada’s steps like a robot (clap, touch your nose, spin around), ending with Imagine it! Plan it! Step by step!"
 themes: ["Imagination", "Maths and computers", "Step-by-step thinking", "Patterns", "Women in science"]
 samples:
   - src: ../../assets/samples/ada-lovelace-p5.jpg

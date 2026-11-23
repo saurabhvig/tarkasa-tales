@@ -17,7 +17,7 @@ kindleAsin: "B0HSNM26SQ"      # Kindle eBook (used for Amazon.in)
 status: published
 featured: true
 video: /videos/galileo-galilei.mp4
-videoDescription: "Pictures from the book show Galileo timing a swinging lamp, rolling balls down ramps, and finding mountains on the Moon and moons around Jupiter, ending with Look. Measure. Look again!"
+videoDescription: "A play-along video: swing your arm and count like Galileo’s lamp, guess whether a ball speeds up rolling down a ramp, spot the craters on the Moon and count Jupiter’s four moons, ending with Look! Measure! Look again!"
 themes: ["Stars and planets", "Measuring and testing", "Curiosity", "Looking again", "Telescopes"]
 samples:
   - src: ../../assets/samples/galileo-galilei-p7.jpg
