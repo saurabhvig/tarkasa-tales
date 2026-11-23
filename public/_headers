@@ -1,5 +1,5 @@
 # Security headers for Cloudflare
-# The Content Security Policy allows only: this site, Umami statistics (cloud.umami.is, api-gateway.umami.dev)
+# The Content Security Policy allows only: this site, Umami statistics (*.umami.is, api-gateway.umami.dev)
 # and posting the newsletter form to Brevo (*.sibforms.com). Nothing else can load or receive data.
 /*
   X-Content-Type-Options: nosniff
@@ -7,7 +7,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
   Strict-Transport-Security: max-age=31536000
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cloud.umami.is; font-src 'self'; connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://*.sibforms.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://*.sibforms.com; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://cloud.umami.is; font-src 'self'; connect-src 'self' https://*.umami.is https://api-gateway.umami.dev https://*.sibforms.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://*.sibforms.com; upgrade-insecure-requests
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
