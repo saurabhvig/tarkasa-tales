@@ -1,0 +1,42 @@
+---
+// Highlighted "feelings inside this book" section for Big Feelings books (uses the book's `feelings` list).
+import { Image } from 'astro:assets';
+import type { Book } from '../lib/books';
+import acorn from '../assets/feelings/acorn.png';
+import leaf from '../assets/feelings/leaf.png';
+import pebble from '../assets/feelings/pebble.png';
+import bell from '../assets/feelings/bell.png';
+import daisy from '../assets/feelings/daisy.png';
+interface Props { book: Book }
+const { book } = Astro.props;
+const feelings = book.data.feelings;
+const pics = { acorn, leaf, pebble, bell, daisy };
+const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six'];
+const tints = ['bg-coral-soft', 'bg-yellow-soft', 'bg-lavender-soft', 'bg-mint-soft', 'bg-coral-soft'];
+---
+{feelings.length > 0 && (
+  <section aria-labelledby="feelings-inside" class="flex flex-col gap-8 rounded-[var(--radius-panel)] bg-white p-6 sm:p-10">
+    <div class="flex max-w-3xl flex-col gap-3">
+      <p class="eyebrow">Big feelings, gentle tools</p>
+      <h2 id="feelings-inside" class="text-4xl">{words[feelings.length]} feelings inside this book</h2>
+      <p class="text-lg leading-relaxed">Each story is about one big feeling. Bobbin learns a few simple things that help, and keeps a little treasure in her pocket to remember them. Children can practise the same tools with you, when everyone is calm.</p>
+    </div>
+    <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+      {feelings.map((f, i) => (
+        <li class:list={['flex flex-col items-center gap-3 rounded-[var(--radius-card)] p-5 text-center', tints[i % tints.length]]}>
+          <Image src={pics[f.treasure]} alt="" widths={[96, 192]} sizes="96px" class="h-24 w-24 rounded-full shadow-[0_6px_14px_rgba(46,33,64,0.18)]" />
+          <h3 class="text-2xl">Feeling {f.feeling}</h3>
+          <p class="text-sm font-bold text-ink-soft">{f.story}</p>
+          <p class="font-extrabold text-plum-deep">Pocket treasure: {f.treasureName}</p>
+          <ul class="flex flex-wrap justify-center gap-1.5">
+            {f.tools.map((t) => <li class="rounded-full bg-white px-3 py-1 text-sm font-bold text-plum-deep">{t}</li>)}
+          </ul>
+        </li>
+      ))}
+    </ul>
+    <div class="grid gap-5 lg:grid-cols-2">
+      <p class="rounded-[var(--radius-card)] bg-lavender-soft p-5 text-lg"><strong class="text-plum-deep">For every big feeling:</strong> say hello to it, ask “How big is it? Acorn-small, apple-middle or pumpkin-BIG?”, and tell a grown-up.</p>
+      <p class="rounded-[var(--radius-card)] bg-yellow-soft p-5 font-display text-2xl font-semibold text-plum-deep">The feeling is allowed. Hurting is not. And mistakes can be mended.</p>
+    </div>
+  </section>
+)}

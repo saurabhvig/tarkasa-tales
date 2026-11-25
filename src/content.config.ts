@@ -79,6 +79,20 @@ const books = defineCollection({
         themes: z.preprocess((v) => v ?? [], z.array(z.string())),
         /** Up to three short sentences: what a child takes away from the book. Shown as "What your child will learn". */
         learningOutcomes: z.preprocess((v) => v ?? [], z.array(z.string()).max(3)),
+        /**
+         * Optional (Big Feelings books): the feelings inside the book, shown as a highlighted section.
+         * treasure is one of: acorn, leaf, pebble, bell, daisy (pictures in src/assets/feelings/).
+         */
+        feelings: z
+          .array(z.object({
+            feeling: z.string(),
+            story: z.string(),
+            treasure: z.enum(['acorn', 'leaf', 'pebble', 'bell', 'daisy']),
+            treasureName: z.string(),
+            tools: z.array(z.string()).max(4),
+          }))
+          .max(6)
+          .default([]),
         samples: z
           .array(z.object({ src: image(), alt: z.string() }))
           .max(6)
