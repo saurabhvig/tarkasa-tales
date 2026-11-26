@@ -2,6 +2,14 @@
  * SITE SETTINGS — the one place for brand-wide details.
  * Edit the values between quotes, save, and publish.
  */
+/**
+ * PREVIEW BUILDS: Cloudflare builds every GitHub branch. On any branch other than "main" this is true,
+ * and the preview copy is hidden from search engines, shows a "preview" banner, and switches off
+ * visitor statistics, the newsletter form and the review form, so a preview never touches the live set-up.
+ */
+const branch = (typeof process !== 'undefined' && process.env?.WORKERS_CI_BRANCH) || '';
+export const IS_PREVIEW = !!branch && branch !== 'main';
+
 export const SITE = {
   name: 'Tarkasa Tales',
   tagline: 'Little Questions. Big Discoveries.',
@@ -34,7 +42,7 @@ export const SITE = {
    * Paste the "Website ID" from Umami → Settings → Websites → Edit.
    * Leave empty ('') and no statistics script is loaded at all.
    */
-  umamiWebsiteId: '653625b0-8936-4013-8fa4-7e1bc41afffc',
+  umamiWebsiteId: IS_PREVIEW ? '' : '653625b0-8936-4013-8fa4-7e1bc41afffc',
 
   /**
    * EMAIL NEWSLETTER (Brevo).
@@ -42,7 +50,7 @@ export const SITE = {
    * e.g. 'https://a1b2c3.sibforms.com/serve/MUIFAB...'.
    * Leave empty ('') and every signup box is hidden.
    */
-  brevoFormAction: 'https://c12d850b.sibforms.com/serve/MUIFALcZ_2tyt73eOob648d9vJ1i-_OKRsxAFgWTSkqnGg0Jijr0aDjb2l00Gahr7eNNWazTAlvXI9zcHD0jIYP_O-whos6bLzAJdcxqfBP2ZIa6QeyjFuR2NnLYhMxHEf2fi55GDQwPN3Xo3IBO9gweLh2n53ELU0s5iVUjIgHDRE2NNo5AtTXjIQckGII9zKoKakccraXymGJXOA==',
+  brevoFormAction: IS_PREVIEW ? '' : 'https://c12d850b.sibforms.com/serve/MUIFALcZ_2tyt73eOob648d9vJ1i-_OKRsxAFgWTSkqnGg0Jijr0aDjb2l00Gahr7eNNWazTAlvXI9zcHD0jIYP_O-whos6bLzAJdcxqfBP2ZIa6QeyjFuR2NnLYhMxHEf2fi55GDQwPN3Xo3IBO9gweLh2n53ELU0s5iVUjIgHDRE2NNo5AtTXjIQckGII9zKoKakccraXymGJXOA==',
 
   /** The person behind Tarkasa Tales, shown on the About page, homepage and book pages. */
   creator: {

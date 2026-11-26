@@ -3,6 +3,8 @@ import { AMAZON_STORES } from '../site.config';
 
 export type Book = CollectionEntry<'books'>;
 export type Series = CollectionEntry<'series'>;
+export type Collection = CollectionEntry<'collections'>;
+export type Edition = CollectionEntry<'editions'>;
 
 /** Colour classes for each series colour name. Text is always deep plum for AA contrast. */
 export const SERIES_COLORS = {
@@ -40,7 +42,41 @@ export const ageLabel = (b: Book) =>
   b.data.ageMin === b.data.ageMax ? `Age ${b.data.ageMin}` : `Ages ${b.data.ageMin}–${b.data.ageMax}`;
 
 export const bookUrl = (b: Book) => `/books/${b.id}/`;
-export const seriesUrl = (s: Series | string) => `/series/${typeof s === 'string' ? s : s.id}/`;
+/** A series has no page of its own: it is a section on its collection's page. */
+export const seriesUrl = (s: Series) => `/collections/${s.data.collection.id}/#series-${s.id}`;
+export const collectionUrl = (c: Collection | string) => `/collections/${typeof c === 'string' ? c : c.id}/`;
+
+/* ---------- Collections and themed editions ---------- */
+
+export async function getAllCollections(): Promise<Collection[]> {
+  return (await getCollection('collections')).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+}
+/** Collections that have their own page (not "coming soon"). */
+export const getActiveCollections = async () => (await getAllCollections()).filter((c) => c.data.status === 'active');
+
+export async function getSeriesInCollection(collectionId: string): Promise<Series[]> {
+  return (await getAllSeries()).filter((s) => s.data.collection.id === collectionId);
+}
+export async function getBooksInCollection(collectionId: string): Promise<Book[]> {
+  const ids = new Set((await getSeriesInCollection(collectionId)).map((s) => s.id));
+  return (await getAllBooks()).filter((b) => ids.has(b.data.series.id));
+}
+export async function collectionOf(book: Book): Promise<Collection> {
+  const s = await seriesOf(book);
+  const c = await getEntry(s.data.collection);
+  if (!c) throw new Error(`Series "${s.id}" points to a collection that does not exist: "${s.data.collection.id}"`);
+  return c;
+}
+/** Themed editions that may be shown (forthcoming or published), optionally for one collection. */
+export async function getVisibleEditions(collectionId?: string): Promise<Edition[]> {
+  return (await getCollection('editions'))
+    .filter((e) => e.data.status !== 'planned' && (!collectionId || e.data.collection.id === collectionId))
+    .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+}
+/** Editions (forthcoming or published) that include this book. */
+export async function editionsWithBook(book: Book): Promise<Edition[]> {
+  return (await getVisibleEditions()).filter((e) => e.data.includes.some((r) => r.id === book.id));
+}
 
 export function amazonLinks(b: Book) {
   const { asin, kindleAsin, amazon, amazonStores } = b.data;

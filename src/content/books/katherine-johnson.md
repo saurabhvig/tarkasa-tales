@@ -24,6 +24,7 @@ featured: true
 video: /videos/katherine-johnson.mp4
 videoDescription: "Pictures from the book show Katherine counting everything, then checking the numbers for astronaut John Glenn’s flight around the Earth, ending with Count it. Check it. Check again!"
 themes: ["Loving numbers", "Never giving up", "Checking your work", "Fairness", "Space"]
+topics: ["Women in science", "Space & sky", "Maths"]
 learningOutcomes:
   - "Counting and checking your work are real superpowers."
   - "Keep going, even when things are unfair."

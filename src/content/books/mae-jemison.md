@@ -19,6 +19,7 @@ featured: true
 video: /videos/mae-jemison.mp4
 videoDescription: "Pictures from the book show little Mae telling her teacher she will be a scientist, dancing, training as an astronaut and looking at the Earth from space, ending with Dream big. Learn lots. Reach far."
 themes: ["Big dreams", "Space and astronauts", "Science and dance", "Hard work", "Being yourself"]
+topics: ["Women in science", "Space & sky"]
 learningOutcomes:
   - "Your dream is yours, even when someone suggests a smaller one."
   - "You can love science and dance at the same time."

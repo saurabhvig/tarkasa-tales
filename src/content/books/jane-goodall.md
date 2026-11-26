@@ -20,6 +20,7 @@ featured: true
 video: /videos/jane-goodall.mp4
 videoDescription: "Pictures from the book show four-year-old Jane waiting to see a hen lay an egg, then watching wild chimpanzees in Africa, ending with Wait. Watch. Wonder."
 themes: ["Patience", "Observation", "Curiosity", "Caring for animals", "Protecting nature"]
+topics: ["Women in science", "Nature & animals"]
 learningOutcomes:
   - "Watching quietly and patiently helps you notice things others miss."
   - "Animals deserve kindness, and nature is worth protecting."

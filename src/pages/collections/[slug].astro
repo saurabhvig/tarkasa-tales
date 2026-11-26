@@ -1,0 +1,197 @@
+---
+/**
+ * COLLECTION PAGE (reusable template): /collections/<name>/
+ * Built from src/content/collections/<name>.md, the series that belong to it, their books,
+ * themed editions and printables. Collections marked "coming-soon" get no page.
+ */
+import { Image } from 'astro:assets';
+import { render, getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import BookCard from '../../components/BookCard.astro';
+import EditionCard from '../../components/EditionCard.astro';
+import CollectionCard from '../../components/CollectionCard.astro';
+import AmazonButtons from '../../components/AmazonButtons.astro';
+import {
+  type Collection, getActiveCollections, getAllCollections, getSeriesInCollection, getBooksInSeries,
+  getVisibleEditions, SERIES_COLORS, bookUrl, coverAlt, collectionUrl,
+} from '../../lib/books';
+import { SITE } from '../../site.config';
+
+export async function getStaticPaths() {
+  return (await getActiveCollections()).map((collection) => ({ params: { slug: collection.id }, props: { collection } }));
+}
+interface Props { collection: Collection }
+const { collection: c } = Astro.props;
+const { Content } = await render(c);
+const col = SERIES_COLORS[c.data.color];
+
+const seriesList = await Promise.all(
+  (await getSeriesInCollection(c.id)).map(async (s) => ({ series: s, books: await getBooksInSeries(s.id) })),
+);
+const allBooks = seriesList.flatMap((s) => s.books);
+const published = allBooks.filter((b) => b.data.status === 'published');
+const upcoming = allBooks.filter((b) => b.data.status === 'coming-soon');
+// "Newest": the last published book in series order.
+const newest = published.at(-1);
+const formats = [...new Set(published.flatMap((b) => b.data.formats))];
+const editions = await getVisibleEditions(c.id);
+
+const bookIds = new Set(allBooks.map((b) => b.id));
+const printables = await getCollection('activities', (a) => !!a.data.relatedBook && bookIds.has(a.data.relatedBook.id));
+const byType = Object.entries(
+  printables.reduce<Record<string, number>>((acc, a) => ((acc[a.data.type] = (acc[a.data.type] ?? 0) + 1), acc), {}),
+).sort((a, b) => b[1] - a[1]);
+const plural = (type: string, n: number) => `${n} ${type.toLowerCase()}${n === 1 ? '' : type.endsWith('h') ? 'es' : 's'}`;
+
+const others = (await getAllCollections()).filter((o) => o.id !== c.id);
+
+const ld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: c.data.title,
+    description: c.data.seoDescription ?? c.data.summary,
+    url: new URL(collectionUrl(c), SITE.url).href,
+    isPartOf: { '@type': 'WebSite', name: SITE.name, url: SITE.url },
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: allBooks.map((b, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(bookUrl(b), SITE.url).href, name: b.data.title })),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Collections', item: new URL('/collections/', SITE.url).href },
+      { '@type': 'ListItem', position: 3, name: c.data.title },
+    ],
+  },
+];
+---
+<BaseLayout title={c.data.seoTitle ?? c.data.title} description={c.data.seoDescription ?? c.data.summary} jsonLd={ld}>
+  <section class:list={['text-plum-deep', col.soft]}>
+    <div class="container-site grid items-center gap-10 py-10 lg:grid-cols-2 lg:py-14">
+      <div class="flex flex-col gap-5">
+        <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: '/collections/', label: 'Collections' }, { label: c.data.title }]} onColor />
+        <h1 class="text-5xl sm:text-6xl !text-plum-deep">{c.data.title}</h1>
+        <p class="font-display text-2xl font-medium">{c.data.tagline}</p>
+        <div class="prose-tt max-w-[60ch] text-lg"><Content /></div>
+        <ul class="flex flex-wrap gap-2" aria-label="At a glance">
+          <li class="pill bg-white !text-[0.9375rem]">Ages {c.data.ageMin}–{c.data.ageMax}</li>
+          <li class="pill bg-white !text-[0.9375rem]">{published.length} {published.length === 1 ? 'book' : 'books'}{upcoming.length > 0 && ` · ${upcoming.length} coming soon`}</li>
+          {formats.length > 0 && <li class="pill bg-white !text-[0.9375rem]">{formats.map((f) => f.replace(' eBook', '')).join(' & ')}</li>}
+          {printables.length > 0 && <li class="pill bg-white !text-[0.9375rem]">Free printables</li>}
+        </ul>
+      </div>
+      {c.data.heroImage && (
+        <Image src={c.data.heroImage} alt={c.data.heroAlt ?? ''} widths={[480, 720, 960]} sizes="(min-width: 1024px) 560px, 92vw" loading="eager" class="w-full rounded-[var(--radius-panel)] border-8 border-white shadow-[0_20px_40px_rgba(46,33,64,0.18)]" />
+      )}
+    </div>
+  </section>
+
+  <div class="container-site flex flex-col gap-16 py-14">
+    {newest && (
+      <section aria-labelledby="newest" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-1">
+          <p class="eyebrow">Start here</p>
+          <h2 id="newest" class="text-[2.1rem]">Newest in {c.data.title}</h2>
+        </div>
+        <div class="grid gap-8 rounded-[var(--radius-panel)] bg-white p-6 sm:p-8 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] md:items-start">
+          <a href={bookUrl(newest)} class="block"><Image src={newest.data.cover} alt={coverAlt(newest)} widths={[256, 384, 512]} sizes="256px" class="aspect-square w-full rounded-2xl object-cover" /></a>
+          <div class="flex flex-col gap-3">
+            <h3 class="text-[2rem]"><a href={bookUrl(newest)} class="no-underline">{newest.data.title}</a></h3>
+            {newest.data.subtitle && <p class="font-display text-xl text-plum">{newest.data.subtitle}</p>}
+            <p class="text-lg">{newest.data.shortDescription}</p>
+            <a href={bookUrl(newest)} class="font-extrabold">See inside the book <span aria-hidden="true">→</span></a>
+            <AmazonButtons book={newest} />
+          </div>
+        </div>
+      </section>
+    )}
+
+    {seriesList.map(({ series: s, books }) => {
+      const topics = [...new Set(books.flatMap((b) => b.data.topics))].sort();
+      return (
+        <section id={`series-${s.id}`} aria-labelledby={`h-series-${s.id}`} class="flex scroll-mt-6 flex-col gap-6" data-topic-section>
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div class="flex max-w-3xl flex-col gap-1">
+              <p class="eyebrow">Series in this collection</p>
+              <h2 id={`h-series-${s.id}`} class="text-[2.1rem]">The {s.data.title} series</h2>
+              <p class="text-lg">{s.data.summary}{seriesList.length === 1 && books.length > 1 && ' Read them in any order.'}</p>
+            </div>
+            {topics.length > 0 && (
+              <div class="flex flex-wrap gap-2" role="group" aria-label="Show books about">
+                <button type="button" class="topic-btn" aria-pressed="true" data-topic="">All {books.length}</button>
+                {topics.map((t) => <button type="button" class="topic-btn" aria-pressed="false" data-topic={t}>{t}</button>)}
+              </div>
+            )}
+          </div>
+          <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-topic-list>
+            {books.map((b) => <li data-topics={b.data.topics.join('|')}><BookCard book={b} showSeries={false} /></li>)}
+          </ul>
+          {topics.length > 0 && <p class="sr-only" aria-live="polite" data-topic-status></p>}
+        </section>
+      );
+    })}
+
+    {editions.length > 0 && (
+      <section aria-labelledby="editions" class="flex flex-col gap-6">
+        <h2 id="editions" class="text-[2.1rem]">Themed editions</h2>
+        {editions.map((e) => <EditionCard edition={e} />)}
+      </section>
+    )}
+
+    <div class="grid gap-6 lg:grid-cols-2">
+      {c.data.benefits.length > 0 && (
+        <section aria-labelledby="benefits" class:list={['flex flex-col gap-3 rounded-[var(--radius-panel)] p-7 sm:p-9 text-plum-deep', col.soft]}>
+          <h2 id="benefits" class="text-[1.9rem] !text-plum-deep">What children take away</h2>
+          <ul class="prose-tt text-lg">{c.data.benefits.map((x) => <li>{x}</li>)}</ul>
+        </section>
+      )}
+      {printables.length > 0 && (
+        <section aria-labelledby="printables" class="flex flex-col gap-4 rounded-[var(--radius-panel)] bg-yellow p-7 sm:p-9 text-plum-deep">
+          <h2 id="printables" class="text-[1.9rem] !text-plum-deep">{c.data.resourcesTitle ?? 'Free printables'}</h2>
+          <p class="text-lg">{byType.map(([t, n]) => plural(t, n)).join(', ')}. Free to print, no sign-up needed.</p>
+          <a href={`/activities/?collection=${c.id}`} class="btn btn-dark self-start">See the printables</a>
+        </section>
+      )}
+    </div>
+
+    <section aria-labelledby="other-collections" class="flex flex-col gap-6">
+      <h2 id="other-collections" class="text-[2.1rem]">Explore other collections</h2>
+      <div class="grid gap-5 md:grid-cols-3">
+        {others.map((o) => <CollectionCard collection={o} size="small" />)}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .topic-btn { min-height: 2.75rem; border-radius: 999px; padding: 0.5rem 1rem; font-weight: 800; background: #fff; color: var(--color-plum-deep); border: 2px solid transparent; cursor: pointer; }
+  .topic-btn:hover { border-color: var(--color-plum); }
+  .topic-btn[aria-pressed='true'] { background: var(--color-plum); color: var(--color-cream); }
+</style>
+
+<script>
+  // Topic filters: show only the books tagged with the chosen topic. Without JavaScript every book stays visible.
+  document.querySelectorAll<HTMLElement>('[data-topic-section]').forEach((section) => {
+    const buttons = section.querySelectorAll<HTMLButtonElement>('.topic-btn');
+    const items = section.querySelectorAll<HTMLElement>('[data-topic-list] > li');
+    const status = section.querySelector<HTMLElement>('[data-topic-status]');
+    buttons.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const topic = btn.dataset.topic ?? '';
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        let shown = 0;
+        items.forEach((li) => {
+          const match = !topic || (li.dataset.topics ?? '').split('|').includes(topic);
+          li.hidden = !match;
+          if (match) shown++;
+        });
+        if (status) status.textContent = `${shown} ${shown === 1 ? 'book' : 'books'} shown`;
+      }),
+    );
+  });
+</script>

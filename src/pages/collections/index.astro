@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CollectionCard from '../../components/CollectionCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Sparkle from '../../components/Sparkle.astro';
+import { getAllCollections } from '../../lib/books';
+const all = await getAllCollections();
+const active = all.filter((c) => c.data.status === 'active');
+const soon = all.filter((c) => c.data.status === 'coming-soon');
+---
+<BaseLayout title="Book Collections for Ages 4–8" description="Explore the Tarkasa Tales collections: Bobbin's World for big feelings, Little Scientists for true science stories, and Timeless Tales of classic stories, for ages 4–8.">
+  <div class="container-site flex flex-col gap-10 py-12 lg:py-16">
+    <div class="flex max-w-3xl flex-col gap-3">
+      <Breadcrumbs items={[{ href: '/', label: 'Home' }, { label: 'Collections' }]} />
+      <p class="eyebrow inline-flex items-center gap-2"><Sparkle size={16} /> Find the right book</p>
+      <h1 class="text-5xl sm:text-6xl">Our collections</h1>
+      <p class="text-lg sm:text-xl">Each collection explores a different way of being curious: understanding big feelings, meeting real scientists, and hearing stories families have shared for generations.</p>
+    </div>
+    <div class="grid gap-7 lg:grid-cols-2">
+      {active.map((c) => <CollectionCard collection={c} headingLevel="h2" />)}
+      {soon.map((c) => <CollectionCard collection={c} headingLevel="h2" />)}
+    </div>
+    <p class="text-lg"><a href="/books/" class="font-extrabold">See every book in one list <span aria-hidden="true">→</span></a></p>
+  </div>
+</BaseLayout>

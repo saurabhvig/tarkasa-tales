@@ -1,0 +1,38 @@
+---
+/**
+ * A themed (omnibus) edition. Forthcoming: a reading list of the included books, no buy button.
+ * Published: links to the edition's own book page, where the Buy on Amazon button lives.
+ */
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import { type Edition, type Book, bookUrl, coverAlt } from '../lib/books';
+interface Props { edition: Edition; headingLevel?: 'h2' | 'h3' }
+const { edition: e, headingLevel = 'h3' } = Astro.props;
+const H = headingLevel;
+const included = (await Promise.all(e.data.includes.map((r) => getEntry(r)))).filter(Boolean) as Book[];
+const own = e.data.status === 'published' && e.data.book ? ((await getEntry(e.data.book)) as Book | undefined) : undefined;
+---
+<article class="grid gap-6 rounded-[var(--radius-panel)] bg-white p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+  <div class="flex flex-col gap-3">
+    <p class="flex flex-wrap items-center gap-2">
+      <span class="eyebrow">Themed edition</span>
+      {e.data.status === 'forthcoming' && <span class="pill bg-yellow-soft">Forthcoming edition</span>}
+    </p>
+    <H class="text-[1.8rem] sm:text-[2.1rem]">{own ? <a href={bookUrl(own)}>{e.data.title}</a> : e.data.title}</H>
+    {e.data.subtitle && <p class="font-display text-xl text-plum">{e.data.subtitle}</p>}
+    <p class="text-lg">{e.data.summary}</p>
+    {own
+      ? <a href={bookUrl(own)} class="btn btn-primary self-start">See the edition</a>
+      : <p class="text-[0.9375rem] text-ink-soft">Not yet available to buy. Read the stories now:</p>}
+  </div>
+  <ul class="flex flex-wrap gap-3" aria-label={`Books in ${e.data.title}`}>
+    {included.map((b) => (
+      <li>
+        <a href={bookUrl(b)} class="flex w-[7.5rem] flex-col gap-1 font-extrabold no-underline text-plum-deep hover:underline">
+          <Image src={b.data.cover} alt={coverAlt(b)} widths={[200, 300]} sizes="120px" class="aspect-square w-full rounded-xl border-4 border-cream object-cover" />
+          <span class="text-[0.9375rem] leading-tight">{b.data.title}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</article>

@@ -1,5 +1,6 @@
 ---
 title: Timeless Tales
+collection: timeless-tales
 tagline: Ancient stories. Meaningful lessons.
 summary: Gentle, illustrated retellings of classic stories and legends that families have shared for generations.
 color: lavender

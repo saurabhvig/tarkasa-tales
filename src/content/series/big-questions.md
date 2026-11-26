@@ -1,5 +1,6 @@
 ---
 title: Big Questions
+collection: little-scientists
 tagline: Real people. Remarkable discoveries.
 summary: True stories of real scientists for young readers, each one starting with a child’s big question.
 color: mint

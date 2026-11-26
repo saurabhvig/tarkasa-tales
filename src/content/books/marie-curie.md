@@ -22,6 +22,7 @@ featured: true
 video: /videos/marie-curie.mp4
 videoDescription: "Pictures from the book tell how little Manya, full of questions, grew up to discover radium and win two Nobel Prizes, ending with the words Why? How? What’s inside?"
 themes: ["Curiosity", "Persistence", "Science and discovery", "Girls in science", "Helping others"]
+topics: ["Women in science"]
 learningOutcomes:
   - "Big discoveries start with small questions, like “What’s inside a stone?”"
   - "When a door is closed, you can keep learning and wait for your turn."

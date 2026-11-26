@@ -1,0 +1,57 @@
+---
+/**
+ * A card for one collection (Bobbin's World, Little Scientists, …).
+ * size="large": big card with covers (homepage, /collections/). size="small": compact row.
+ * A "coming soon" collection has no page, so its card is not a link; it invites people to the email list instead.
+ */
+import { Image } from 'astro:assets';
+import { type Collection, getBooksInCollection, SERIES_COLORS, collectionUrl } from '../lib/books';
+import { SITE } from '../site.config';
+interface Props { collection: Collection; size?: 'large' | 'small'; headingLevel?: 'h2' | 'h3' }
+const { collection: c, size = 'large', headingLevel = 'h3' } = Astro.props;
+const col = SERIES_COLORS[c.data.color];
+const H = headingLevel;
+const soon = c.data.status === 'coming-soon';
+const books = soon ? [] : await getBooksInCollection(c.id);
+const published = books.filter((b) => b.data.status === 'published');
+const upcoming = books.filter((b) => b.data.status === 'coming-soon');
+// Newest first for the cover strip, so new books are seen.
+const strip = [...books].reverse().slice(0, size === 'large' ? 4 : 1);
+const count = `${published.length} ${published.length === 1 ? 'book' : 'books'}${upcoming.length ? `, ${upcoming.length} coming soon` : ''}`;
+const signupHref = SITE.brevoFormAction ? '/#home-signup-title' : '/contact/';
+---
+{soon ? (
+  <article class:list={['flex flex-col gap-2 rounded-[var(--radius-card)] p-6 text-plum-deep', col.soft]}>
+    <div class="flex flex-wrap items-center gap-3">
+      <H class:list={['!text-plum-deep', size === 'large' ? 'text-[1.8rem]' : 'text-[1.5rem]']}>{c.data.title}</H>
+      <span class="pill bg-plum-deep !text-cream">Coming soon</span>
+    </div>
+    <p class="font-bold">{c.data.tagline}</p>
+    <p>{c.data.summary}</p>
+    <a href={signupHref} class="font-extrabold">{SITE.brevoFormAction ? 'Get news by email' : 'Ask us about it'} <span aria-hidden="true">→</span></a>
+  </article>
+) : size === 'small' ? (
+  <article class:list={['relative flex items-center gap-5 rounded-[var(--radius-card)] p-5 text-plum-deep', col.soft]}>
+    {strip[0] && <Image src={strip[0].data.cover} alt="" widths={[160, 240]} sizes="96px" class="w-24 shrink-0 aspect-square rounded-xl border-4 border-white object-cover" />}
+    <div class="flex flex-col gap-1">
+      <H class="text-[1.5rem] !text-plum-deep"><a href={collectionUrl(c)} class="no-underline text-plum-deep after:absolute after:inset-0 after:rounded-[var(--radius-card)]">{c.data.title}</a></H>
+      <p>{c.data.tagline} <span class="text-ink-soft">· {count}</span></p>
+    </div>
+  </article>
+) : (
+  <article class:list={['relative flex flex-col gap-4 rounded-[var(--radius-panel)] p-7 sm:p-8 text-plum-deep', col.soft]}>
+    <p><span class:list={['pill', col.panel]}>Ages {c.data.ageMin}–{c.data.ageMax}</span></p>
+    <H class="text-[2rem] sm:text-[2.3rem] !text-plum-deep">
+      <a href={collectionUrl(c)} class="no-underline text-plum-deep hover:text-plum-deep after:absolute after:inset-0 after:rounded-[var(--radius-panel)]">{c.data.title}</a>
+    </H>
+    <p class="text-lg font-bold">{c.data.tagline}</p>
+    <p>{c.data.summary}</p>
+    {strip.length > 0 && (
+      <div class="flex flex-wrap gap-3" aria-hidden="true">
+        {strip.map((b) => <Image src={b.data.cover} alt="" widths={[200, 300]} sizes="100px" class="w-[5.5rem] sm:w-[6.25rem] aspect-square rounded-xl border-4 border-white object-cover shadow-[0_8px_18px_rgba(46,33,64,0.18)]" />)}
+      </div>
+    )}
+    <p class="mt-auto font-extrabold">{count} · Explore {c.data.title} <span aria-hidden="true">→</span></p>
+  </article>
+)}
+<style>article:has(a:focus-visible) { outline: 3px solid var(--color-plum-deep); outline-offset: 4px; } article a:focus-visible { outline: none; box-shadow: none; }</style>

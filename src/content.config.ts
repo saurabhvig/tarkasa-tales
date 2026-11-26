@@ -25,10 +25,41 @@ const amazonUrl = (host: string) =>
     }, `This link must be a real ${host} address (https://www.${host}/...)`)
     .optional();
 
+/**
+ * COLLECTIONS: the top level of the catalogue (Bobbin's World, Little Scientists, …).
+ * One file per collection in src/content/collections/. Each series belongs to one collection.
+ * A collection with status "coming-soon" has no page yet: it only shows as a small card.
+ */
+const collectionsCollection = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/collections' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      tagline: z.string(),
+      summary: z.string().describe('One or two sentences shown on cards'),
+      color: z.enum(['mint', 'lavender', 'yellow', 'coral']),
+      order: z.number().default(10),
+      status: z.enum(['active', 'coming-soon']).default('active'),
+      ageMin: z.number().int().default(4),
+      ageMax: z.number().int().default(8),
+      /** A picture from one of the books for the top of the collection page (optional). */
+      heroImage: image().optional(),
+      heroAlt: z.string().optional(),
+      /** Three to five short points: what children gain from this collection. */
+      benefits: z.array(z.string()).max(5).default([]),
+      /** Heading used for the printables box on the collection page, e.g. "Free science printables". */
+      resourcesTitle: z.string().optional(),
+      seoTitle: z.string().max(70).optional(),
+      seoDescription: z.string().max(170).optional(),
+    }),
+});
+
 const series = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/series' }),
   schema: z.object({
     title: z.string(),
+    /** The collection this series belongs to (a file name in src/content/collections/, without .md). */
+    collection: reference('collections'),
     tagline: z.string(),
     summary: z.string().describe('One or two sentences shown on cards'),
     color: z.enum(['mint', 'lavender', 'yellow', 'coral']),
@@ -77,6 +108,8 @@ const books = defineCollection({
         expectedRelease: z.string().optional(),
         featured: z.boolean().default(false),
         themes: z.preprocess((v) => v ?? [], z.array(z.string())),
+        /** Short topic tags used as filters on the collection page, e.g. ["Women in science", "Space & sky"]. */
+        topics: z.preprocess((v) => v ?? [], z.array(z.string())),
         /** Up to three short sentences: what a child takes away from the book. Shown as "What your child will learn". */
         learningOutcomes: z.preprocess((v) => v ?? [], z.array(z.string()).max(3)),
         /**
@@ -123,11 +156,35 @@ const books = defineCollection({
       }),
 });
 
+/**
+ * THEMED EDITIONS: omnibus books that bring several stories together (e.g. Women Who Asked Big Questions).
+ * status: planned = not shown anywhere · forthcoming = shown as a reading list of the included books, no buy button
+ * · published = needs `book:` pointing to the edition's own book file (with its ASIN), which gets the Buy button.
+ */
+const editions = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/editions' }),
+  schema: z
+    .object({
+      title: z.string(),
+      subtitle: z.string().optional(),
+      collection: reference('collections'),
+      summary: z.string(),
+      includes: z.array(reference('books')).min(2),
+      status: z.enum(['planned', 'forthcoming', 'published']),
+      book: reference('books').optional(),
+      order: z.number().default(10),
+    })
+    .superRefine((e, ctx) => {
+      if (e.status === 'published' && !e.book)
+        ctx.addIssue({ code: 'custom', path: ['book'], message: 'A published edition needs book: pointing to its own book file' });
+    }),
+});
+
 const activities = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/activities' }),
   schema: z.object({
     title: z.string(),
-    type: z.enum(['Activity pack', 'Colouring sheet', 'Word search', 'Science activity', 'Worksheet', 'Reading activity', 'Reading guide', 'Puzzle']),
+    type: z.enum(['Activity pack', 'Colouring sheet', 'Colouring page', 'Word search', 'Science activity', 'Science experiment', 'Science fact sheet', 'Feelings worksheet', 'Worksheet', 'Reading activity', 'Reading guide', 'Puzzle', 'Seasonal']),
     description: z.string(),
     /** Path of the PDF inside the public/activities folder, e.g. /activities/marie-curie-colouring.pdf */
     file: z.string().startsWith('/activities/').endsWith('.pdf'),
@@ -159,4 +216,4 @@ const testimonials = defineCollection({
   }),
 });
 
-export const collections = { series, books, activities, testimonials };
+export const collections = { collections: collectionsCollection, series, books, editions, activities, testimonials };

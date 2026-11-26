@@ -1,5 +1,6 @@
 ---
 title: Big Feelings
+collection: bobbins-world
 tagline: Gentle stories for wobbly moments.
 summary: Warm, funny animal stories that help little ones name and handle big feelings, together with a grown-up.
 color: yellow

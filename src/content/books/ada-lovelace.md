@@ -19,6 +19,7 @@ featured: true
 video: /videos/ada-lovelace.mp4
 videoDescription: "A play-along video: guess what 2 + 3 makes like Babbage’s calculating machine, find the punched cards on the loom, and follow Ada’s steps like a robot (clap, touch your nose, spin around), ending with Imagine it! Plan it! Step by step!"
 themes: ["Imagination", "Maths and computers", "Step-by-step thinking", "Patterns", "Women in science"]
+topics: ["Women in science", "Maths", "Inventions"]
 samples:
   - src: ../../assets/samples/ada-lovelace-p5.jpg
     alt: "Inside page: twelve-year-old Ada in a garden holds a paper wing, with drawings of flying machines spread on the grass"

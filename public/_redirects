@@ -1,2 +1,14 @@
-/series/hindu-mythology-stories/ /series/timeless-tales/ 301
-/series/hindu-mythology-stories /series/timeless-tales/ 301
+# Permanent redirects. Old series pages now live under /collections/ (book addresses never changed).
+/series/ /collections/ 301
+/series /collections/ 301
+/series/big-questions/ /collections/little-scientists/ 301
+/series/big-questions /collections/little-scientists/ 301
+/series/big-feelings/ /collections/bobbins-world/ 301
+/series/big-feelings /collections/bobbins-world/ 301
+/series/timeless-tales/ /collections/timeless-tales/ 301
+/series/timeless-tales /collections/timeless-tales/ 301
+/series/hindu-mythology-stories/ /collections/timeless-tales/ 301
+/series/hindu-mythology-stories /collections/timeless-tales/ 301
+# Short address for the free printables
+/resources/ /activities/ 301
+/resources /activities/ 301

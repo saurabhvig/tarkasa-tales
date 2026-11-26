@@ -6,7 +6,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sparkle from '../components/Sparkle.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
-import { SITE } from '../site.config';
+import { SITE, IS_PREVIEW } from '../site.config';
 
 const reviews = (await getCollection('testimonials')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const books = (await getCollection('books', (b) => b.data.status === 'published')).sort((a, b) => a.data.title.localeCompare(b.data.title));
@@ -34,20 +34,21 @@ const email = SITE.contactEmail;
       )}
     </section>
 
-    <section id="write" aria-labelledby="write-heading" class="grid scroll-mt-24 gap-10 rounded-[var(--radius-panel)] bg-lavender-soft p-6 sm:p-10 lg:grid-cols-[1fr_1.4fr]">
+    <section id="write" aria-labelledby="write-heading" class="grid scroll-mt-24 gap-10 rounded-[var(--radius-panel)] bg-lavender-soft p-6 sm:p-10 lg:grid-cols-[1fr_1.4fr] [&>*]:min-w-0">
       <div class="flex flex-col gap-4">
         <h2 id="write-heading" class="text-4xl">Share your review</h2>
         <p class="text-lg leading-relaxed">Tell us about a book, our free activities or Tarkasa Tales in general. If you tick the box, we may share your words here with your first name. We read every review first, so it won’t appear straight away.</p>
         <p class="leading-relaxed">Bought a book on Amazon? A review there helps other families find it too. You’ll find a <strong>Leave a review on Amazon</strong> button on each book’s page.</p>
-        <p class="text-sm text-ink-soft">For grown-ups only (16 and over), please. See our <a href="/privacy/#reviews">privacy policy</a>.</p>
+        <p class="text-sm text-ink-soft">For grown-ups only (16 and over), please. See our <a href="/privacy/#reviews" class="underline">privacy policy</a>.</p>
       </div>
 
       <div>
         <div id="review-sent" hidden class="mb-6 rounded-2xl bg-mint-soft p-5 font-bold text-plum-deep" role="status">Thank you! Your review is on its way to us. We read every one.</div>
         <div id="review-error" hidden class="mb-6 rounded-2xl bg-coral-soft p-5 font-bold text-plum-deep" role="alert">Sorry, something went wrong and your review wasn’t sent.{email && <> Please try again, or email it to <a href={`mailto:${email}`}>{email}</a>.</>}</div>
 
+        {IS_PREVIEW ? <p class="rounded-[var(--radius-card)] bg-white p-6 font-bold">The review form is switched off in this preview.</p> : (
         <form method="post" action="/api/review" class="review-form flex flex-col gap-5 rounded-[var(--radius-card)] bg-white p-6">
-          <div class="grid gap-5 sm:grid-cols-2">
+          <div class="grid gap-5 sm:grid-cols-2 [&>*]:min-w-0">
             <label class="flex flex-col gap-1">
               <span class="font-extrabold text-plum-deep">First name <span class="text-ink-soft font-bold">(required)</span></span>
               <input name="name" required maxlength="40" autocomplete="given-name" class="field" />
@@ -57,7 +58,7 @@ const email = SITE.contactEmail;
               <input name="place" maxlength="60" class="field" placeholder="e.g. Rotterdam, Netherlands" />
             </label>
           </div>
-          <div class="grid gap-5 sm:grid-cols-2">
+          <div class="grid gap-5 sm:grid-cols-2 [&>*]:min-w-0">
             <label class="flex flex-col gap-1">
               <span class="font-extrabold text-plum-deep">I am a…</span>
               <select name="role" class="field">
@@ -66,7 +67,7 @@ const email = SITE.contactEmail;
             </label>
             <label class="flex flex-col gap-1">
               <span class="font-extrabold text-plum-deep">My review is about</span>
-              <select name="book" id="review-book" class="field">
+              <select name="book" id="review-book" class="field w-full min-w-0">
                 <option value="">Tarkasa Tales in general</option>
                 {books.map((b) => <option value={b.id}>{b.data.title}</option>)}
               </select>
@@ -106,6 +107,7 @@ const email = SITE.contactEmail;
           <input type="hidden" name="t" value="" />
           <button type="submit" class="btn btn-primary self-start" data-umami-event="review-submit">Send my review</button>
         </form>
+        )}
       </div>
     </section>
   </div>

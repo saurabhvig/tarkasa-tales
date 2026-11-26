@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BookCard from '../components/BookCard.astro';
-import SeriesCard from '../components/SeriesCard.astro';
+import CollectionCard from '../components/CollectionCard.astro';
 import ComingSoonCard from '../components/ComingSoonCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Sparkle from '../components/Sparkle.astro';
@@ -13,7 +13,7 @@ import WhatsInside from '../components/WhatsInside.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import AboutCreator from '../components/AboutCreator.astro';
 import { bookUrl } from '../lib/books';
-import { getFeatured, getPublished, getComingSoon, getAllBooks, getAllSeries } from '../lib/books';
+import { getFeatured, getPublished, getComingSoon, getAllBooks, getAllCollections } from '../lib/books';
 import { SITE } from '../site.config';
 
 // Featured: published books marked featured → any published → (before launch) any book marked featured.
@@ -26,7 +26,7 @@ const heroBooks = [...featuredBooks, ...(await getComingSoon())].filter((b, i, a
 // Coming-soon section skips books already shown above, so nothing appears twice.
 const soon = (await getComingSoon()).filter((b) => !featuredIds.has(b.id)).slice(0, 3);
 const featuredTitle = published.length ? 'Featured books' : 'Our first books';
-const series = await getAllSeries();
+const collections = await getAllCollections();
 
 // SHOP BY INTEREST — edit the groups or book lists here (use the book's file name without .md).
 const all = await getAllBooks();
@@ -131,9 +131,9 @@ const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SIT
   <!-- COLLECTIONS -->
   <section aria-labelledby="collections" class="bg-white/70">
     <div class="container-site flex flex-col gap-8 pb-20">
-      <SectionHeading eyebrow="Explore" title="Our collections" id="collections" linkHref="/series/" linkLabel="All series" />
+      <SectionHeading eyebrow="Explore" title="Our collections" id="collections" linkHref="/collections/" linkLabel="All collections" />
       <div class="grid gap-7 lg:grid-cols-2">
-        {series.map((s) => <SeriesCard series={s} />)}
+        {collections.map((c) => <CollectionCard collection={c} />)}
       </div>
     </div>
   </section>
