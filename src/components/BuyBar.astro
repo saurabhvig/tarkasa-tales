@@ -1,0 +1,67 @@
+---
+/**
+ * Small "Buy on Amazon" bar for phones and tablets (hidden on large screens).
+ * It appears only after the visitor has scrolled past the main buy box, and disappears again
+ * when they scroll back up to it or reach the footer. Tapping it scrolls back to the main
+ * buy box and opens the list of Amazon stores, so the visitor still chooses their own country.
+ * The page gets extra space at the bottom while the bar shows, so it never covers any content.
+ */
+import { type Book, canBuy } from '../lib/books';
+interface Props { book: Book; target: string }
+const { book, target } = Astro.props;
+const show = canBuy(book);
+const soon = book.data.status === 'coming-soon';
+---
+{show && (
+  <div class="buy-bar" data-buy-bar data-target={target} hidden>
+    <p class="min-w-0 truncate font-extrabold text-plum-deep">{book.data.title}</p>
+    <button type="button" class="btn btn-primary shrink-0 !min-h-12 !px-5" data-umami-event="buy-bar-open" data-umami-event-book={book.id}>
+      {soon ? 'Preorder on Amazon' : 'Buy on Amazon'}
+    </button>
+  </div>
+)}
+
+<style>
+  .buy-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    padding: 0.625rem 1rem calc(0.625rem + env(safe-area-inset-bottom));
+    background: #fff; border-top: 2px solid var(--color-yellow);
+    box-shadow: 0 -10px 24px rgba(46, 33, 64, 0.12);
+  }
+  .buy-bar[hidden] { display: none !important; }
+  @media (min-width: 1024px) { .buy-bar { display: none !important; } }
+  :global(html.has-buy-bar body) { padding-bottom: 5rem; }
+  @media (min-width: 1024px) { :global(html.has-buy-bar body) { padding-bottom: 0; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-buy-bar]').forEach((bar) => {
+    const box = document.getElementById(bar.dataset.target ?? '');
+    const footer = document.querySelector('footer');
+    if (!box) return;
+    // Checked on scroll (at most once per frame), so fast swipes and jumps are handled too.
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const pastBox = box.getBoundingClientRect().bottom < 0;
+      const footerVisible = !!footer && footer.getBoundingClientRect().top < window.innerHeight;
+      const visible = pastBox && !footerVisible;
+      if (bar.hidden === visible) {
+        bar.hidden = !visible;
+        document.documentElement.classList.toggle('has-buy-bar', visible);
+      }
+    };
+    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue, { passive: true });
+    update();
+    bar.querySelector('button')?.addEventListener('click', () => {
+      const menu = box.querySelector<HTMLDetailsElement>('details');
+      if (menu) menu.open = true;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      box.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      box.querySelector<HTMLElement>('summary')?.focus({ preventScroll: true });
+    });
+  });
+</script>

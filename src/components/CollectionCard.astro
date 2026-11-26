@@ -6,7 +6,6 @@
  */
 import { Image } from 'astro:assets';
 import { type Collection, getBooksInCollection, SERIES_COLORS, collectionUrl } from '../lib/books';
-import { SITE } from '../site.config';
 interface Props { collection: Collection; size?: 'large' | 'small'; headingLevel?: 'h2' | 'h3' }
 const { collection: c, size = 'large', headingLevel = 'h3' } = Astro.props;
 const col = SERIES_COLORS[c.data.color];
@@ -18,7 +17,6 @@ const upcoming = books.filter((b) => b.data.status === 'coming-soon');
 // Newest first for the cover strip, so new books are seen.
 const strip = [...books].reverse().slice(0, size === 'large' ? 4 : 1);
 const count = `${published.length} ${published.length === 1 ? 'book' : 'books'}${upcoming.length ? `, ${upcoming.length} coming soon` : ''}`;
-const signupHref = SITE.brevoFormAction ? '/#home-signup-title' : '/contact/';
 ---
 {soon ? (
   <article class:list={['flex flex-col gap-2 rounded-[var(--radius-card)] p-6 text-plum-deep', col.soft]}>
@@ -28,7 +26,7 @@ const signupHref = SITE.brevoFormAction ? '/#home-signup-title' : '/contact/';
     </div>
     <p class="font-bold">{c.data.tagline}</p>
     <p>{c.data.summary}</p>
-    <a href={signupHref} class="font-extrabold">{SITE.brevoFormAction ? 'Get news by email' : 'Ask us about it'} <span aria-hidden="true">→</span></a>
+    <a href="/learning-club/" class="font-extrabold">Join the Learning Club for news <span aria-hidden="true">→</span></a>
   </article>
 ) : size === 'small' ? (
   <article class:list={['relative flex items-center gap-5 rounded-[var(--radius-card)] p-5 text-plum-deep', col.soft]}>

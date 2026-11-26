@@ -1,24 +1,33 @@
 ---
 import Logo from './Logo.astro';
 import { SITE } from '../site.config';
+import { getAllCollections, collectionUrl } from '../lib/books';
+const collections = await getAllCollections();
 const year = new Date().getFullYear();
 const socials = Object.entries(SITE.social).filter(([, url]) => !!url) as [string, string][];
 const label = (k: string) => k.charAt(0).toUpperCase() + k.slice(1);
 ---
 <footer class="bg-plum text-cream mt-auto">
   <div class="container-site pt-14 pb-8 flex flex-col gap-10">
-    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
       <div class="flex flex-col gap-3">
         <Logo reversed />
         <p class="text-[#E9E1F7] max-w-xs">{SITE.tagline}</p>
       </div>
-      <nav aria-label="Footer — books" class="flex flex-col gap-2">
-        <h2 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] text-yellow">Books</h2>
-        <a class="text-cream no-underline hover:underline hover:text-cream" href="/books/">Our Books</a>
-        <a class="text-cream no-underline hover:underline hover:text-cream" href="/collections/">Collections</a>
-        <a class="text-cream no-underline hover:underline hover:text-cream" href="/coming-soon/">Coming Soon</a>
-        <a class="text-cream no-underline hover:underline hover:text-cream" href="/activities/">Free Activities</a>
-        <a class="text-cream no-underline hover:underline hover:text-cream" href="/gifts/">Gift Ideas</a>
+      <nav aria-label="Footer — collections" class="flex flex-col gap-2">
+        <h2 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] text-yellow">Collections</h2>
+        {collections.map((c) => c.data.status === 'active'
+          ? <a class="text-cream no-underline hover:underline hover:text-cream" href={collectionUrl(c)}>{c.data.title}</a>
+          : <span class="text-[#E9E1F7]">{c.data.title} (soon)</span>)}
+      </nav>
+      <nav aria-label="Footer — explore" class="flex flex-col gap-2">
+        <h2 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] text-yellow">Explore</h2>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/books/">All books</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/topics/">Books by topic</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/activities/">Free Resources</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/learning-club/">Learning Club</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/coming-soon/">Coming soon</a>
+        <a class="text-cream no-underline hover:underline hover:text-cream" href="/gifts/">Gift ideas</a>
       </nav>
       <nav aria-label="Footer — about" class="flex flex-col gap-2">
         <h2 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] text-yellow">Tarkasa Tales</h2>

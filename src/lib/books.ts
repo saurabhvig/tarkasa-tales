@@ -84,10 +84,8 @@ export function amazonLinks(b: Book) {
   return AMAZON_STORES.map((s) => {
     const id = s.kindleOnly ? kindleAsin : asin;
     const allowed = !amazonStores || amazonStores.includes(s.key);
-    let auto = id && allowed ? `https://www.${s.host}/dp/${id}` : undefined;
-    // Kindle-only store without a Kindle code yet: link to a Kindle search for the book instead.
-    if (!auto && s.kindleOnly && asin && allowed)
-      auto = `https://www.${s.host}/s?k=${encodeURIComponent(`${b.data.title} ${b.data.subtitle ?? ''} ${b.data.author}`.trim())}&i=digital-text`;
+    // Only verified editions are linked: a Kindle-only store (Amazon.in) appears only once the book has a kindleAsin.
+    const auto = id && allowed ? `https://www.${s.host}/dp/${id}` : undefined;
     return { ...s, url: custom[s.key] ?? auto };
   }).filter((s) => !!s.url) as Array<(typeof AMAZON_STORES)[number] & { url: string }>;
 }
@@ -114,3 +112,42 @@ export const formatDate = (d?: Date) =>
   d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) : undefined;
 
 export const coverAlt = (b: Book) => b.data.coverAlt ?? `Front cover of ${b.data.title}`;
+
+/* ---------- Topics (what a book is about) and qualities (what it helps a child grow in) ---------- */
+
+export type Topic = CollectionEntry<'topics'>;
+export type Quality = CollectionEntry<'qualities'>;
+
+/** A topic gets its own page once it has at least this many published books (avoids thin, one-book pages). */
+export const MIN_BOOKS_FOR_TOPIC_PAGE = 2;
+
+const byOrder = <T extends { data: { order: number; title: string } }>(a: T, b: T) =>
+  a.data.order - b.data.order || a.data.title.localeCompare(b.data.title);
+
+/**
+ * Active topics that at least one published book has, with their books (published first, then coming soon).
+ * Planned topics and topics with no published book are never shown.
+ */
+export async function getTopicsInUse() {
+  const books = await getAllBooks();
+  const topics = (await getCollection('topics')).filter((t) => t.data.status === 'active').sort(byOrder);
+  return topics
+    .map((topic) => {
+      const tagged = books.filter((b) => b.data.topics.some((r) => r.id === topic.id));
+      const published = tagged.filter((b) => b.data.status === 'published');
+      return { topic, books: [...published, ...tagged.filter((b) => b.data.status !== 'published')], published, hasPage: published.length >= MIN_BOOKS_FOR_TOPIC_PAGE };
+    })
+    .filter((t) => t.published.length > 0);
+}
+
+/** Qualities that at least one published book has, with the number of published books. */
+export async function getQualitiesInUse() {
+  const published = await getPublished();
+  return (await getCollection('qualities'))
+    .sort(byOrder)
+    .map((quality) => ({ quality, count: published.filter((b) => b.data.qualities.some((r) => r.id === quality.id)).length }))
+    .filter((q) => q.count > 0);
+}
+
+/** Where a topic link goes: its own page if it has one, otherwise the filtered book list. */
+export const topicHref = (t: { topic: Topic; hasPage: boolean }) => (t.hasPage ? `/topics/${t.topic.id}/` : `/books/?topic=${t.topic.id}`);

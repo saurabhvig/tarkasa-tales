@@ -5,7 +5,7 @@
  * instead of publishing a broken page. You normally never need to edit this file.
  */
 import { defineCollection, reference } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { AMAZON_STORES } from './site.config';
 
@@ -52,6 +52,30 @@ const collectionsCollection = defineCollection({
       seoTitle: z.string().max(70).optional(),
       seoDescription: z.string().max(170).optional(),
     }),
+});
+
+/**
+ * TOPICS (what a book is about) and QUALITIES (what it helps a child grow in).
+ * Both are simple lists in src/data/. Books refer to them by id.
+ */
+const topics = defineCollection({
+  loader: file('src/data/topics.yaml'),
+  schema: z.object({
+    title: z.string(),
+    status: z.enum(['active', 'planned']).default('active'),
+    order: z.number().default(10),
+    description: z.string(),
+    /** Opening sentence for the topic page (and its search-engine description). */
+    intro: z.string().max(170).optional(),
+  }),
+});
+const qualities = defineCollection({
+  loader: file('src/data/qualities.yaml'),
+  schema: z.object({
+    title: z.string(),
+    order: z.number().default(10),
+    description: z.string(),
+  }),
 });
 
 const series = defineCollection({
@@ -108,10 +132,23 @@ const books = defineCollection({
         expectedRelease: z.string().optional(),
         featured: z.boolean().default(false),
         themes: z.preprocess((v) => v ?? [], z.array(z.string())),
-        /** Short topic tags used as filters on the collection page, e.g. ["Women in science", "Space & sky"]. */
-        topics: z.preprocess((v) => v ?? [], z.array(z.string())),
-        /** Up to three short sentences: what a child takes away from the book. Shown as "What your child will learn". */
-        learningOutcomes: z.preprocess((v) => v ?? [], z.array(z.string()).max(3)),
+        /** What the book is about: ids from src/data/topics.yaml, e.g. [space-astronomy, women-in-science]. */
+        topics: z.preprocess((v) => v ?? [], z.array(reference('topics')).max(4)),
+        /** What the book helps a child grow in: ids from src/data/qualities.yaml, e.g. [perseverance]. Two or three. */
+        qualities: z.preprocess((v) => v ?? [], z.array(reference('qualities')).max(3)),
+        /** How many separate stories are inside (leave out for a single story). */
+        storyCount: z.number().int().min(2).optional(),
+        /**
+         * "What your child will take away", in two short lists (up to five sentences each):
+         * science = facts and ideas about science (for traditional tales: the story and its culture); growth = personal development (curiosity, patience…).
+         */
+        learningOutcomes: z.preprocess(
+          (v) => v ?? {},
+          z.object({
+            science: z.array(z.string()).max(5).default([]),
+            growth: z.array(z.string()).max(5).default([]),
+          }).strict(),
+        ),
         /**
          * Optional (Big Feelings books): the feelings inside the book, shown as a highlighted section.
          * treasure is one of: acorn, leaf, pebble, bell, daisy (pictures in src/assets/feelings/).
@@ -216,4 +253,4 @@ const testimonials = defineCollection({
   }),
 });
 
-export const collections = { collections: collectionsCollection, series, books, editions, activities, testimonials };
+export const collections = { collections: collectionsCollection, topics, qualities, series, books, editions, activities, testimonials };

@@ -1,0 +1,50 @@
+---
+/**
+ * LEARNING CLUB: the free monthly email for grown-ups (Brevo, double opt-in).
+ * Phase 4 version: what members get and the signup box. Phase 5 adds more detail.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import Sparkle from '../components/Sparkle.astro';
+import { SITE, IS_PREVIEW } from '../site.config';
+
+const perks = [
+  ['A new printable', 'A new activity sheet or puzzle to print at home or in class.', 'bg-yellow-soft'],
+  ['A science fact', 'One short, true fact to wonder about together.', 'bg-mint-soft'],
+  ['Book news', 'A short note when a new book or themed edition comes out.', 'bg-lavender-soft'],
+];
+---
+<BaseLayout title="Learning Club: a Free Monthly Email for Parents and Teachers" description="Join the free Tarkasa Tales Learning Club: one email a month with a new printable, a science fact and book news. For parents, carers and teachers.">
+  <div class="container-site flex flex-col gap-12 py-10 lg:py-14">
+    <div class="flex max-w-3xl flex-col gap-4">
+      <Breadcrumbs items={[{ href: '/', label: 'Home' }, { label: 'Learning Club' }]} />
+      <p class="eyebrow inline-flex items-center gap-2"><Sparkle size={16} /> Free · for grown-ups</p>
+      <h1 class="text-5xl sm:text-6xl">The Learning Club</h1>
+      <p class="text-lg sm:text-xl">One email a month: a new printable, a science fact and book news. For parents, carers and teachers of children aged 4–8.</p>
+    </div>
+
+    <ul class="grid gap-5 md:grid-cols-3">
+      {perks.map(([t, d, c]) => (
+        <li class:list={['flex flex-col gap-2 rounded-[var(--radius-card)] p-6 text-plum-deep', c]}>
+          <h2 class="text-2xl !text-plum-deep">{t}</h2>
+          <p>{d}</p>
+        </li>
+      ))}
+    </ul>
+
+    {SITE.brevoFormAction
+      ? <NewsletterSignup id="club-signup" source="learning-club" title="Join for free" />
+      : <p class="rounded-[var(--radius-card)] bg-white p-6 font-bold">{IS_PREVIEW ? 'The signup form is switched off in this preview.' : 'Signups open soon. In the meantime, every printable is free on our Free Resources page.'}</p>}
+
+    <section aria-labelledby="club-faq" class="flex max-w-3xl flex-col gap-4">
+      <h2 id="club-faq" class="text-[2.1rem]">Good to know</h2>
+      <ul class="prose-tt">
+        <li>All printables stay free on the <a href="/activities/">Free Resources</a> page, with or without signing up.</li>
+        <li>You’ll get one email first to confirm your address. Nothing is sent until you confirm.</li>
+        <li>The club is for grown-ups. We never ask for children’s names or details.</li>
+        <li>Unsubscribe any time with one click at the bottom of every email. See our <a href="/privacy/">privacy policy</a>.</li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

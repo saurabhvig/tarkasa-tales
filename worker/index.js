@@ -10,6 +10,12 @@
 import { EmailMessage } from 'cloudflare:email';
 
 const FROM = 'reviews@tarkasatales.com';
+/**
+ * Review emails are only ever sent from the real website. Cloudflare preview versions (branch builds)
+ * share this script's settings and secrets, so without this check a preview copy could send real emails.
+ * On any other address the form is accepted but nothing is sent.
+ */
+const LIVE_HOSTS = ['tarkasatales.com', 'www.tarkasatales.com'];
 const ROLES = ['Parent', 'Grandparent', 'Teacher', 'Librarian', 'Reader'];
 
 export default {
@@ -58,6 +64,10 @@ async function handleReview(request, env, url) {
   const adult = f.get('adult') === 'yes';
 
   if (!name || review.length < 10 || !adult) return go('/reviews/?error=1#write');
+  if (!LIVE_HOSTS.includes(url.hostname)) {
+    console.log(`Preview copy (${url.hostname}): review not emailed.`);
+    return go('/reviews/?sent=1#write');
+  }
   if (!env.SEB || !env.REVIEW_TO) {
     console.error('Review email not set up: add the REVIEW_TO secret (and the SEB send_email binding).');
     return go('/reviews/?error=1#write');

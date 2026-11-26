@@ -1,31 +1,34 @@
 ---
 import { Image } from 'astro:assets';
 import ExampleBadge from './ExampleBadge.astro';
-import { type Book, ageLabel, bookUrl, coverAlt, seriesOf, SERIES_COLORS } from '../lib/books';
-interface Props { book: Book; headingLevel?: 'h2' | 'h3'; showSeries?: boolean; loading?: 'lazy' | 'eager' }
-const { book, headingLevel = 'h3', showSeries = true, loading = 'lazy' } = Astro.props;
-const s = await seriesOf(book);
-const col = SERIES_COLORS[s.data.color];
+import { type Book, ageLabel, bookUrl, coverAlt, collectionOf, SERIES_COLORS } from '../lib/books';
+/** compact: on phones the description is hidden and the card is smaller, so two cards fit side by side. */
+interface Props { book: Book; headingLevel?: 'h2' | 'h3'; showSeries?: boolean; loading?: 'lazy' | 'eager'; compact?: boolean }
+const { book, headingLevel = 'h3', showSeries = true, loading = 'lazy', compact = false } = Astro.props;
+const c = await collectionOf(book);
+const col = SERIES_COLORS[c.data.color];
+// e.g. "Little Scientists · Book 10" (shown when showSeries is true)
+const label = c.data.title + (book.data.seriesNumber ? ` · Book ${book.data.seriesNumber}` : '');
 const H = headingLevel;
 const soon = book.data.status === 'coming-soon';
 ---
-<article class="group relative flex flex-col gap-3 rounded-[var(--radius-card)] bg-white p-4 shadow-[0_1px_0_#eadfcb] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(46,33,64,0.12)] motion-reduce:hover:translate-y-0">
+<article class:list={['group relative flex flex-col rounded-[var(--radius-card)] bg-white shadow-[0_1px_0_#eadfcb] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(46,33,64,0.12)] motion-reduce:hover:translate-y-0', compact ? 'gap-2 p-3 sm:gap-3 sm:p-4' : 'gap-3 p-4']}>
   <div class:list={['relative overflow-hidden rounded-2xl aspect-square', col.soft]}>
-    <Image src={book.data.cover} alt={coverAlt(book)} widths={[280, 420, 560]} sizes="(min-width: 1024px) 270px, (min-width: 640px) 45vw, 90vw" class="h-full w-full object-cover" loading={loading} />
+    <Image src={book.data.cover} alt={coverAlt(book)} widths={[280, 420, 560]} sizes={compact ? "(min-width: 1024px) 270px, 45vw" : "(min-width: 1024px) 270px, (min-width: 640px) 45vw, 90vw"} class="h-full w-full object-cover" loading={loading} />
   </div>
   {(showSeries || soon || book.data.example) && (
     <div class="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-      {showSeries && <p class="text-[0.8125rem] font-extrabold uppercase tracking-[0.06em] text-ink-soft">{s.data.title}</p>}
+      {showSeries && <p class:list={['font-extrabold uppercase tracking-[0.06em] text-ink-soft', compact ? 'text-[0.75rem] sm:text-[0.8125rem]' : 'text-[0.8125rem]']}>{label}</p>}
       {soon && <span class="pill bg-coral">Coming Soon</span>}
       {book.data.example && <ExampleBadge />}
     </div>
   )}
-  <H class="text-[1.4rem]">
+  <H class:list={[compact ? 'text-[1.15rem] sm:text-[1.4rem]' : 'text-[1.4rem]']}>
     <a href={bookUrl(book)} class="no-underline after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none">{book.data.title}</a>
   </H>
   <p class="text-[0.9375rem] font-bold text-ink-soft">{ageLabel(book)}</p>
-  <p class="text-base text-ink">{book.data.shortDescription}</p>
-  <span class="btn btn-primary mt-auto w-full pointer-events-none" aria-hidden="true">{soon ? 'Learn More' : 'View Book'}</span>
+  <p class:list={['text-base text-ink', compact && 'hidden sm:block']}>{book.data.shortDescription}</p>
+  <span class:list={['btn btn-primary mt-auto w-full pointer-events-none', compact && 'max-sm:!min-h-11 max-sm:!px-3 max-sm:text-[0.9375rem]']} aria-hidden="true">{soon ? 'Learn More' : 'View Book'}</span>
 </article>
 <style>
   /* Whole card is clickable; show the focus ring on the card when its link is focused. */

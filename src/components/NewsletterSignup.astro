@@ -7,17 +7,17 @@
  */
 import { SITE } from '../site.config';
 import Sparkle from './Sparkle.astro';
-interface Props { id?: string; compact?: boolean; source?: string }
-const { id = 'signup', compact = false, source = 'page' } = Astro.props;
+interface Props { id?: string; compact?: boolean; source?: string; title?: string }
+const { id = 'signup', compact = false, source = 'page', title = 'Join the Learning Club' } = Astro.props;
 const action = SITE.brevoFormAction;
 ---
 {action && (
   <section aria-labelledby={`${id}-title`} class:list={['rounded-[var(--radius-panel)] bg-lavender-soft text-plum-deep', compact ? 'p-6 sm:p-8' : 'p-7 sm:p-12']}>
     <div class:list={['grid gap-8', !compact && 'lg:grid-cols-[1fr_1.1fr] lg:items-center']}>
       <div class="flex flex-col gap-3">
-        <p class="text-sm font-extrabold uppercase tracking-[0.12em] inline-flex items-center gap-2"><Sparkle size={16} color="#53406C" /> For parents and teachers</p>
-        <h2 id={`${id}-title`} class:list={['!text-plum-deep', compact ? 'text-[1.9rem]' : 'text-[2.1rem] sm:text-[2.6rem]']}>A free printable every month</h2>
-        <p class="text-lg">One short email a month: a new activity sheet, a scientist story to share, and news when a book comes out. Unsubscribe any time.</p>
+        <p class="text-sm font-extrabold uppercase tracking-[0.12em] inline-flex items-center gap-2"><Sparkle size={16} color="#53406C" /> Tarkasa Tales Learning Club · free</p>
+        <h2 id={`${id}-title`} class:list={['!text-plum-deep', compact ? 'text-[1.9rem]' : 'text-[2.1rem] sm:text-[2.6rem]']}>{title}</h2>
+        <p class="text-lg">One email a month: a new printable, a science fact and book news. For parents, carers and teachers. Unsubscribe any time.</p>
       </div>
       <form action={action} method="post" class="flex flex-col gap-4" data-brevo-signup>
         <div class="flex flex-col gap-1.5">
@@ -35,7 +35,7 @@ const action = SITE.brevoFormAction;
         {/* Spam trap for bots: people never see or fill this. */}
         <input type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
         <input type="hidden" name="locale" value="en" />
-        <button type="submit" class="btn btn-primary self-start" data-umami-event="signup-submit" data-umami-event-source={source}>Send me the printables</button>
+        <button type="submit" class="btn btn-primary self-start" data-umami-event="signup-submit" data-umami-event-source={source}>Join the club</button>
         <p class="rounded-lg border-l-4 border-coral bg-white px-3 py-2 font-bold text-plum-deep" role="alert" aria-live="polite" data-signup-error hidden></p>
         <p class="text-sm text-ink-soft">We use Brevo to send our emails and you’ll get one email to confirm. We never ask for children’s details. See our <a href="/privacy/" class="underline">Privacy Policy</a>.</p>
       </form>
@@ -63,7 +63,7 @@ const action = SITE.brevoFormAction;
         try { await fetch(form.action, { method: 'POST', body: data, mode: 'no-cors' }); window.location.href = '/thanks/'; return; }
         catch { if (error) { error.textContent = 'We couldn’t reach our email service. Please try again in a minute.'; error.hidden = false; } }
       }
-      if (button) { button.disabled = false; button.textContent = 'Send me the printables'; }
+      if (button) { button.disabled = false; button.textContent = 'Join the club'; }
     });
   });
 </script>

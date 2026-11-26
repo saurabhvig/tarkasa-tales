@@ -1,0 +1,88 @@
+# TOPICS: what a book is about (its subject).
+# Books list their topics by id, e.g.  topics: [space-astronomy, women-in-science]
+# status: active  = shown on the site, but only once at least one published book has the topic
+#         planned = ready for future books; never shown until you change it to active
+# A topic gets its own page (/topics/<id>/) when it has at least 2 published books (see lib/books.ts).
+# Tag a book only with what the story itself covers, not everything the scientist did in life.
+
+- id: women-in-science
+  title: Women in Science
+  status: active
+  order: 1
+  description: True stories of girls who asked big questions and grew up to change science.
+  intro: Picture books about real women scientists, each starting with the curious girl she once was. Ages 4–8.
+
+- id: space-astronomy
+  title: Space & Astronomy
+  status: active
+  order: 2
+  description: Stars, planets, rockets and the people who helped us understand the sky.
+  intro: True stories about the Moon, the planets, light and space travel, told through the childhoods of the scientists behind them. Ages 4–8.
+
+- id: physics-discoveries
+  title: Physics & Discoveries
+  status: active
+  order: 3
+  description: Gravity, light, magnets and the hidden forces that shape our world.
+  intro: Picture books that turn big physics ideas, like gravity, light and invisible rays, into gentle true stories for young children. Ages 4–8.
+
+- id: maths-computing
+  title: Maths & Computing
+  status: active
+  order: 4
+  description: Counting, patterns, careful checking and the very first computer program.
+  intro: True stories for children who love numbers, patterns and step-by-step thinking. Ages 4–8.
+
+- id: inventions-technology
+  title: Inventions & Technology
+  status: active
+  order: 5
+  description: Telescopes, calculating machines and the ideas that built them.
+  intro: Picture books about scientists who built and imagined machines, from a homemade telescope to the first computer program. Ages 4–8.
+
+- id: nature-animals
+  title: Nature & Animals
+  status: active
+  order: 6
+  description: Watching wildlife, exploring woods and caring for living things.
+  intro: True stories for children who love animals, plants and being outdoors. Ages 4–8.
+
+- id: plants-environment
+  title: Plants & Environment
+  status: active
+  order: 7
+  description: Seeds, soil, forests and looking after the natural world.
+  intro: Picture books about scientists who cared for plants, soil and wild places. Ages 4–8.
+
+- id: medicine-health
+  title: Medicine & Health
+  status: active
+  order: 8
+  description: Germs, medicines and the discoveries that keep us healthy.
+  intro: True stories about the discoveries that help doctors keep people healthy. Ages 4–8.
+
+# ---------- Planned for future books (not shown yet) ----------
+
+- id: fossils-prehistoric-life
+  title: Fossils & Prehistoric Life
+  status: planned
+  order: 20
+  description: Fossils, dinosaurs and the story of life long ago.
+
+- id: human-biology
+  title: Human Biology
+  status: planned
+  order: 21
+  description: How our bodies work, from cells and blood to the tiny helpers inside us.
+
+- id: electricity-energy
+  title: Electricity & Energy
+  status: planned
+  order: 22
+  description: Sparks, magnets, batteries and the energy that powers our world.
+
+- id: genetics-dna
+  title: Genetics & DNA
+  status: planned
+  order: 23
+  description: Why we look like our families, and the tiny instructions inside every cell.

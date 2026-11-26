@@ -2,48 +2,80 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BookCard from '../../components/BookCard.astro';
 import Planet from '../../components/Planet.astro';
-import { getAllBooks, getAllSeries } from '../../lib/books';
+import EditionCard from '../../components/EditionCard.astro';
+import { getAllBooks, getAllSeries, getActiveCollections, getTopicsInUse, getQualitiesInUse, getVisibleEditions, topicHref } from '../../lib/books';
 
 const books = await getAllBooks();
 const series = await getAllSeries();
+const collections = await getActiveCollections();
+const topics = await getTopicsInUse();
+const qualities = await getQualitiesInUse();
+const editions = await getVisibleEditions();
+const collectionOfSeries = Object.fromEntries(series.map((s) => [s.id, s.data.collection.id]));
+const hasMultiStory = books.some((b) => b.data.storyCount);
 const ages = [...new Set(books.flatMap((b) => Array.from({ length: b.data.ageMax - b.data.ageMin + 1 }, (_, i) => b.data.ageMin + i)))].sort((a, b) => a - b);
 const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
 ---
 <BaseLayout
   title="Our Books"
-  description="Browse every Tarkasa Tales children’s book. Search by title and filter by series, age and availability."
+  description="Browse every Tarkasa Tales picture book for ages 4–8. Filter by collection, topic, what it helps with, age and availability."
 >
   <div class="container-site flex flex-col gap-8 py-12 lg:py-16">
     <div class="flex flex-wrap items-end justify-between gap-6">
       <div class="flex max-w-2xl flex-col gap-3">
         <h1 class="text-5xl sm:text-6xl">Our Books</h1>
-        <p class="text-lg sm:text-xl">Every Tarkasa Tales book in one place. Search by title or narrow down by series, age and availability.</p>
+        <p class="text-lg sm:text-xl">Every Tarkasa Tales book in one place. Narrow down by collection, by topic, or by what you’d like the book to help with.</p>
+        <p><a href="/topics/" class="font-extrabold">Browse by topic <span aria-hidden="true">→</span></a></p>
       </div>
       <Planet size={150} class="hidden sm:block" />
     </div>
 
-    <form id="book-filters" role="search" aria-label="Filter books" class="js-only grid gap-4 rounded-[1.75rem] bg-white p-5 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr]">
-      <div class="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-1">
+    <form id="book-filters" data-series-map={JSON.stringify(collectionOfSeries)} role="search" aria-label="Filter books" class="js-only grid gap-4 rounded-[1.75rem] bg-white p-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-3">
         <label for="f-q" class="text-sm font-extrabold text-plum-deep">Search by title</label>
         <input id="f-q" name="q" type="search" autocomplete="off" placeholder="e.g. Marie Curie" class="min-h-12 w-full rounded-full border-2 border-[#9C8DB0] bg-cream px-5 text-base text-plum-deep placeholder:text-ink-soft" />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label for="f-series" class="text-sm font-extrabold text-plum-deep">Series</label>
-        <select id="f-series" name="series" class="min-h-12 rounded-full border-2 border-[#9C8DB0] bg-cream px-4 text-base text-plum-deep">
-          <option value="">All series</option>
-          {series.map((s) => <option value={s.id}>{s.data.title}</option>)}
+        <label for="f-collection" class="text-sm font-extrabold text-plum-deep">Collection</label>
+        <select id="f-collection" name="collection" class="f-select">
+          <option value="">All collections</option>
+          {collections.map((c) => <option value={c.id}>{c.data.title}</option>)}
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="f-topic" class="text-sm font-extrabold text-plum-deep">Topic</label>
+        <select id="f-topic" name="topic" class="f-select">
+          <option value="">Any topic</option>
+          {topics.map((t) => <option value={t.topic.id}>{t.topic.data.title}</option>)}
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="f-helps" class="text-sm font-extrabold text-plum-deep">Helps with</label>
+        <select id="f-helps" name="helps" class="f-select">
+          <option value="">Anything</option>
+          {qualities.map((q) => <option value={q.quality.id}>{q.quality.data.title}</option>)}
         </select>
       </div>
       <div class="flex flex-col gap-1.5">
         <label for="f-age" class="text-sm font-extrabold text-plum-deep">Child’s age</label>
-        <select id="f-age" name="age" class="min-h-12 rounded-full border-2 border-[#9C8DB0] bg-cream px-4 text-base text-plum-deep">
+        <select id="f-age" name="age" class="f-select">
           <option value="">Any age</option>
           {ages.map((a) => <option value={a}>{a} years</option>)}
         </select>
       </div>
+      {hasMultiStory && (
+        <div class="flex flex-col gap-1.5">
+          <label for="f-kind" class="text-sm font-extrabold text-plum-deep">Stories per book</label>
+          <select id="f-kind" name="kind" class="f-select">
+            <option value="">Any</option>
+            <option value="single">One story</option>
+            <option value="multi">Several stories in one book</option>
+          </select>
+        </div>
+      )}
       <fieldset class="flex flex-wrap items-center gap-2 sm:col-span-2 lg:col-span-3">
         <legend class="mb-2 text-sm font-extrabold text-plum-deep">Availability</legend>
-        {[['', 'All'], ['published', 'Published'], ['coming-soon', 'Coming Soon']].map(([v, l]) => (
+        {[['', 'All'], ['published', 'Available now'], ['coming-soon', 'Coming Soon']].map(([v, l]) => (
           <label class="status-chip">
             <input type="radio" name="status" value={v} checked={v === ''} class="sr-only" />
             <span>{l}</span>
@@ -61,6 +93,10 @@ const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
           class="flex"
           data-title={`${b.data.title} ${b.data.subtitle ?? ''} ${seriesNames[b.data.series.id] ?? ''}`.toLowerCase()}
           data-series={b.data.series.id}
+          data-collection={collectionOfSeries[b.data.series.id]}
+          data-topics={b.data.topics.map((r) => r.id).join('|')}
+          data-helps={b.data.qualities.map((r) => r.id).join('|')}
+          data-kind={b.data.storyCount ? 'multi' : 'single'}
           data-status={b.data.status}
           data-age-min={b.data.ageMin}
           data-age-max={b.data.ageMax}
@@ -73,12 +109,30 @@ const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
       <h2 class="text-2xl">No books match those filters</h2>
       <p class="mt-2">Try another search, or <button type="button" id="no-results-reset" class="font-extrabold text-plum underline underline-offset-4">clear all filters</button>.</p>
     </div>
+
+    {editions.length > 0 && (
+      <section aria-labelledby="editions" class="flex flex-col gap-5 pt-6">
+        <div class="flex flex-col gap-1">
+          <p class="eyebrow">Several stories in one book</p>
+          <h2 id="editions" class="text-[2.1rem]">Themed editions</h2>
+        </div>
+        {editions.map((e) => <EditionCard edition={e} />)}
+      </section>
+    )}
+
+    <section aria-labelledby="topics-heading" class="flex flex-col gap-4 rounded-[var(--radius-panel)] bg-white p-6 sm:p-8">
+      <h2 id="topics-heading" class="text-[1.9rem]">Browse by topic</h2>
+      <ul class="flex flex-wrap gap-2.5">
+        {topics.map((t) => <li><a href={topicHref(t)} class="topic-chip">{t.topic.data.title} <span class="font-bold text-ink-soft">({t.published.length})</span></a></li>)}
+      </ul>
+    </section>
   </div>
 </BaseLayout>
 
 <style>
   :global(.no-js) .js-only { display: none; }
   #book-grid > li > :global(article) { width: 100%; }
+  .f-select { min-height: 3rem; border-radius: 999px; border: 2px solid #9C8DB0; background: var(--color-cream); padding: 0 1rem; font-size: 1rem; color: var(--color-plum-deep); }
   .status-chip span {
     display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1.25rem; border-radius: 999px;
     border: 2px solid var(--color-plum); background: #fff; color: var(--color-plum); font-weight: 800; cursor: pointer;
@@ -97,7 +151,10 @@ const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
     if (!form) return;
     const fd = new FormData(form);
     const q = String(fd.get('q') ?? '').trim().toLowerCase();
-    const series = String(fd.get('series') ?? '');
+    const collection = String(fd.get('collection') ?? '');
+    const topic = String(fd.get('topic') ?? '');
+    const helps = String(fd.get('helps') ?? '');
+    const kind = String(fd.get('kind') ?? '');
     const age = String(fd.get('age') ?? '');
     const status = String(fd.get('status') ?? '');
     let shown = 0;
@@ -105,7 +162,10 @@ const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
       const d = li.dataset;
       const ok =
         (!q || (d.title ?? '').includes(q)) &&
-        (!series || d.series === series) &&
+        (!collection || d.collection === collection) &&
+        (!topic || (d.topics ?? '').split('|').includes(topic)) &&
+        (!helps || (d.helps ?? '').split('|').includes(helps)) &&
+        (!kind || d.kind === kind) &&
         (!status || d.status === status) &&
         (!age || (Number(d.ageMin) <= Number(age) && Number(age) <= Number(d.ageMax)));
       li.hidden = !ok;
@@ -116,7 +176,10 @@ const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
     if (updateUrl) {
       const params = new URLSearchParams();
       if (q) params.set('q', q);
-      if (series) params.set('series', series);
+      if (collection) params.set('collection', collection);
+      if (topic) params.set('topic', topic);
+      if (helps) params.set('helps', helps);
+      if (kind) params.set('kind', kind);
       if (age) params.set('age', age);
       if (status) params.set('status', status);
       const qs = params.toString();
@@ -129,7 +192,17 @@ const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
     const p = new URLSearchParams(location.search);
     (form.elements.namedItem('q') as HTMLInputElement).value = p.get('q') ?? '';
     const sel = (name: string) => form.elements.namedItem(name) as HTMLSelectElement;
-    if ([...sel('series').options].some((o) => o.value === p.get('series'))) sel('series').value = p.get('series')!;
+    // Old links such as /books/?series=big-questions still work: they select that series' collection.
+    const SERIES_TO_COLLECTION: Record<string, string> = JSON.parse(form.dataset.seriesMap ?? '{}');
+    const wantCollection = p.get('collection') ?? SERIES_TO_COLLECTION[p.get('series') ?? ''] ?? '';
+    const pick = (name: string, value: string | null) => {
+      const el = form.elements.namedItem(name) as HTMLSelectElement | null;
+      if (el && value && [...el.options].some((o) => o.value === value)) el.value = value;
+    };
+    pick('collection', wantCollection);
+    pick('topic', p.get('topic'));
+    pick('helps', p.get('helps'));
+    pick('kind', p.get('kind'));
     if ([...sel('age').options].some((o) => o.value === p.get('age'))) sel('age').value = p.get('age')!;
     const st = p.get('status') ?? '';
     form.querySelectorAll<HTMLInputElement>('input[name="status"]').forEach((r) => (r.checked = r.value === st));

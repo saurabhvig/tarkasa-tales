@@ -18,11 +18,14 @@ featured: true
 video: /videos/george-washington-carver.mp4
 videoDescription: "Pictures from the book show young George, the Plant Doctor, walking miles to school and growing up to help farmers and their soil, ending with Notice. Care. Share."
 themes: ["Noticing nature", "Caring for plants", "Sharing what you learn", "Never giving up", "Farming and soil"]
-topics: ["Nature & animals"]
+topics: [nature-animals, plants-environment]
+qualities: [perseverance, kindness]
 learningOutcomes:
-  - "Looking closely at plants and soil teaches us how living things grow."
-  - "Learning is worth working hard for, and it is even better when shared."
-  - "Who George Washington Carver was, and how he helped farmers bring tired soil back to life."
+  science:
+    - "Looking closely at plants and soil teaches us how living things grow."
+    - "Who George Washington Carver was, and how he helped farmers bring tired soil back to life."
+  growth:
+    - "Learning is worth working hard for, and it is even better when shared."
 samples:
   - src: ../../assets/samples/george-washington-carver-p5.jpg
     alt: "Inside page: young George kneels in the woods, looking closely at leaves and mushrooms in his secret garden"

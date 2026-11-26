@@ -19,6 +19,7 @@ featured: true
 video: /videos/hanuman-ocean-leap.mp4
 videoDescription: "A play-along video: crouch down and count 3, 2, 1 to leap with Hanuman, guess how he gets past the giant Surasa, and find him hiding in the moonlit garden, ending with Be strong! Be clever! Be kind!"
 themes: ["Courage", "Believing in yourself", "Cleverness", "Kindness", "Friendship", "Stories from India"]
+qualities: [courage, confidence, kindness]
 samples:
   - src: ../../assets/samples/hanuman-ocean-leap-p9.jpg
     alt: "Inside page: Hanuman pushes off from a mountain by the sea and leaps into the pink sunset sky"

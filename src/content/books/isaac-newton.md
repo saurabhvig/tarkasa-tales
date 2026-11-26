@@ -19,11 +19,14 @@ featured: true
 video: /videos/isaac-newton.mp4
 videoDescription: "Pictures from the book show young Isaac’s mouse-powered windmill, a glowing kite, a rainbow from sunlight and a falling apple, ending with Look. Ask. Test."
 themes: ["Noticing everyday things", "Asking questions", "Testing ideas", "Gravity", "Light and colour"]
-topics: ["Space & sky"]
+topics: [space-astronomy, physics-discoveries]
+qualities: [curiosity]
 learningOutcomes:
-  - "Everyday things, like a falling apple, hide big questions."
-  - "Scientists test their ideas by building and trying things out."
-  - "Who Isaac Newton was, and a first simple idea of gravity and of the colours in light."
+  science:
+    - "Scientists test their ideas by building and trying things out."
+    - "Who Isaac Newton was, and a first simple idea of gravity and of the colours in light."
+  growth:
+    - "Everyday things, like a falling apple, hide big questions."
 samples:
   - src: ../../assets/samples/isaac-newton-p5.jpg
     alt: "Inside page: young Isaac with the little windmill he built, which a mouse could turn"

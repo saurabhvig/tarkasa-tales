@@ -17,10 +17,13 @@ featured: true
 video: /videos/bobbins-feelings-pocket.mp4
 videoDescription: "A play-along video: guess how Bobbin feels when her tower crashes, show how big a feeling is (acorn, apple or pumpkin), breathe along with Bun-and-Soup Breath, and meet Bobbin’s five pocket treasures, ending with The feeling is allowed. Hurting is not. And mistakes can be mended."
 themes: ["Feeling angry", "Feeling worried", "Feeling sad", "Feeling scared", "Feeling jealous", "Calming tools", "Friendship and family"]
+qualities: [big-feelings]
+storyCount: 5
 learningOutcomes:
-  - "All feelings are allowed, and every feeling has a name. Hurting others is not okay, and mistakes can be mended."
-  - "Simple tools help when a feeling gets big: say hello to it, measure it (acorn, apple or pumpkin), breathe, and tell a grown-up."
-  - "Grown-ups and friends can help us through big feelings, and we can help them too."
+  growth:
+    - "All feelings are allowed, and every feeling has a name. Hurting others is not okay, and mistakes can be mended."
+    - "Simple tools help when a feeling gets big: say hello to it, measure it (acorn, apple or pumpkin), breathe, and tell a grown-up."
+    - "Grown-ups and friends can help us through big feelings, and we can help them too."
 feelings:
   - feeling: angry
     story: "Bobbin and the Toppled Tower"

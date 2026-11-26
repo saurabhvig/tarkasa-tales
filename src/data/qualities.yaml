@@ -1,0 +1,49 @@
+# QUALITIES: what a book helps a child grow in (personal development), separate from its subject.
+# Books list them by id, e.g.  qualities: [perseverance, curiosity]
+# Shown as the "Helps with" filter on the Our Books page, only when at least one published book has it.
+# Tag only qualities the story is clearly about (usually from the book's own themes), two or three per book.
+
+- id: curiosity
+  title: Curiosity
+  order: 1
+  description: Noticing, wondering and asking “why?”
+
+- id: perseverance
+  title: Perseverance
+  order: 2
+  description: Keeping going when something is hard or unfair.
+
+- id: patience
+  title: Patience
+  order: 3
+  description: Waiting, watching and taking things slowly.
+
+- id: confidence
+  title: Confidence
+  order: 4
+  description: Believing in yourself and your big dreams.
+
+- id: imagination
+  title: Imagination
+  order: 5
+  description: Dreaming up ideas and picturing what could be.
+
+- id: kindness
+  title: Kindness & Caring
+  order: 6
+  description: Looking after people, animals and the world around us.
+
+- id: teamwork
+  title: Teamwork
+  order: 7
+  description: Working together and sharing what you learn.
+
+- id: courage
+  title: Courage
+  order: 8
+  description: Being brave, even when you feel small.
+
+- id: big-feelings
+  title: Managing Big Feelings
+  order: 9
+  description: Naming feelings and finding simple ways to calm down.

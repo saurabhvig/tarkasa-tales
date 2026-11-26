@@ -85,6 +85,12 @@
   .btn-dark:hover { background: #000; color: var(--color-cream); }
 
   .pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 0.25rem 0.75rem; font-size: 0.8125rem; font-weight: 800; color: var(--color-plum-deep); }
+  /* Clickable topic tag, e.g. "Space & Astronomy" (44px tall for easy tapping). */
+  .topic-chip {
+    display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; padding: 0.4rem 1rem; border-radius: 999px;
+    background: var(--color-cream); border: 2px solid var(--color-line); color: var(--color-plum-deep); font-weight: 800; text-decoration: none;
+  }
+  .topic-chip:hover { border-color: var(--color-plum); color: var(--color-plum-deep); background: #fff; }
 
   .prose-tt { font-size: 1.125rem; line-height: 1.75; }
   .prose-tt > * + * { margin-top: 1rem; }

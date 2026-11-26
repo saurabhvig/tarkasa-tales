@@ -1,0 +1,45 @@
+---
+/** TOPICS OVERVIEW: /topics/ — every topic that has published books, plus the "Helps with" qualities. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getTopicsInUse, getQualitiesInUse, topicHref } from '../../lib/books';
+
+const topics = await getTopicsInUse();
+const qualities = await getQualitiesInUse();
+const tints = ['bg-mint-soft', 'bg-lavender-soft', 'bg-yellow-soft', 'bg-coral-soft'];
+---
+<BaseLayout title="Find a Book by Topic or Interest" description="Find a Tarkasa Tales picture book by topic, such as space, nature or women in science, or by what it helps children with, such as patience or perseverance.">
+  <div class="container-site flex flex-col gap-12 py-10 lg:py-14">
+    <div class="flex max-w-3xl flex-col gap-4">
+      <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: '/books/', label: 'Books' }, { label: 'Topics' }]} />
+      <h1 class="text-5xl sm:text-6xl">Find a book by interest</h1>
+      <p class="text-lg sm:text-xl">Start with what your child already loves, or with something you’d like to help them with.</p>
+    </div>
+
+    <section aria-labelledby="by-topic" class="flex flex-col gap-5">
+      <h2 id="by-topic" class="text-[2.1rem]">What it’s about</h2>
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {topics.map((t, i) => (
+          <li class:list={['relative flex flex-col gap-2 rounded-[var(--radius-card)] p-5 text-plum-deep', tints[i % 4]]}>
+            <h3 class="text-xl !text-plum-deep"><a href={topicHref(t)} class="no-underline text-plum-deep after:absolute after:inset-0 after:rounded-[var(--radius-card)]">{t.topic.data.title}</a></h3>
+            <p>{t.topic.data.description}</p>
+            <p class="mt-auto font-extrabold">{t.published.length} {t.published.length === 1 ? 'book' : 'books'} <span aria-hidden="true">→</span></p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="by-quality" class="flex flex-col gap-5">
+      <h2 id="by-quality" class="text-[2.1rem]">What it helps with</h2>
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {qualities.map(({ quality, count }) => (
+          <li class="relative flex flex-col gap-1 rounded-[var(--radius-card)] bg-white p-5">
+            <h3 class="text-xl"><a href={`/books/?helps=${quality.id}`} class="no-underline after:absolute after:inset-0 after:rounded-[var(--radius-card)]">{quality.data.title}</a></h3>
+            <p>{quality.data.description}</p>
+            <p class="font-bold text-ink-soft">{count} {count === 1 ? 'book' : 'books'}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

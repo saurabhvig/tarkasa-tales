@@ -19,7 +19,8 @@ featured: true
 video: /videos/galileo-galilei.mp4
 videoDescription: "A play-along video: swing your arm and count like Galileo’s lamp, guess whether a ball speeds up rolling down a ramp, spot the craters on the Moon and count Jupiter’s four moons, ending with Look! Measure! Look again!"
 themes: ["Stars and planets", "Measuring and testing", "Curiosity", "Looking again", "Telescopes"]
-topics: ["Space & sky"]
+topics: [space-astronomy, physics-discoveries, inventions-technology]
+qualities: [curiosity, perseverance]
 samples:
   - src: ../../assets/samples/galileo-galilei-p7.jpg
     alt: "Inside page: young Galileo in Pisa Cathedral watches a great lamp swinging on its chain, timing it with his pulse"

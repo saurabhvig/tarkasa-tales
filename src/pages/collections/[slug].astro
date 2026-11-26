@@ -14,7 +14,7 @@ import CollectionCard from '../../components/CollectionCard.astro';
 import AmazonButtons from '../../components/AmazonButtons.astro';
 import {
   type Collection, getActiveCollections, getAllCollections, getSeriesInCollection, getBooksInSeries,
-  getVisibleEditions, SERIES_COLORS, bookUrl, coverAlt, collectionUrl,
+  getVisibleEditions, getTopicsInUse, SERIES_COLORS, bookUrl, coverAlt, collectionUrl,
 } from '../../lib/books';
 import { SITE } from '../../site.config';
 
@@ -45,6 +45,8 @@ const byType = Object.entries(
 const plural = (type: string, n: number) => `${n} ${type.toLowerCase()}${n === 1 ? '' : type.endsWith('h') ? 'es' : 's'}`;
 
 const others = (await getAllCollections()).filter((o) => o.id !== c.id);
+// Topic filter buttons: only topics that a published book in this series actually has.
+const topicsInUse = await getTopicsInUse();
 
 const ld = [
   {
@@ -112,7 +114,8 @@ const ld = [
     )}
 
     {seriesList.map(({ series: s, books }) => {
-      const topics = [...new Set(books.flatMap((b) => b.data.topics))].sort();
+      const ids = new Set(books.filter((b) => b.data.status === 'published').flatMap((b) => b.data.topics.map((r) => r.id)));
+      const topics = topicsInUse.filter((t) => ids.has(t.topic.id)).map((t) => t.topic);
       return (
         <section id={`series-${s.id}`} aria-labelledby={`h-series-${s.id}`} class="flex scroll-mt-6 flex-col gap-6" data-topic-section>
           <div class="flex flex-wrap items-end justify-between gap-4">
@@ -124,12 +127,12 @@ const ld = [
             {topics.length > 0 && (
               <div class="flex flex-wrap gap-2" role="group" aria-label="Show books about">
                 <button type="button" class="topic-btn" aria-pressed="true" data-topic="">All {books.length}</button>
-                {topics.map((t) => <button type="button" class="topic-btn" aria-pressed="false" data-topic={t}>{t}</button>)}
+                {topics.map((t) => <button type="button" class="topic-btn" aria-pressed="false" data-topic={t.id}>{t.data.title}</button>)}
               </div>
             )}
           </div>
           <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-topic-list>
-            {books.map((b) => <li data-topics={b.data.topics.join('|')}><BookCard book={b} showSeries={false} /></li>)}
+            {books.map((b) => <li data-topics={b.data.topics.map((r) => r.id).join('|')}><BookCard book={b} showSeries={false} /></li>)}
           </ul>
           {topics.length > 0 && <p class="sr-only" aria-live="polite" data-topic-status></p>}
         </section>

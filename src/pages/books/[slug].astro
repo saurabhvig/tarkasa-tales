@@ -16,7 +16,8 @@ import WhatsInside from '../../components/WhatsInside.astro';
 import FeelingsInside from '../../components/FeelingsInside.astro';
 import AboutCreator from '../../components/AboutCreator.astro';
 import NewsletterSignup from '../../components/NewsletterSignup.astro';
-import { type Book, getAllBooks, getBooksInSeries, seriesOf, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
+import BuyBar from '../../components/BuyBar.astro';
+import { type Book, getAllBooks, getBooksInCollection, seriesOf, collectionOf, collectionUrl, editionsWithBook, getTopicsInUse, getQualitiesInUse, topicHref, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
 import { SITE } from '../../site.config';
 
 export async function getStaticPaths() {
@@ -28,9 +29,19 @@ interface Props { book: Book }
 const { book } = Astro.props;
 const d = book.data;
 const series = await seriesOf(book);
-const col = SERIES_COLORS[series.data.color];
+const collection = await collectionOf(book);
+const col = SERIES_COLORS[collection.data.color];
 const { Content } = await render(book);
-const related = (await getBooksInSeries(series.id)).filter((b) => b.id !== book.id).slice(0, 4);
+// "More from this collection": newest first, so readers find the latest books.
+const related = (await getBooksInCollection(collection.id)).filter((b) => b.id !== book.id).reverse().slice(0, 4);
+const editions = await editionsWithBook(book);
+// Topic and "helps with" links: only topics/qualities that are shown on the site.
+const topicLinks = (await getTopicsInUse()).filter((t) => d.topics.some((r) => r.id === t.topic.id));
+const qualityLinks = (await getQualitiesInUse()).filter((q) => d.qualities.some((r) => r.id === q.quality.id));
+const { science, growth } = d.learningOutcomes;
+const isScience = collection.id === 'little-scientists';
+// The first outcome list is about science for science books, and about the story and its culture for traditional tales.
+const knowledgeLabel = isScience ? 'Science learning' : 'Story and culture';
 const soon = d.status === 'coming-soon';
 const bookReviews = (await getCollection('testimonials', (t) => t.data.book?.id === book.id)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const activities = (await getCollection('activities', (a) => a.data.relatedBook?.id === book.id)).sort((a, b) => a.data.order - b.data.order);
@@ -41,7 +52,10 @@ const coverBig = await big(d.cover);
 const samplesBig = await Promise.all(d.samples.map((s) => big(s.src)));
 
 const details: [string, string | undefined][] = [
+  ['Collection', collection.data.title],
   ['Series', series.data.title + (d.seriesNumber ? ` · Book ${d.seriesNumber}` : '')],
+  ['Stories', d.storyCount ? `${d.storyCount} stories in one book` : undefined],
+  ['Also in', editions.length ? editions.map((e) => `${e.data.title}${e.data.status === 'forthcoming' ? ' (forthcoming edition)' : ''}`).join('; ') : undefined],
   ['Author', d.author],
   ['Illustrator', d.illustrator],
   ['Recommended age', ageLabel(book).replace(/^Ages? /, '')],
@@ -79,8 +93,9 @@ const crumbsLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
-    { '@type': 'ListItem', position: 2, name: 'Our Books', item: SITE.url + '/books/' },
-    { '@type': 'ListItem', position: 3, name: d.title },
+    { '@type': 'ListItem', position: 2, name: collection.data.title, item: new URL(collectionUrl(collection), SITE.url).href },
+    { '@type': 'ListItem', position: 3, name: series.data.title, item: new URL(seriesUrl(series), SITE.url).href },
+    { '@type': 'ListItem', position: 4, name: d.title },
   ],
 };
 ---
@@ -94,7 +109,7 @@ const crumbsLd = {
   jsonLd={d.example ? undefined : [bookLd, crumbsLd]}
 >
   <div class="container-site flex flex-col gap-14 py-8 lg:py-10">
-    <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: '/books/', label: 'Our Books' }, { label: d.title }]} />
+    <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: collectionUrl(collection), label: collection.data.title }, { href: seriesUrl(series), label: series.data.title }, { label: d.title }]} />
 
     {d.example && (
       <p class="rounded-2xl border-2 border-dashed border-plum-deep bg-yellow-soft p-4 font-bold text-plum-deep">
@@ -102,9 +117,9 @@ const crumbsLd = {
       </p>
     )}
 
-    <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-16">
-      <div class="flex flex-col gap-5">
-        <div class="relative">
+    <div class="grid items-start gap-8 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-x-16 lg:gap-y-6">
+      <div class="lg:col-start-1 lg:row-start-1">
+        <div class="relative mx-auto max-w-[16rem] sm:max-w-[22rem] lg:max-w-none">
           <div class:list={['absolute inset-[1.5rem_-1rem_-1rem_1.5rem] rounded-[2rem]', col.panel]} aria-hidden="true"></div>
           <a href={coverBig.src} data-lightbox="book-pictures" data-alt={coverAlt(book)} class="group relative block rounded-2xl cursor-zoom-in">
             <Image src={d.cover} alt={coverAlt(book)} widths={[360, 540, 720, 900]} sizes="(min-width: 1024px) 416px, 90vw" loading="eager" fetchpriority="high" class="relative w-full rounded-2xl shadow-[0_24px_40px_rgba(46,33,64,0.18)]" />
@@ -112,8 +127,9 @@ const crumbsLd = {
             <span class="sr-only"> (view larger pictures)</span>
           </a>
         </div>
-        {d.samples.length > 0 && (
-          <section aria-labelledby="inside" class="mt-6 flex flex-col gap-3">
+      </div>
+      {d.samples.length > 0 && (
+          <section aria-labelledby="inside" class="order-last flex flex-col gap-3 lg:order-none lg:col-start-1 lg:row-start-2 lg:mt-6">
             <h2 id="inside" class="eyebrow !font-sans">Inside the book <span class="normal-case tracking-normal font-bold">· tap a page to look closer</span></h2>
             <ul class="grid grid-cols-3 gap-3">
               {d.samples.map((s, n) => (
@@ -126,13 +142,13 @@ const crumbsLd = {
               ))}
             </ul>
           </section>
-        )}
-      </div>
+      )}
 
-      <div class="flex min-w-0 flex-col gap-6">
-        <div class="flex flex-wrap gap-2">
-          <a href={seriesUrl(series)} class:list={['pill no-underline', col.panel]}>{series.data.title}</a>
-          {soon ? <span class="pill bg-coral">Coming Soon</span> : <span class="pill bg-white">Published</span>}
+      <div class="flex min-w-0 flex-col gap-6 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <a href={collectionUrl(collection)} class:list={['pill no-underline !text-[0.875rem]', col.panel]}>{collection.data.title}</a>
+          <a href={seriesUrl(series)} class="text-[0.9375rem] font-extrabold text-ink-soft">{series.data.title}{d.seriesNumber && `, Book ${d.seriesNumber}`}</a>
+          {soon && <span class="pill bg-coral">Coming Soon</span>}
           {d.example && <ExampleBadge />}
         </div>
         <div class="flex flex-col gap-2">
@@ -140,22 +156,43 @@ const crumbsLd = {
           {d.subtitle && <p class="font-display text-2xl font-medium text-plum">{d.subtitle}</p>}
           <p class="text-lg">by <strong class="text-plum-deep">{d.author}</strong>{d.illustrator && <> · illustrated by <strong class="text-plum-deep">{d.illustrator}</strong></>}</p>
         </div>
-        <dl class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <p class="text-[1.0625rem] font-bold text-plum-deep sm:hidden">{[`Ages ${d.ageMin}–${d.ageMax}`, d.pageCount && `${d.pageCount} pages`, d.formats.map((f) => f.replace(' eBook', '')).join(' · ')].filter(Boolean).join(' · ')}</p>
+        <dl class="hidden grid-cols-2 gap-3 sm:grid sm:grid-cols-4">
           <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Ages</dt><dd class="text-lg font-extrabold text-plum-deep">{d.ageMin}–{d.ageMax}</dd></div>
           {d.pageCount && <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Pages</dt><dd class="text-lg font-extrabold text-plum-deep">{d.pageCount}</dd></div>}
           {d.formats.length > 0 && <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Format</dt><dd class="text-lg font-extrabold text-plum-deep">{d.formats.join(' · ')}</dd></div>}
           <div class="rounded-2xl bg-white p-4"><dt class="text-xs font-extrabold uppercase tracking-[0.08em] text-ink-soft">Language</dt><dd class="text-lg font-extrabold text-plum-deep">{d.language}</dd></div>
         </dl>
-        <p class="text-xl leading-relaxed">{d.shortDescription}</p>
-        {d.learningOutcomes.length > 0 && (
-          <section aria-labelledby="outcomes" class="rounded-[var(--radius-card)] bg-mint-soft p-5 text-plum-deep">
-            <h2 id="outcomes" class="text-xl !text-plum-deep">What your child will take away</h2>
-            <ul class="prose-tt mt-2">{d.learningOutcomes.map((o) => <li>{o}</li>)}</ul>
+        <p class="text-xl leading-relaxed max-sm:order-2">{d.shortDescription}</p>
+        <div id="buy" class="scroll-mt-24 flex flex-col gap-3 max-sm:order-1">
+          <AmazonButtons book={book} />
+          {editions.length > 0 && (
+            <p class="text-[0.9375rem] text-ink-soft">
+              Also in: {editions.map((e, i) => <>{i > 0 && ', '}<a href={`${collectionUrl(collection)}#editions`} class="font-bold">{e.data.title}</a>{e.data.status === 'forthcoming' && ' (forthcoming edition, not yet available)'}</>)}
+            </p>
+          )}
+        </div>
+        {(science.length > 0 || growth.length > 0) && (
+          <section aria-labelledby="outcomes" class:list={['max-sm:order-3 flex flex-col gap-4 rounded-[var(--radius-card)] p-5 sm:p-6 text-plum-deep', col.soft]}>
+            <h2 id="outcomes" class="text-[1.5rem] !text-plum-deep">What your child will take away</h2>
+            <div class:list={['grid gap-5', science.length > 0 && growth.length > 0 && 'sm:grid-cols-2']}>
+              {science.length > 0 && (
+                <div class="flex flex-col gap-2">
+                  <h3 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] !text-plum-deep">{knowledgeLabel}</h3>
+                  <ul class="prose-tt !text-[1.0625rem]">{science.map((o) => <li>{o}</li>)}</ul>
+                </div>
+              )}
+              {growth.length > 0 && (
+                <div class="flex flex-col gap-2">
+                  <h3 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] !text-plum-deep">Personal growth</h3>
+                  <ul class="prose-tt !text-[1.0625rem]">{growth.map((o) => <li>{o}</li>)}</ul>
+                </div>
+              )}
+            </div>
           </section>
         )}
-        <AmazonButtons book={book} />
-        {d.video && <BookVideo book={book} />}
-        <AmazonReview book={book} />
+        {d.video && <div class="max-sm:order-3"><BookVideo book={book} /></div>}
+        <div class="max-sm:order-3"><AmazonReview book={book} /></div>
       </div>
     </div>
 
@@ -172,6 +209,15 @@ const crumbsLd = {
               {d.themes.map((t, i) => <li class:list={['rounded-full px-4 py-2 font-bold text-plum-deep', ['bg-mint-soft', 'bg-lavender-soft', 'bg-yellow-soft', 'bg-coral-soft'][i % 4]]}>{t}</li>)}
             </ul>
           </>
+        )}
+        {(topicLinks.length > 0 || qualityLinks.length > 0) && (
+          <nav aria-labelledby="similar" class="mt-4 flex flex-col gap-3">
+            <h3 id="similar" class="text-2xl">Find more books like this</h3>
+            <ul class="flex flex-wrap gap-2.5">
+              {topicLinks.map((t) => <li><a href={topicHref(t)} class="topic-chip">{t.topic.data.title}</a></li>)}
+              {qualityLinks.map((q) => <li><a href={`/books/?helps=${q.quality.id}`} class="topic-chip">Helps with: {q.quality.data.title}</a></li>)}
+            </ul>
+          </nav>
         )}
       </section>
       <aside aria-labelledby="details" class="self-start rounded-[var(--radius-card)] bg-white p-6">
@@ -216,8 +262,8 @@ const crumbsLd = {
     {related.length > 0 && (
       <section aria-labelledby="related" class="flex flex-col gap-6">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 id="related" class="text-[2.1rem]">More {series.data.title}</h2>
-          <a href={seriesUrl(series)} class="font-extrabold">View the whole series <span aria-hidden="true">→</span></a>
+          <h2 id="related" class="text-[2.1rem]">More {collection.data.title}</h2>
+          <a href={collectionUrl(collection)} class="font-extrabold">See the whole collection <span aria-hidden="true">→</span></a>
         </div>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {related.map((b) => <BookCard book={b} showSeries={false} />)}
@@ -225,7 +271,10 @@ const crumbsLd = {
       </section>
     )}
     <NewsletterSignup id="book-signup" compact source={`book:${book.id}`} />
-    <AboutCreator />
+    {isScience
+      ? <AboutCreator eyebrow="The scientist behind the story" text={`${SITE.creator.name}, a biomedical scientist (PhD), chose ${d.title}, researched their life from reliable sources and checked every fact in this book.`} />
+      : <AboutCreator />}
   </div>
   <Lightbox id="book-pictures" title={d.title} />
+  <BuyBar book={book} target="buy" />
 </BaseLayout>

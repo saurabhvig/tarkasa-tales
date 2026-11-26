@@ -1,0 +1,80 @@
+---
+/**
+ * TOPIC PAGE: /topics/<topic>/ (e.g. /topics/space-astronomy/)
+ * Made automatically for every active topic in src/data/topics.yaml that has at least
+ * MIN_BOOKS_FOR_TOPIC_PAGE published books, so there are never empty or one-book pages.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import BookCard from '../../components/BookCard.astro';
+import { getTopicsInUse, topicHref, collectionOf, collectionUrl, bookUrl, type Collection } from '../../lib/books';
+import { SITE } from '../../site.config';
+
+export async function getStaticPaths() {
+  const all = await getTopicsInUse();
+  return all.filter((t) => t.hasPage).map((t) => ({ params: { slug: t.topic.id }, props: { entry: t, all } }));
+}
+type Entry = Awaited<ReturnType<typeof getTopicsInUse>>[number];
+interface Props { entry: Entry; all: Entry[] }
+const { entry, all } = Astro.props;
+const { topic, books, published } = entry;
+const t = topic.data;
+const others = all.filter((o) => o.topic.id !== topic.id);
+// The collections these books belong to (usually just one).
+const cols = [...new Map((await Promise.all(books.map((b) => collectionOf(b)))).map((c) => [c.id, c] as [string, Collection])).values()];
+const pageTitle = `${t.title} Books for Kids`;
+const description = t.intro ?? t.description;
+
+const ld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: pageTitle,
+    description,
+    url: new URL(`/topics/${topic.id}/`, SITE.url).href,
+    isPartOf: { '@type': 'WebSite', name: SITE.name, url: SITE.url },
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: published.map((b, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(bookUrl(b), SITE.url).href, name: b.data.title })),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Books', item: new URL('/books/', SITE.url).href },
+      { '@type': 'ListItem', position: 3, name: 'Topics', item: new URL('/topics/', SITE.url).href },
+      { '@type': 'ListItem', position: 4, name: t.title },
+    ],
+  },
+];
+---
+<BaseLayout title={`${t.title} Picture Books for Ages 4–8`} description={description} jsonLd={ld}>
+  <div class="container-site flex flex-col gap-10 py-10 lg:py-14">
+    <div class="flex max-w-3xl flex-col gap-4">
+      <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: '/books/', label: 'Books' }, { href: '/topics/', label: 'Topics' }, { label: t.title }]} />
+      <p class="eyebrow">Books by topic</p>
+      <h1 class="text-5xl sm:text-6xl">{pageTitle}</h1>
+      <p class="text-lg sm:text-xl">{t.intro ?? t.description}</p>
+      <p class="font-bold text-ink-soft">
+        {published.length} {published.length === 1 ? 'book' : 'books'} available
+        {cols.length > 0 && <> · from {cols.map((c, i) => <>{i > 0 && ', '}<a href={collectionUrl(c)}>{c.data.title}</a></>)}</>}
+      </p>
+    </div>
+
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {books.map((b, i) => <li class="flex [&>*]:w-full"><BookCard book={b} headingLevel="h2" loading={i < 4 ? 'eager' : 'lazy'} /></li>)}
+    </ul>
+
+    {others.length > 0 && (
+      <section aria-labelledby="more-topics" class="flex flex-col gap-4 rounded-[var(--radius-panel)] bg-white p-6 sm:p-8">
+        <h2 id="more-topics" class="text-[1.9rem]">More topics</h2>
+        <ul class="flex flex-wrap gap-2.5">
+          {others.map((o) => <li><a href={topicHref(o)} class="topic-chip">{o.topic.data.title} <span class="text-ink-soft font-bold">({o.published.length})</span></a></li>)}
+        </ul>
+        <a href="/books/" class="font-extrabold self-start">Browse all books <span aria-hidden="true">→</span></a>
+      </section>
+    )}
+  </div>
+</BaseLayout>

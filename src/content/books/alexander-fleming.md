@@ -19,7 +19,8 @@ featured: true
 video: /videos/alexander-fleming.mp4
 videoDescription: "Pictures from the book show young Alec exploring the Scottish moors, his messy laboratory and the dish of mould that led to penicillin, ending with Notice. Wonder. Find out."
 themes: ["Noticing small things", "Germs and medicine", "Curiosity", "Teamwork", "Mistakes that lead to discoveries"]
-topics: ["Medicine & health"]
+topics: [medicine-health]
+qualities: [curiosity, teamwork]
 samples:
   - src: ../../assets/samples/alexander-fleming-p5.jpg
     alt: "Inside page: young Alec lies by a Scottish stream, looking closely at a bird’s nest, fox tracks and a hiding trout"
