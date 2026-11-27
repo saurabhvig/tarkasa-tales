@@ -6,6 +6,7 @@ seriesNumber: 1
 author: "Saurabh Vig"
 cover: ../../assets/covers/bobbin-and-the-wobble-bridge.jpg
 coverAlt: "Cover of Bobbin and the Wobble Bridge, showing a small fox in a yellow coat beside a rope bridge over a pond, with a duckling and a turtle"
+seoTitle: "Bobbin and the Wobble Bridge: Big Feelings Book for Kids 4–8"
 shortDescription: "Five warm, funny stories about a small fox in a big yellow coat, and the friends who help her through wobbly, cross, sad and jealous moments."
 ageMin: 4
 ageMax: 8

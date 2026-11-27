@@ -108,6 +108,9 @@ const books = defineCollection({
         cover: image(),
         coverAlt: z.string().optional(),
         shortDescription: z.string().max(220),
+        /** Optional: title and description for search results, when the defaults are too long. Up to about 65 and 160 characters. */
+        seoTitle: z.string().max(70).optional(),
+        seoDescription: z.string().max(160).optional(),
         ageMin: z.number().int().min(0).max(18),
         ageMax: z.number().int().min(0).max(18),
         language: z.string().default('English'),

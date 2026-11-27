@@ -71,6 +71,13 @@ const details: [string, string | undefined][] = [
   ['Status', soon ? 'Coming soon' : 'Published'],
 ];
 
+// Search result title: the book's name plus what it is, e.g. "Marie Curie Picture Book for Kids (Ages 4–8)".
+const ages = `Ages ${d.ageMin}–${d.ageMax}`;
+const seoTitle = d.seoTitle ?? (
+  collection.id === 'little-scientists' ? `${d.title} Picture Book for Kids (${ages})`
+  : collection.id === 'bobbins-world' ? `${d.title}: Big Feelings Picture Book (${ages})`
+  : d.subtitle ? `${d.title}: ${d.subtitle} for Kids` : `${d.title}: Picture Book for Kids (${ages})`);
+const formatLd: Record<string, string> = { Paperback: 'https://schema.org/Paperback', Hardcover: 'https://schema.org/Hardcover', 'Kindle eBook': 'https://schema.org/EBook' };
 const bookLd = {
   '@context': 'https://schema.org',
   '@type': 'Book',
@@ -82,6 +89,10 @@ const bookLd = {
   isPartOf: { '@type': 'BookSeries', name: series.data.title, url: new URL(seriesUrl(series), SITE.url).href },
   inLanguage: d.language,
   typicalAgeRange: `${d.ageMin}-${d.ageMax}`,
+  audience: { '@type': 'PeopleAudience', suggestedMinAge: d.ageMin, suggestedMaxAge: d.ageMax },
+  genre: collection.id === 'little-scientists' ? ['Children’s picture book', 'Biography'] : collection.id === 'timeless-tales' ? ['Children’s picture book', 'Mythology'] : ['Children’s picture book', 'Social and emotional learning'],
+  ...(collection.id === 'little-scientists' ? { about: { '@type': 'Person', name: d.title } } : {}),
+  ...(d.formats.length ? { workExample: d.formats.map((f) => ({ '@type': 'Book', bookFormat: formatLd[f], ...(f === 'Paperback' && d.isbn ? { isbn: d.isbn } : {}) })) } : {}),
   description: d.shortDescription,
   image: new URL(ogImg.src, SITE.url).href,
   url: new URL(`/books/${book.id}/`, SITE.url).href,
@@ -90,25 +101,15 @@ const bookLd = {
   ...(d.publicationDate ? { datePublished: d.publicationDate.toISOString().slice(0, 10) } : {}),
   ...(amazonLinks(book).length ? { sameAs: amazonLinks(book).map((l) => l.url) } : {}),
 };
-const crumbsLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
-    { '@type': 'ListItem', position: 2, name: collection.data.title, item: new URL(collectionUrl(collection), SITE.url).href },
-    { '@type': 'ListItem', position: 3, name: series.data.title, item: new URL(seriesUrl(series), SITE.url).href },
-    { '@type': 'ListItem', position: 4, name: d.title },
-  ],
-};
 ---
 <BaseLayout
-  title={d.subtitle ? `${d.title}: ${d.subtitle}` : d.title}
-  description={d.shortDescription}
+  title={seoTitle}
+  description={d.seoDescription ?? d.shortDescription}
   image={ogImg.src}
   imageAlt={coverAlt(book)}
   type="book"
   noindex={d.example}
-  jsonLd={d.example ? undefined : [bookLd, crumbsLd]}
+  jsonLd={d.example ? undefined : bookLd}
 >
   <div class="container-site flex flex-col gap-14 py-8 lg:py-10">
     <Breadcrumbs items={[{ href: '/', label: 'Home' }, { href: collectionUrl(collection), label: collection.data.title }, { href: seriesUrl(series), label: series.data.title }, { label: d.title }]} />

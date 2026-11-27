@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BookCard from '../../components/BookCard.astro';
 import Planet from '../../components/Planet.astro';
 import EditionCard from '../../components/EditionCard.astro';
+import { SITE } from '../../site.config';
 import { getAllBooks, getAllSeries, getActiveCollections, getTopicsInUse, getQualitiesInUse, getVisibleEditions, topicHref } from '../../lib/books';
 
 const books = await getAllBooks();
@@ -15,9 +16,18 @@ const collectionOfSeries = Object.fromEntries(series.map((s) => [s.id, s.data.co
 const hasMultiStory = books.some((b) => b.data.storyCount);
 const ages = [...new Set(books.flatMap((b) => Array.from({ length: b.data.ageMax - b.data.ageMin + 1 }, (_, i) => b.data.ageMin + i)))].sort((a, b) => a - b);
 const seriesNames = Object.fromEntries(series.map((s) => [s.id, s.data.title]));
+// Search engines: this page is a list of every book.
+const listLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'All Tarkasa Tales books',
+  url: new URL('/books/', SITE.url).href,
+  mainEntity: { '@type': 'ItemList', itemListElement: books.map((b, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/books/${b.id}/`, SITE.url).href, name: b.data.title })) },
+};
 ---
 <BaseLayout
-  title="Our Books"
+  title="All Children’s Books for Ages 4–8"
+  jsonLd={listLd}
   description="Browse every Tarkasa Tales picture book for ages 4–8. Filter by collection, topic, what it helps with, age and availability."
 >
   <div class="container-site flex flex-col gap-8 py-12 lg:py-16">

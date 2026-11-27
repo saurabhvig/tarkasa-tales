@@ -34,6 +34,17 @@ export const SITE = {
     youtube: '',
   },
 
+  /**
+   * SEARCH ENGINE VERIFICATION (optional). Only needed if you verify with an HTML tag instead of DNS.
+   * Google Search Console → Add property → URL prefix → HTML tag: paste only the content="…" value.
+   * Bing Webmaster Tools → Add site → HTML Meta Tag: paste only the content="…" value.
+   * Leave empty ('') and nothing is added. (Easiest: verify with DNS in Cloudflare, or import from Google into Bing.)
+   */
+  verification: {
+    google: '',
+    bing: '',
+  },
+
   /** The date the Privacy Policy was last updated. */
   privacyUpdated: '2026-11-27',
 

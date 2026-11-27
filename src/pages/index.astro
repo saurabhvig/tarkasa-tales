@@ -56,12 +56,13 @@ const orgLd = {
   url: SITE.url,
   logo: `${SITE.url}/brand/icon-512.png`,
   slogan: SITE.tagline,
+  description: SITE.description,
   ...(SITE.contactEmail ? { email: SITE.contactEmail } : {}),
   sameAs: Object.values(SITE.social).filter(Boolean),
 };
 const siteLd = { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url };
 ---
-<BaseLayout title={SITE.name} jsonLd={[orgLd, siteLd]}>
+<BaseLayout title="Tarkasa Tales: Children’s Science Picture Books for Ages 4–8" description="Picture books for ages 4–8 about real scientists, big feelings and timeless tales, with free printables and a monthly Learning Club for parents and teachers." jsonLd={[orgLd, siteLd]}>
   <!-- HERO -->
   <section aria-labelledby="hero-title" class="relative overflow-hidden">
     <div class="container-site grid items-center gap-10 py-12 lg:grid-cols-2 lg:py-20">

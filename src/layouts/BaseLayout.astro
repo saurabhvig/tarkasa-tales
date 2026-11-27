@@ -14,7 +14,11 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 const { title, description = SITE.description, image = '/og-default.png', imageAlt = 'Tarkasa Tales — Little Questions. Big Discoveries.', type = 'website', noindex = false, jsonLd } = Astro.props;
-const fullTitle = title === SITE.name ? `${SITE.name} — ${SITE.tagline}` : `${title} | ${SITE.name}`;
+// The brand is added after the page title, unless the title already names it or the result would be too long
+// for search results (about 65 characters), where the page's own words matter more.
+const fullTitle = title === SITE.name ? `${SITE.name} — ${SITE.tagline}`
+  : title.includes(SITE.name) || `${title} | ${SITE.name}`.length > 65 ? title
+  : `${title} | ${SITE.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
 const ogImage = new URL(image, Astro.site ?? SITE.url).href;
 const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
@@ -29,6 +33,8 @@ const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {IS_PREVIEW ? <meta name="robots" content="noindex, nofollow" /> : noindex && <meta name="robots" content="noindex, follow" />}
+    {!IS_PREVIEW && SITE.verification.google && <meta name="google-site-verification" content={SITE.verification.google} />}
+    {!IS_PREVIEW && SITE.verification.bing && <meta name="msvalidate.01" content={SITE.verification.bing} />}
     <meta name="theme-color" content="#53406C" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />

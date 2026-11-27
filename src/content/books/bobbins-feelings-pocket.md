@@ -7,6 +7,7 @@ author: "Saurabh Vig"
 cover: ../../assets/covers/bobbins-feelings-pocket.jpg
 coverAlt: "Cover of Bobbin’s Feelings Pocket, showing Bobbin the fox in a yellow coat with five glowing treasures floating from her pocket (an acorn cap, a golden leaf, a green pebble, a silver bell and a daisy), with Nana Fox, Dabble the duckling, baby fox Pip and Moss the turtle in a flowery meadow"
 shortDescription: "Angry, worried, sad, scared and jealous: five warm stories in which Bobbin the fox learns simple tools for big feelings, and keeps a little treasure in her pocket to remember what helped."
+seoDescription: "Angry, worried, sad, scared and jealous: five warm stories in which Bobbin the fox learns simple tools for big feelings. A picture book for ages 4–8."
 ageMin: 4
 ageMax: 8
 language: English

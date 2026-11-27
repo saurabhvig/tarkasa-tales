@@ -6,7 +6,9 @@ seriesNumber: 2
 author: "Saurabh Vig"
 cover: ../../assets/covers/shiva-river-from-sky.jpg
 coverAlt: "Cover of Shiva and the River from the Sky, showing Lord Shiva with eyes closed as a waterfall pours into his hair, and King Bhagiratha with folded hands beside a river, his chariot behind him"
+seoTitle: "Shiva and the River from the Sky: Ramayana Tale for Kids"
 shortDescription: "King Bhagiratha wants to bring the river Ganga down from the sky. But who could catch a whole river? A tale of asking kindly, waiting patiently and never giving up."
+seoDescription: "Who could catch a whole river? A Ramayana tale for ages 4–8 about King Bhagiratha, Lord Shiva and the river Ganga: ask kindly, wait patiently, keep going."
 ageMin: 4
 ageMax: 8
 language: English

@@ -27,7 +27,7 @@ const IDEAS: Array<{ id: string; who: string; why: string; tint: string }> = [
 
 const ideas = (await Promise.all(IDEAS.map(async (i) => ({ ...i, book: (await getEntry('books', i.id)) as Book | undefined })))).filter((i) => i.book);
 const guide = (id: string) => `/activities/${id}-reading-guide.pdf`;
-const description = 'Gift ideas for curious kids aged 4–8: illustrated picture books about real scientists and big feelings, for Sinterklaas, Christmas and birthdays, plus free printables to tuck inside.';
+const description = 'Gift ideas for curious kids aged 4–8: picture books about real scientists and big feelings for Sinterklaas, Christmas and birthdays, plus free printables.';
 ---
 <BaseLayout title="Gift Ideas for Curious Kids (Ages 4–8)" description={description}>
   <section class="bg-coral-soft">

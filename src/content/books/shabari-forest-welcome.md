@@ -7,6 +7,7 @@ author: "Saurabh Vig"
 cover: ../../assets/covers/shabari-forest-welcome.jpg
 coverAlt: "Cover of Shabari’s Forest Welcome, showing smiling old Shabari holding out a basket of fruit to Rama and Lakshmana beside her forest hut and a lotus lake"
 shortDescription: "Every morning for years, Shabari sweeps the path and picks the sweetest fruit, ready for the day Prince Rama comes. A gentle tale about patience, kindness and a warm welcome."
+seoDescription: "Every morning, Shabari sweeps the path and picks the sweetest fruit for Prince Rama. A gentle Ramayana tale about patience and kindness for ages 4–8."
 ageMin: 4
 ageMax: 8
 language: English
