@@ -12,6 +12,7 @@ ageMax: 8
 language: English
 pageCount: 24
 formats: [Paperback, Kindle eBook]
+isbn: "9798141377501"
 asin: "B0HR321WJC"
 kindleAsin: "B0HR3HTKSD"
 status: published
