@@ -60,7 +60,7 @@ To check and set up (you, signed in):
 1. KDP → Bookshelf → a book → **Promote and Advertise** → opens Amazon Ads. Or go to advertising.amazon.com and sign in with your KDP account.
 2. In the Ads console look for **Measurement & Reporting → Amazon Attribution**. If it is there, you are eligible. If not, nothing to do; Umami clicks remain your guide.
 3. Create one campaign per channel (Website, Instagram, Newsletter) and add the books. Amazon gives a tag link per book.
-4. Send me the website tag links per book and store. They go in the book file as `amazon: { com: "…", couk: "…", de: "…" }`. The site then marks those clicks `attribution: tagged` in Umami.
+4. Send me the website tag links per book and store. They go in the book file under `attribution:` (only com, ca, couk, de, fr, it, es are accepted), e.g. `attribution: { com: "…", couk: "…", de: "…" }`. All other stores (Amazon.nl, Amazon.in, …) keep their normal links. The build refuses a tag link without `maas=` or with another book's ASIN. The site marks tagged clicks `attribution: tagged` in Umami.
 5. Results appear in Attribution after about a day: detail page views, add-to-carts and purchases that Amazon credits to each tag.
 
 ## Monthly 10-minute check

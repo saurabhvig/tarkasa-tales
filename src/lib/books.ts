@@ -81,14 +81,16 @@ export async function editionsWithBook(book: Book): Promise<Edition[]> {
 }
 
 export function amazonLinks(b: Book) {
-  const { asin, kindleAsin, amazon, amazonStores } = b.data;
+  const { asin, kindleAsin, amazon, amazonStores, attribution } = b.data;
   const custom = amazon as Record<string, string | undefined>;
+  const tags = attribution as Record<string, string | undefined>;
   return AMAZON_STORES.map((s) => {
     const id = s.kindleOnly ? kindleAsin : asin;
     const allowed = !amazonStores || amazonStores.includes(s.key);
     // Only verified editions are linked: a Kindle-only store (Amazon.in) appears only once the book has a kindleAsin.
     const auto = id && allowed ? `https://www.${s.host}/dp/${id}` : undefined;
-    const url = custom[s.key] ?? auto;
+    // An Attribution tag link (eligible stores only) wins; otherwise the store's own link.
+    const url = tags[s.key] ?? custom[s.key] ?? auto;
     // For statistics: which edition the link opens, and whether it carries an Amazon Attribution tag.
     const format = s.kindleOnly || (b.data.formats.length === 1 && b.data.formats[0] === 'Kindle eBook') ? 'kindle' : 'paperback';
     const tagged = !!url && /[?&]maas=/.test(url);

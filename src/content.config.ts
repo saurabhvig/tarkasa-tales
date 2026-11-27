@@ -7,7 +7,7 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { AMAZON_STORES } from './site.config';
+import { AMAZON_STORES, ATTRIBUTION_STORES } from './site.config';
 
 const storeKeys = AMAZON_STORES.map((s) => s.key) as [string, ...string[]];
 
@@ -121,8 +121,16 @@ const books = defineCollection({
         asin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
         /** ASIN of the Kindle eBook edition (used for Kindle-only stores such as Amazon.in). */
         kindleAsin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
-        /** Optional: a different link for a particular store, e.g.  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }.
-         *  Also the place for Amazon Attribution tag links (they contain "maas="), e.g. amazon: { com: "https://www.amazon.com/dp/B0…?maas=…" }. */
+        /**
+         * Optional: Amazon Attribution tag links, only for stores where Attribution works (com, ca, couk, de, fr, it, es).
+         * Paste the full link Amazon Ads gives you, e.g.  attribution: { com: "https://www.amazon.com/dp/B0…?maas=…" }
+         * Other stores keep their normal link. Leave out until your Attribution account is confirmed.
+         */
+        attribution: z.preprocess(
+          (v) => v ?? {},
+          z.object(Object.fromEntries(ATTRIBUTION_STORES.map((k) => [k, amazonUrl(AMAZON_STORES.find((st) => st.key === k)!.host)]))).strict(),
+        ),
+        /** Optional: a different link for a particular store, e.g.  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" } */
         amazon: z.preprocess(
           (v) => v ?? {},
           z.object(Object.fromEntries(AMAZON_STORES.map((st) => [st.key, amazonUrl(st.host)]))).strict(),
@@ -191,6 +199,13 @@ const books = defineCollection({
             path: ['amazon'],
             message: 'A published book needs an asin or at least one Amazon link',
           });
+        for (const [k, u] of Object.entries(b.attribution as Record<string, string | undefined>)) {
+          if (!u) continue;
+          if (!/[?&]maas=/.test(u))
+            ctx.addIssue({ code: 'custom', path: ['attribution', k], message: 'An Attribution link must contain "maas=" (copy the full tag link from Amazon Ads)' });
+          if (![b.asin, b.kindleAsin].some((id) => id && u.includes(id)))
+            ctx.addIssue({ code: 'custom', path: ['attribution', k], message: 'This Attribution link does not contain this book’s ASIN: check it is for the right book' });
+        }
         if (b.status === 'coming-soon' && hasLink && !b.preorder)
           ctx.addIssue({
             code: 'custom',

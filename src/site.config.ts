@@ -83,6 +83,13 @@ export const SITE = {
 };
 
 /**
+ * AMAZON ATTRIBUTION (free for KDP authors, via the Amazon Ads console) only works in these stores.
+ * A book can list tag links for them under `attribution:`; every other store keeps its normal link.
+ * Source: Amazon Ads launch announcement for KDP authors (US, Canada, UK, Germany, France, Italy, Spain).
+ */
+export const ATTRIBUTION_STORES = ['com', 'ca', 'couk', 'de', 'fr', 'it', 'es'] as const;
+
+/**
  * Amazon stores we link to, in the order buttons appear.
  * All stores appear in the list under the single "Buy on Amazon" button, sorted by country name.
  * A book with an `asin` gets a link to every store below automatically
