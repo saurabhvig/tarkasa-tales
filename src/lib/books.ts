@@ -86,8 +86,12 @@ export function amazonLinks(b: Book) {
     const allowed = !amazonStores || amazonStores.includes(s.key);
     // Only verified editions are linked: a Kindle-only store (Amazon.in) appears only once the book has a kindleAsin.
     const auto = id && allowed ? `https://www.${s.host}/dp/${id}` : undefined;
-    return { ...s, url: custom[s.key] ?? auto };
-  }).filter((s) => !!s.url) as Array<(typeof AMAZON_STORES)[number] & { url: string }>;
+    const url = custom[s.key] ?? auto;
+    // For statistics: which edition the link opens, and whether it carries an Amazon Attribution tag.
+    const format = s.kindleOnly || (b.data.formats.length === 1 && b.data.formats[0] === 'Kindle eBook') ? 'kindle' : 'paperback';
+    const tagged = !!url && /[?&]maas=/.test(url);
+    return { ...s, url, format, tagged };
+  }).filter((s) => !!s.url) as Array<(typeof AMAZON_STORES)[number] & { url: string; format: 'kindle' | 'paperback'; tagged: boolean }>;
 }
 
 /**

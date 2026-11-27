@@ -59,6 +59,10 @@ const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     {SITE.umamiWebsiteId && (
       <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={SITE.umamiWebsiteId} data-domains="tarkasatales.com,www.tarkasatales.com" data-do-not-track="true"></script>
     )}
+    {/* Cookieless page-speed statistics (Cloudflare Web Analytics). Only loads when cloudflareBeaconToken is set. See /privacy/. */}
+    {SITE.cloudflareBeaconToken && (
+      <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: SITE.cloudflareBeaconToken })}></script>
+    )}
   </head>
   <body class="min-h-dvh flex flex-col">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 btn btn-primary">Skip to main content</a>

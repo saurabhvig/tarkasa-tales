@@ -56,6 +56,14 @@ export const SITE = {
   umamiWebsiteId: IS_PREVIEW ? '' : '653625b0-8936-4013-8fa4-7e1bc41afffc',
 
   /**
+   * SPEED STATISTICS (Cloudflare Web Analytics, free, no cookies). Shows Core Web Vitals: how fast pages load for real visitors.
+   * Cloudflare → Analytics & Logs → Web Analytics → Add a site → tarkasatales.com → choose "JS snippet" (not automatic),
+   * then paste only the token from the snippet (the value after "token": ). Leave empty ('') to switch it off.
+   * Visits and button clicks stay in Umami; Cloudflare is only used for page speed.
+   */
+  cloudflareBeaconToken: IS_PREVIEW ? '' : '',
+
+  /**
    * EMAIL NEWSLETTER (Brevo).
    * Paste the form "action" address from Brevo → Marketing → Forms → your form → Share → Simple HTML,
    * e.g. 'https://a1b2c3.sibforms.com/serve/MUIFAB...'.

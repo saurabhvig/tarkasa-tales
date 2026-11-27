@@ -120,7 +120,8 @@ const books = defineCollection({
         asin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
         /** ASIN of the Kindle eBook edition (used for Kindle-only stores such as Amazon.in). */
         kindleAsin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
-        /** Optional: a different link for a particular store, e.g.  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" } */
+        /** Optional: a different link for a particular store, e.g.  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" }.
+         *  Also the place for Amazon Attribution tag links (they contain "maas="), e.g. amazon: { com: "https://www.amazon.com/dp/B0…?maas=…" }. */
         amazon: z.preprocess(
           (v) => v ?? {},
           z.object(Object.fromEntries(AMAZON_STORES.map((st) => [st.key, amazonUrl(st.host)]))).strict(),
