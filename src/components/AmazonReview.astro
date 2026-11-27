@@ -1,9 +1,10 @@
 ---
 // "Read it already? Leave a review" box on published book pages.
 // Links to each Amazon store's "write a review" page for this book.
-import { type Book, reviewLinks } from '../lib/books';
+import { type Book, reviewLinks, collectionOf } from '../lib/books';
 interface Props { book: Book }
 const { book } = Astro.props;
+const collectionId = (await collectionOf(book)).id;
 const links = [...reviewLinks(book)].sort((a, b) => a.region.localeCompare(b.region));
 ---
 {links.length > 0 && (
@@ -21,7 +22,7 @@ const links = [...reviewLinks(book)].sort((a, b) => a.region.localeCompare(b.reg
         <ul class="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {links.map((l) => (
             <li>
-              <a href={l.url} target="_blank" rel="noopener noreferrer" data-umami-event="amazon-review-click" data-umami-event-book={book.id} data-umami-event-store={l.key} class="flex min-h-14 flex-col justify-center rounded-xl border-2 border-transparent bg-cream px-3 py-2 no-underline hover:border-plum hover:bg-lavender-soft">
+              <a href={l.url} target="_blank" rel="noopener noreferrer" data-umami-event="amazon-review-click" data-umami-event-book={book.id} data-umami-event-collection={collectionId} data-umami-event-store={l.key} class="flex min-h-14 flex-col justify-center rounded-xl border-2 border-transparent bg-cream px-3 py-2 no-underline hover:border-plum hover:bg-lavender-soft">
                 <span class="font-extrabold text-plum-deep">{l.region}</span>
                 <span class="text-sm text-ink-soft">{l.label}</span>
                 <span class="sr-only"> (opens in a new tab)</span>

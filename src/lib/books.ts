@@ -151,3 +151,39 @@ export async function getQualitiesInUse() {
 
 /** Where a topic link goes: its own page if it has one, otherwise the filtered book list. */
 export const topicHref = (t: { topic: Topic; hasPage: boolean }) => (t.hasPage ? `/topics/${t.topic.id}/` : `/books/?topic=${t.topic.id}`);
+
+/* ---------- Free resources (printables) ---------- */
+
+export type Activity = CollectionEntry<'activities'>;
+
+/**
+ * Every printable with what the filters need: its books, collection, topics and ages.
+ * Collection = the explicit `collection`, otherwise that of its main book.
+ * Topics = the topics (in use on the site) of its main and extra books.
+ * Sorted: new ones first, then by `order`, then by title.
+ */
+export async function getResources() {
+  const [all, books, series, topicsInUse] = await Promise.all([getCollection('activities'), getAllBooks(), getAllSeries(), getTopicsInUse()]);
+  const bookById = new Map(books.map((b) => [b.id, b]));
+  const collectionOfSeries = new Map(series.map((s) => [s.id, s.data.collection.id]));
+  const shownTopics = new Set(topicsInUse.map((t) => t.topic.id));
+  return all
+    .map((a) => {
+      const main = a.data.relatedBook ? bookById.get(a.data.relatedBook.id) : undefined;
+      const extra = (a.data.alsoFor ?? []).map((r) => bookById.get(r.id)).filter(Boolean) as Book[];
+      const related = [...(main ? [main] : []), ...extra];
+      const collectionId = a.data.collection?.id ?? (main ? collectionOfSeries.get(main.data.series.id) : undefined);
+      const topicIds = [...new Set(related.flatMap((b) => b.data.topics.map((r) => r.id)))].filter((id) => shownTopics.has(id));
+      return { entry: a, main, related, collectionId, topicIds };
+    })
+    .sort((x, y) => Number(y.entry.data.isNew) - Number(x.entry.data.isNew) || x.entry.data.order - y.entry.data.order || x.entry.data.title.localeCompare(y.entry.data.title));
+}
+export type Resource = Awaited<ReturnType<typeof getResources>>[number];
+
+/** Printables for one book page: its own first, then ones that also suit it. */
+export async function getResourcesForBook(book: Book) {
+  const all = await getResources();
+  const own = all.filter((r) => r.main?.id === book.id);
+  const suits = all.filter((r) => r.main?.id !== book.id && r.related.some((b) => b.id === book.id));
+  return { own, suits };
+}

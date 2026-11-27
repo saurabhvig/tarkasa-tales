@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Katherine Johnson counting and space activity</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .stars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; }
+  .sbox { background: #fff; border: .6mm solid var(--line); border-radius: 4mm; padding: 3mm; }
+  .sbox svg { width: 100%; height: 30mm; }
+  .sbox p { font-size: 10.5pt; margin-top: 1.5mm; }
+  .count { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2mm; margin-top: 3mm; }
+  .count span { height: 13mm; border-radius: 2.5mm; border: .6mm solid var(--plum); background: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 16pt; color: var(--plum-deep); }
+  .hunt td { height: 13mm; }
+</style></head>
+<body>
+<section class="page">
+  <div class="top"><img src="../public/brand/tarkasa-logo-horizontal.svg" alt="Tarkasa Tales"><span class="kicker">Free activity · ages 4–7</span></div>
+  <div class="hero">
+    <div style="display:flex;flex-direction:column;gap:3mm">
+      <p class="kicker">Katherine Johnson</p>
+      <h1 style="font-size:27pt">Count It, Check It: a Space Activity</h1>
+      <p class="lead">Katherine counted everything: the steps to the road, the steps up to church, every fork and spoon she washed. Later, her careful numbers helped astronaut John Glenn fly around the Earth and home again.</p>
+      <span class="refrain" style="align-self:flex-start">Count it. Check it. Check again!</span>
+    </div>
+    <img src="art/katherine-steps.jpg" alt="" style="height:56mm">
+  </div>
+
+  <div class="box lav">
+    <h2><span class="num">1</span>Count the stars</h2>
+    <p class="note" style="margin:1.5mm 0 3mm">Count the stars in each box and write the number. Then ask someone to check your count!</p>
+    <div class="stars" id="stars"></div>
+  </div>
+
+  <div class="box yellow">
+    <h2><span class="num">2</span>Ready for launch!</h2>
+    <p class="note" style="margin:1.5mm 0 1mm">Fill in the missing numbers. Then count down out loud: 10, 9, 8 … lift off!</p>
+    <div class="count"><span>10</span><span></span><span>8</span><span></span><span></span><span>5</span><span></span><span>3</span><span></span><span>1</span></div>
+  </div>
+  <p class="grownup"><strong>For grown-ups:</strong> in the book, Katherine checked every number by hand before the flight. Celebrate checking as much as the right answer: “You counted 7, I counted 7. Checked!”</p>
+  <div class="foot"><span>Free printable from tarkasatales.com · Goes with <em>Katherine Johnson: The Girl Who Counted Her Way Forward</em></span><span>© 2026 Saurabh Vig</span></div>
+</section>
+
+<section class="page">
+  <div class="top"><img src="../public/brand/tarkasa-logo-horizontal.svg" alt="Tarkasa Tales"><span class="kicker">Count it. Check it. Check again!</span></div>
+
+  <div class="box mint">
+    <h2><span class="num">3</span>Around the Earth</h2>
+    <p class="note" style="margin:1.5mm 0 2mm">John Glenn’s spacecraft flew around the Earth. Start at the rocket and trace the dotted path with your finger, then with a pencil.</p>
+    <svg viewBox="0 0 300 150" style="width:100%;height:78mm" aria-hidden="true">
+      <circle cx="150" cy="75" r="44" fill="#80c9c3" stroke="#53406c" stroke-width="2.4"/>
+      <path d="M128 52c10 4 6 14 16 16s12 12 4 20-18 2-22 10M168 44c-6 8 4 12 12 10s10 12 2 18" fill="none" stroke="#2e7d6b" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cx="150" cy="75" rx="128" ry="62" fill="none" stroke="#53406c" stroke-width="2.6" stroke-dasharray="5 7"/>
+      <g transform="translate(18 66) rotate(-90)"><path d="M0 0c6 -10 14 -10 20 0l0 22h-20z" fill="#fff" stroke="#53406c" stroke-width="2"/><circle cx="10" cy="9" r="3.4" fill="#b6a5e3" stroke="#53406c" stroke-width="1.6"/><path d="M0 18l-6 8h6zM20 18l6 8h-6z" fill="#f39a9d" stroke="#53406c" stroke-width="1.6"/><path d="M5 23l5 10 5-10z" fill="#f6bd60"/></g>
+      <g fill="#f6bd60"><path d="M262 18l2 5 5 .5-4 3 1.3 5-4.3-2.8-4.3 2.8 1.3-5-4-3 5-.5z"/><path d="M40 128l1.6 4 4 .4-3 2.4 1 4-3.6-2.2-3.6 2.2 1-4-3-2.4 4-.4z"/><path d="M226 132l1.6 4 4 .4-3 2.4 1 4-3.6-2.2-3.6 2.2 1-4-3-2.4 4-.4z"/></g>
+    </svg>
+    <p style="margin-top:1mm">How many times can you trace around the Earth in 10 seconds? <span class="write" style="min-width:20mm"></span> Check again: <span class="write" style="min-width:20mm"></span></p>
+  </div>
+
+  <div class="box coral">
+    <h2><span class="num">4</span>My counting hunt</h2>
+    <p class="note" style="margin:1.5mm 0 2mm">Count like Katherine! Write your number, then ask a grown-up to check it.</p>
+    <table class="grid hunt">
+      <tr><th style="width:52%">I counted…</th><th>My number</th><th>Checked by</th></tr>
+      <tr><td>the steps from my bed to the door</td><td></td><td></td></tr>
+      <tr><td>the forks and spoons on the table</td><td></td><td></td></tr>
+      <tr><td>the windows in my home</td><td></td><td></td></tr>
+      <tr><td>my own idea: <span class="write"></span></td><td></td><td></td></tr>
+    </table>
+  </div>
+  <p class="grownup"><strong>Try this together:</strong> pick a number, such as 7. Your child finds 7 of something around the house, then someone else checks the count. Swap roles! Answers for activity 2: 9, 7, 6, 4, 2.</p>
+  <div class="foot"><span>Free printable from tarkasatales.com · More activities at tarkasatales.com/activities</span><span>© 2026 Saurabh Vig · Free for home &amp; classroom use</span></div>
+</section>
+<script>
+  // Star boxes: 7, 5, 9 and 6 stars, placed in fixed spots so every copy is the same.
+  const counts = [7, 5, 9, 6];
+  const spots = [[20,22],[52,14],[84,26],[30,52],[66,48],[100,56],[16,80],[50,82],[86,84]];
+  const star = (x, y) => `<path transform="translate(${x} ${y})" d="M0 -9l2.6 6.2 6.6.5-5 4.3 1.6 6.5L0 5l-5.8 3.5 1.6-6.5-5-4.3 6.6-.5z" fill="#f6bd60" stroke="#53406c" stroke-width="1.3"/>`;
+  document.getElementById('stars').innerHTML = counts.map((n, i) => `<div class="sbox"><svg viewBox="0 0 120 100">${spots.slice(0, n).map(([x, y]) => star(x + (i % 2) * 4, y)).join('')}</svg><p>I counted <span class="write" style="min-width:10mm"></span></p><p>Checked: <span class="write" style="min-width:10mm"></span></p></div>`).join('');
+</script>
+</body></html>

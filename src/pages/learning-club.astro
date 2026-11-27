@@ -1,13 +1,18 @@
 ---
 /**
  * LEARNING CLUB: the free monthly email for grown-ups (Brevo, double opt-in).
- * Phase 4 version: what members get and the signup box. Phase 5 adds more detail.
+ * What members get, the adults-only signup (18+, double opt-in) and the newest free printables.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import Sparkle from '../components/Sparkle.astro';
+import ActivityCard from '../components/ActivityCard.astro';
+import { getResources } from '../lib/books';
 import { SITE, IS_PREVIEW } from '../site.config';
+
+// A taste of what members get: the newest free printables.
+const latest = (await getResources()).filter((r) => r.entry.data.isNew).slice(0, 3);
 
 const perks = [
   ['A new printable', 'A new activity sheet or puzzle to print at home or in class.', 'bg-yellow-soft'],
@@ -19,7 +24,7 @@ const perks = [
   <div class="container-site flex flex-col gap-12 py-10 lg:py-14">
     <div class="flex max-w-3xl flex-col gap-4">
       <Breadcrumbs items={[{ href: '/', label: 'Home' }, { label: 'Learning Club' }]} />
-      <p class="eyebrow inline-flex items-center gap-2"><Sparkle size={16} /> Free · for grown-ups</p>
+      <p class="eyebrow inline-flex items-center gap-2"><Sparkle size={16} /> Free · for adults (18+)</p>
       <h1 class="text-5xl sm:text-6xl">The Learning Club</h1>
       <p class="text-lg sm:text-xl">One email a month: a new printable, a science fact and book news. For parents, carers and teachers of children aged 4–8.</p>
     </div>
@@ -37,12 +42,24 @@ const perks = [
       ? <NewsletterSignup id="club-signup" source="learning-club" title="Join for free" />
       : <p class="rounded-[var(--radius-card)] bg-white p-6 font-bold">{IS_PREVIEW ? 'The signup form is switched off in this preview.' : 'Signups open soon. In the meantime, every printable is free on our Free Resources page.'}</p>}
 
+    {latest.length > 0 && (
+      <section aria-labelledby="latest" class="flex flex-col gap-5">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="latest" class="text-[2.1rem]">New this month, free for everyone</h2>
+          <a href="/activities/" class="font-extrabold">All free printables <span aria-hidden="true">→</span></a>
+        </div>
+        <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {latest.map((r) => <li class="flex [&>*]:w-full"><ActivityCard resource={r} headingLevel="h3" placement="learning-club" /></li>)}
+        </ul>
+      </section>
+    )}
+
     <section aria-labelledby="club-faq" class="flex max-w-3xl flex-col gap-4">
       <h2 id="club-faq" class="text-[2.1rem]">Good to know</h2>
       <ul class="prose-tt">
         <li>All printables stay free on the <a href="/activities/">Free Resources</a> page, with or without signing up.</li>
         <li>You’ll get one email first to confirm your address. Nothing is sent until you confirm.</li>
-        <li>The club is for grown-ups. We never ask for children’s names or details.</li>
+        <li>The club is for adults aged 18 or over: parents, carers and teachers. We never ask for children’s names or details.</li>
         <li>Unsubscribe any time with one click at the bottom of every email. See our <a href="/privacy/">privacy policy</a>.</li>
       </ul>
     </section>

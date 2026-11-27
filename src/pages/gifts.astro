@@ -58,7 +58,7 @@ const description = 'Gift ideas for curious kids aged 4–8: illustrated picture
                 <p>{why}</p>
                 <div class="mt-2 flex flex-wrap gap-3">
                   <a href={bookUrl(b)} class="btn btn-primary">{soon ? 'Learn more' : 'See the book'}<span class="sr-only">: {b.data.title}</span></a>
-                  <a href={guide(b.id)} class="btn btn-secondary" download data-umami-event="download" data-umami-event-file={`${b.id}-reading-guide`}>Free read-aloud guide<span class="sr-only"> for {b.data.title} (PDF)</span></a>
+                  <a href={guide(b.id)} class="btn btn-secondary" download data-umami-event="download" data-umami-event-file={`${b.id}-reading-guide`} data-umami-event-book={b.id} data-umami-event-type="Reading guide" data-umami-event-placement="gifts">Free read-aloud guide<span class="sr-only"> for {b.data.title} (PDF)</span></a>
                 </div>
               </div>
             </li>

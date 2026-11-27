@@ -1,35 +1,132 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+/**
+ * FREE RESOURCES (/activities/): every free printable, with filters for age, collection, topic and type.
+ * Filters work in the browser and update the address (e.g. ?collection=little-scientists&age=5), so links can be shared.
+ * Without JavaScript every printable is simply listed.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Sparkle from '../components/Sparkle.astro';
 import ActivityCard from '../components/ActivityCard.astro';
+import BookCard from '../components/BookCard.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { getResources, getActiveCollections, getTopicsInUse } from '../lib/books';
 
-const activities = (await getCollection('activities')).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
-const items = await Promise.all(
-  activities.map(async (a) => ({ data: a.data, book: a.data.relatedBook ? await getEntry(a.data.relatedBook) : undefined })),
-);
+const resources = await getResources();
+const collections = (await getActiveCollections()).filter((c) => resources.some((r) => r.collectionId === c.id));
+const topics = (await getTopicsInUse()).filter((t) => resources.some((r) => r.topicIds.includes(t.topic.id)));
+const types = [...new Set(resources.map((r) => r.entry.data.type))].sort();
+const ages = [4, 5, 6, 7, 8];
+// Books to recommend: the main books of the newest printables (published only), up to four.
+const recommended = [...new Map(resources.filter((r) => r.entry.data.isNew && r.main?.data.status === 'published').map((r) => [r.main!.id, r.main!])).values()].slice(0, 4);
+const newCount = resources.filter((r) => r.entry.data.isNew).length;
 ---
-<BaseLayout title="Free Activities" description="Free printable activity packs, word searches and read-aloud guides for parents and teachers, to go with Tarkasa Tales picture books for ages 4–8.">
+<BaseLayout title="Free Printable Activities for Kids 4–8" description="Free printable activities for ages 4–8: feelings sheets, calm-down cards, science journals, counting and space activities, word searches and read-aloud guides. No sign-up needed.">
   <section class="bg-yellow text-plum-deep">
-    <div class="container-site flex flex-col gap-4 py-12 lg:py-16">
-      <p class="text-sm font-extrabold uppercase tracking-[0.12em] inline-flex items-center gap-2"><Sparkle size={16} color="#FFF5E6" /> Free printables</p>
-      <h1 class="text-5xl sm:text-6xl !text-plum-deep max-w-3xl">Free Activities</h1>
-      <p class="max-w-2xl text-lg sm:text-xl">Activity packs, word searches and read-aloud guides for parents and teachers, to go with our books. Free to download for home and classroom use, with no sign-up.</p>
+    <div class="container-site flex flex-col gap-4 py-10 lg:py-14">
+      <Breadcrumbs items={[{ href: '/', label: 'Home' }, { label: 'Free Resources' }]} onColor />
+      <p class="text-sm font-extrabold uppercase tracking-[0.12em] inline-flex items-center gap-2"><Sparkle size={16} color="#FFF5E6" /> Free printables · no sign-up</p>
+      <h1 class="text-5xl sm:text-6xl !text-plum-deep max-w-3xl">Free Resources</h1>
+      <p class="max-w-2xl text-lg sm:text-xl">{resources.length} printables to go with our books: feelings activities, science journals, counting games, word searches and read-aloud guides. Free for home and classroom use.</p>
+      {newCount > 0 && <p class="font-extrabold">{newCount} new printables this month <span aria-hidden="true">✦</span></p>}
     </div>
   </section>
 
-  <div class="container-site flex flex-col gap-10 py-14">
-    {items.length > 0 ? (
-      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((a) => <li><ActivityCard activity={a.data} book={a.book} /></li>)}
-      </ul>
-    ) : (
-      <div class="flex flex-col items-start gap-4 rounded-[var(--radius-card)] bg-white p-8 sm:p-10">
-        <h2 class="text-3xl">New activities are on the way</h2>
-        <p class="max-w-2xl text-lg">We’re preparing printable activities to go with our books. They’ll appear here as soon as they’re ready.</p>
-        <a href="/books/" class="btn btn-secondary">Explore our books</a>
+  <div class="container-site flex flex-col gap-8 py-12">
+    <form id="res-filters" role="search" aria-label="Filter printables" class="js-only grid gap-4 rounded-[1.75rem] bg-white p-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="flex flex-col gap-1.5">
+        <label for="r-age" class="text-sm font-extrabold text-plum-deep">Child’s age</label>
+        <select id="r-age" name="age" class="r-select"><option value="">Any age</option>{ages.map((a) => <option value={a}>{a} years</option>)}</select>
       </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="r-collection" class="text-sm font-extrabold text-plum-deep">Collection</label>
+        <select id="r-collection" name="collection" class="r-select"><option value="">All collections</option>{collections.map((c) => <option value={c.id}>{c.data.title}</option>)}</select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="r-topic" class="text-sm font-extrabold text-plum-deep">Topic</label>
+        <select id="r-topic" name="topic" class="r-select"><option value="">Any topic</option>{topics.map((t) => <option value={t.topic.id}>{t.topic.data.title}</option>)}</select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label for="r-type" class="text-sm font-extrabold text-plum-deep">Type</label>
+        <select id="r-type" name="type" class="r-select"><option value="">All types</option>{types.map((t) => <option value={t}>{t}</option>)}</select>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-4">
+        <p id="res-count" class="font-extrabold text-plum-deep" aria-live="polite">Showing {resources.length} printables</p>
+        <button type="reset" class="ml-auto min-h-11 rounded-full px-4 font-extrabold text-plum underline underline-offset-4">Clear filters</button>
+      </div>
+    </form>
+
+    <ul id="res-list" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {resources.map((r) => <li class="flex [&>*]:w-full"><ActivityCard resource={r} /></li>)}
+    </ul>
+    <div id="res-empty" class="rounded-[var(--radius-card)] bg-white p-8 text-center" hidden>
+      <h2 class="text-2xl">No printables match these filters yet</h2>
+      <p class="mt-2">Try another age or topic, or <button type="button" id="res-empty-reset" class="font-extrabold text-plum underline underline-offset-4">clear all filters</button>.</p>
+    </div>
+
+    <section aria-labelledby="club" class="flex flex-col items-start gap-3 rounded-[var(--radius-panel)] bg-lavender-soft p-7 text-plum-deep sm:flex-row sm:items-center sm:justify-between sm:p-9">
+      <div class="flex max-w-2xl flex-col gap-2">
+        <h2 id="club" class="text-[1.9rem] !text-plum-deep">A new printable every month</h2>
+        <p class="text-lg">Join the free Learning Club: one email a month with a new printable, a science fact and book news. For parents, carers and teachers.</p>
+      </div>
+      <a href="/learning-club/" class="btn btn-dark shrink-0">Join the Learning Club</a>
+    </section>
+
+    {recommended.length > 0 && (
+      <section aria-labelledby="read-books" class="flex flex-col gap-6">
+        <h2 id="read-books" class="text-[2.1rem]">Read the books behind the newest printables</h2>
+        <ul class="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+          {recommended.map((b) => <li class="flex [&>*]:w-full"><BookCard book={b} compact /></li>)}
+        </ul>
+      </section>
     )}
-    <p class="text-ink-soft">Activities are for grown-ups to print and use with children. Downloads don’t require any sign-up and we don’t collect any information when you download them.</p>
+
+    <p class="text-ink-soft">Printables are for grown-ups to print and use with children. Downloads never require a sign-up, and we don’t collect any personal information when you download them.</p>
   </div>
 </BaseLayout>
+
+<style>
+  .r-select { min-height: 3rem; border-radius: 999px; border: 2px solid #9c8db0; background: var(--color-cream); padding: 0 1rem; font-size: 1rem; color: var(--color-plum-deep); }
+</style>
+
+<script>
+  const form = document.getElementById('res-filters') as HTMLFormElement | null;
+  const items = [...document.querySelectorAll<HTMLElement>('#res-list > li')];
+  const count = document.getElementById('res-count');
+  const empty = document.getElementById('res-empty');
+  if (form) {
+    const fields = ['age', 'collection', 'topic', 'type'] as const;
+    const sel = (n: string) => form.elements.namedItem(n) as HTMLSelectElement;
+    const apply = (updateUrl = true) => {
+      const v = Object.fromEntries(fields.map((f) => [f, sel(f).value]));
+      let shown = 0;
+      items.forEach((li) => {
+        const d = (li.querySelector('[data-resource]') as HTMLElement).dataset;
+        const age = Number(v.age);
+        const ok =
+          (!v.age || (Number(d.ageMin) <= age && age <= Number(d.ageMax))) &&
+          (!v.collection || d.collection === v.collection) &&
+          (!v.topic || (d.topics ?? '').split('|').includes(v.topic)) &&
+          (!v.type || d.type === v.type);
+        li.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (count) count.textContent = `Showing ${shown} ${shown === 1 ? 'printable' : 'printables'}`;
+      if (empty) empty.hidden = shown > 0;
+      if (updateUrl) {
+        const params = new URLSearchParams();
+        fields.forEach((f) => v[f] && params.set(f, v[f]));
+        history.replaceState(null, '', params.toString() ? `?${params}` : location.pathname);
+      }
+    };
+    // Read filters from the address, e.g. /activities/?collection=little-scientists
+    const p = new URLSearchParams(location.search);
+    fields.forEach((f) => {
+      const val = p.get(f);
+      if (val && [...sel(f).options].some((o) => o.value === val)) sel(f).value = val;
+    });
+    form.addEventListener('change', () => apply());
+    form.addEventListener('reset', () => setTimeout(() => apply(), 0));
+    document.getElementById('res-empty-reset')?.addEventListener('click', () => form.reset());
+    apply(false);
+  }
+</script>

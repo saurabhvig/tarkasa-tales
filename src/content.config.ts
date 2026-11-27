@@ -219,15 +219,24 @@ const editions = defineCollection({
 
 const activities = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/activities' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
-    type: z.enum(['Activity pack', 'Colouring sheet', 'Colouring page', 'Word search', 'Science activity', 'Science experiment', 'Science fact sheet', 'Feelings worksheet', 'Worksheet', 'Reading activity', 'Reading guide', 'Puzzle', 'Seasonal']),
+    type: z.enum(['Activity pack', 'Activity sheet', 'Calm-down cards', 'Observation journal', 'Maths activity', 'Colouring sheet', 'Colouring page', 'Word search', 'Science activity', 'Science experiment', 'Science fact sheet', 'Feelings worksheet', 'Worksheet', 'Reading activity', 'Reading guide', 'Puzzle', 'Seasonal']),
     description: z.string(),
     /** Path of the PDF inside the public/activities folder, e.g. /activities/marie-curie-colouring.pdf */
     file: z.string().startsWith('/activities/').endsWith('.pdf'),
     ageMin: z.number().int().optional(),
     ageMax: z.number().int().optional(),
+    /** The main book this printable goes with (shown on that book's page). */
     relatedBook: reference('books').optional(),
+    /** Other books it also suits; it appears on their pages too, as a recommendation. */
+    alsoFor: z.array(reference('books')).optional(),
+    /** For printables that suit a whole collection rather than one book, e.g. little-scientists. */
+    collection: reference('collections').optional(),
+    /** A picture of page 1 (src/assets/printables/<name>.png, made by printables/build.py). */
+    preview: image().optional(),
+    /** Shows a small "New" label. Remove it after a month or two. */
+    isNew: z.boolean().default(false),
     order: z.number().default(10),
   }),
 });

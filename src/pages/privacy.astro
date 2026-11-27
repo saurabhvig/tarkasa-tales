@@ -27,7 +27,7 @@ const ext = (href: string, label: string) => `<a href="${href}" rel="noopener" t
             ? <li>We count visits with Umami, a privacy-friendly statistics tool that uses no cookies and cannot identify you.</li>
             : <li>This website does not run visitor statistics.</li>}
           {news
-            ? <li>Our email newsletter is optional. You only receive it if you sign up and confirm, and you can unsubscribe at any time.</li>
+            ? <li>Our Learning Club email is optional and for adults only. You only receive it if you sign up and confirm, and you can unsubscribe at any time.</li>
             : <li>We do not run a newsletter.</li>}
           <li>We do not ask for or collect information from children.</li>
           <li>Free downloads never require you to sign up.</li>
@@ -56,10 +56,10 @@ const ext = (href: string, label: string) => `<a href="${href}" rel="noopener" t
         <h2>Cookies</h2>
         <p>This website does not set cookies and does not use similar technologies such as tracking pixels or local storage for tracking. That is why there is no cookie banner. If that ever changes, we will update this page first and ask for your consent where the law requires it.</p>
 
-        <h2>Email newsletter</h2>
+        <h2>Learning Club email</h2>
         {news ? (
           <>
-            <p>You can choose to receive our newsletter for parents and teachers: about one email a month with a free printable, a scientist story and news about new books. We ask for your email address and, if you like, your first name. You must be 16 or older to sign up. After you sign up, we send one email asking you to confirm; you are only added to the list once you click the confirmation link.</p>
+            <p>You can choose to join our <strong>Learning Club</strong>, a free email for parents, carers and teachers: about one email a month with a free printable, a science fact and news about our books. We ask for your email address and, if you like, your first name. The Learning Club is for adults only: when you sign up you confirm that you are 18 or older and a parent, carer or teacher. This confirmation is checked on the sign-up form and is not stored. After you sign up, we send one email asking you to confirm; you are only added to the list once you click the confirmation link.</p>
             <p>We send the newsletter with <strong>Brevo</strong> (Sendinblue SAS, France), which stores your details in the European Union on our behalf under a data processing agreement. Brevo records the date of your signup and confirmation and whether you open or click our emails, so we can see what is useful. See <Fragment set:html={ext('https://www.brevo.com/legal/privacypolicy/', 'Brevo’s privacy policy')} />.</p>
             <p>Our legal basis is your consent, which you can withdraw at any time with the unsubscribe link at the bottom of every email, or by emailing us. When you unsubscribe we stop sending emails straight away, and we delete your details within 30 days, except a record that you unsubscribed so you are never emailed again by mistake. We never sell or share your details, and the free downloads on this website never require you to sign up.</p>
           </>
@@ -81,7 +81,7 @@ const ext = (href: string, label: string) => `<a href="${href}" rel="noopener" t
         <p>We also link to our social media pages. These are only links: this website does not embed social media posts or load anything from those services. If you visit them, their own privacy policies apply.</p>
 
         <h2>Children’s privacy</h2>
-        <p>Our books are for children, but this website is designed for parents, grandparents, teachers and librarians. We do not knowingly collect personal information from children, and our newsletter is only for people aged 16 or older. If you are a child, please ask a parent, carer or teacher to contact us for you.</p>
+        <p>Our books are for children, but this website is designed for parents, grandparents, teachers and librarians. We do not knowingly collect personal information from children, and our Learning Club email is only for adults aged 18 or older. If you are a child, please ask a parent, carer or teacher to contact us for you.</p>
 
         <h2>Your rights</h2>
         <p>Under the GDPR you have the right to ask for access to, correction of, or deletion of personal data we hold about you, to withdraw your consent, and to object to how we use it. To make a request, please contact us{email ? <> at <a href={`mailto:${email}`}>{email}</a></> : ' using the details on our contact page'}. You also have the right to complain to a data protection authority. In the Netherlands this is the <Fragment set:html={ext('https://www.autoriteitpersoonsgegevens.nl/', 'Autoriteit Persoonsgegevens')} />.</p>

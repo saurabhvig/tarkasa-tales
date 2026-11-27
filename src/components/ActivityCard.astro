@@ -1,29 +1,83 @@
 ---
+/**
+ * One free printable. Shows a picture of page 1 (or the book cover), its type, ages, the books it goes with
+ * and a Download button. Downloads are counted in Umami as "download" with the file, book, collection and type.
+ * After a download, a short line inside the card invites the grown-up to the Learning Club.
+ */
 import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
 import { statSync } from 'node:fs';
-import type { CollectionEntry } from 'astro:content';
-interface Props { activity: CollectionEntry<'activities'>['data']; book?: CollectionEntry<'books'>; headingLevel?: 'h2' | 'h3'; showBook?: boolean }
-const { activity: a, book, headingLevel = 'h2', showBook = true } = Astro.props;
+import { type Resource, bookUrl, collectionUrl } from '../lib/books';
+interface Props { resource: Resource; headingLevel?: 'h2' | 'h3'; showBooks?: boolean; placement?: string }
+const { resource: r, headingLevel = 'h2', showBooks = true, placement = 'resources' } = Astro.props;
+const a = r.entry.data;
 const H = headingLevel;
+const name = a.file.replace(/^\/activities\//, '').replace(/\.pdf$/, '');
 let size = '';
 try { size = `${Math.max(0.1, statSync(`./public${a.file}`).size / 1024 / 1024).toFixed(1)} MB`; } catch {}
-const tint = a.type === 'Word search' ? 'bg-lavender-soft' : a.type === 'Activity pack' ? 'bg-mint-soft' : 'bg-yellow-soft';
+const collection = r.collectionId ? await getEntry('collections', r.collectionId) : undefined;
+const tints: Record<string, string> = { 'Word search': 'bg-lavender-soft', 'Activity pack': 'bg-mint-soft', 'Reading guide': 'bg-yellow-soft', 'Observation journal': 'bg-mint-soft', 'Calm-down cards': 'bg-coral-soft', 'Activity sheet': 'bg-coral-soft' };
+const tint = tints[a.type] ?? 'bg-lavender-soft';
+const goesWith = r.related.slice(0, 2);
 ---
-<article class="flex h-full flex-col gap-3 rounded-[var(--radius-card)] bg-white p-5">
+<article
+  class="flex h-full flex-col gap-3 rounded-[var(--radius-card)] bg-white p-5"
+  data-resource
+  data-type={a.type}
+  data-collection={r.collectionId ?? ''}
+  data-topics={r.topicIds.join('|')}
+  data-age-min={a.ageMin ?? 0}
+  data-age-max={a.ageMax ?? 99}
+>
   <div class="flex items-start gap-4">
-    {book && <Image src={book.data.cover} alt="" widths={[96, 192]} sizes="80px" class="h-20 w-20 shrink-0 rounded-xl object-cover" />}
+    {a.preview
+      ? <Image src={a.preview} alt="" widths={[120, 240]} sizes="96px" class="h-[8.5rem] w-24 shrink-0 rounded-lg border border-line object-cover object-top shadow-[0_6px_14px_rgba(46,33,64,0.12)]" />
+      : r.main && <Image src={r.main.data.cover} alt="" widths={[96, 192]} sizes="80px" class="h-20 w-20 shrink-0 rounded-xl object-cover" />}
     <div class="flex min-w-0 flex-col items-start gap-1.5">
-      <span class:list={['pill', tint]}>{a.type}</span>
-      <H class="text-[1.4rem]">{a.title}</H>
+      <p class="flex flex-wrap gap-1.5">
+        <span class:list={['pill', tint]}>{a.type}</span>
+        {a.isNew && <span class="pill bg-yellow">New</span>}
+      </p>
+      <H class="text-[1.35rem] leading-tight">{a.title}</H>
     </div>
   </div>
   <p>{a.description}</p>
   <p class="text-[0.9375rem] font-bold text-ink-soft">
     {a.ageMin && a.ageMax && <>Ages {a.ageMin}–{a.ageMax} · </>}PDF, A4{size && <> · {size}</>}
   </p>
-  {showBook && book && <p class="text-[0.9375rem]">Goes with: <a href={`/books/${book.id}/`} class="font-bold">{book.data.title}</a></p>}
-  <a href={a.file} download data-umami-event="download" data-umami-event-file={a.file.replace(/^\/activities\//, '').replace(/\.pdf$/, '')} class="btn btn-primary mt-auto">
+  {showBooks && (goesWith.length > 0 || collection) && (
+    <p class="text-[0.9375rem]">
+      Goes with: {goesWith.length > 0
+        ? goesWith.map((b, i) => <>{i > 0 && ', '}<a href={bookUrl(b)} class="font-bold">{b.data.title}</a></>)
+        : collection && <a href={collectionUrl(collection)} class="font-bold">{collection.data.title}</a>}
+      {goesWith.length > 0 && r.related.length > goesWith.length && collection && <> and more <a href={collectionUrl(collection)} class="font-bold">{collection.data.title}</a> books</>}
+    </p>
+  )}
+  <a
+    href={a.file}
+    download
+    data-download
+    data-umami-event="download"
+    data-umami-event-file={name}
+    data-umami-event-book={r.main?.id ?? ''}
+    data-umami-event-collection={r.collectionId ?? ''}
+    data-umami-event-type={a.type}
+    data-umami-event-placement={placement}
+    class="btn btn-primary mt-auto"
+  >
     <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     Download PDF<span class="sr-only">: {a.title}</span>
   </a>
+  <p class="text-[0.9375rem] font-bold text-plum-deep" data-download-thanks aria-live="polite" hidden>
+    Enjoy! Want a new printable each month? <a href="/learning-club/">Join the free Learning Club</a>.
+  </p>
 </article>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('a[data-download]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const thanks = link.parentElement?.querySelector<HTMLElement>('[data-download-thanks]');
+      if (thanks) thanks.hidden = false;
+    });
+  });
+</script>

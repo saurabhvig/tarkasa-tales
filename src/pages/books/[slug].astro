@@ -17,7 +17,7 @@ import FeelingsInside from '../../components/FeelingsInside.astro';
 import AboutCreator from '../../components/AboutCreator.astro';
 import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import BuyBar from '../../components/BuyBar.astro';
-import { type Book, getAllBooks, getBooksInCollection, seriesOf, collectionOf, collectionUrl, editionsWithBook, getTopicsInUse, getQualitiesInUse, topicHref, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
+import { type Book, getAllBooks, getBooksInCollection, seriesOf, collectionOf, collectionUrl, editionsWithBook, getTopicsInUse, getResourcesForBook, getQualitiesInUse, topicHref, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
 import { SITE } from '../../site.config';
 
 export async function getStaticPaths() {
@@ -44,7 +44,9 @@ const isScience = collection.id === 'little-scientists';
 const knowledgeLabel = isScience ? 'Science learning' : 'Story and culture';
 const soon = d.status === 'coming-soon';
 const bookReviews = (await getCollection('testimonials', (t) => t.data.book?.id === book.id)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const activities = (await getCollection('activities', (a) => a.data.relatedBook?.id === book.id)).sort((a, b) => a.data.order - b.data.order);
+// Free printables: this book's own first, then ones that also suit it (e.g. the observation journal).
+const { own: ownResources, suits: suitsResources } = await getResourcesForBook(book);
+const printables = [...ownResources, ...suitsResources];
 const ogImg = await getImage({ src: d.cover, width: 800, format: 'jpg' });
 // Large versions for the picture viewer (cover first, then inside pages).
 const big = (src: ImageMetadata) => getImage({ src, width: 1400, format: 'webp', quality: 82 });
@@ -244,17 +246,19 @@ const crumbsLd = {
       </section>
     )}
 
-    {activities.length > 0 && (
+    {printables.length > 0 && (
       <section aria-labelledby="printables" class="flex flex-col gap-6 rounded-[var(--radius-panel)] bg-yellow p-6 sm:p-10">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
           <div class="flex flex-col gap-1">
             <p class="text-sm font-extrabold uppercase tracking-[0.12em] text-plum-deep">Free printables</p>
             <h2 id="printables" class="text-[2.1rem] !text-plum-deep">Activities for this book</h2>
+            <p class="text-plum-deep">Free to print at home or in class. No sign-up needed.</p>
           </div>
-          <a href="/activities/" class="font-extrabold text-plum-deep">All free activities <span aria-hidden="true">→</span></a>
+          <a href={`/activities/?collection=${collection.id}`} class="font-extrabold text-plum-deep">More {collection.data.title} printables <span aria-hidden="true">→</span></a>
         </div>
-        <ul class="grid gap-5 md:grid-cols-2">
-          {activities.map((a) => <li><ActivityCard activity={a.data} headingLevel="h3" showBook={false} /></li>)}
+        <ul class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {ownResources.map((r) => <li class="flex [&>*]:w-full"><ActivityCard resource={r} headingLevel="h3" showBooks={false} placement="book-page" /></li>)}
+          {suitsResources.map((r) => <li class="flex [&>*]:w-full"><ActivityCard resource={r} headingLevel="h3" placement="book-page" /></li>)}
         </ul>
       </section>
     )}

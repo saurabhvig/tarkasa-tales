@@ -1,0 +1,45 @@
+/* Shared print styles for Tarkasa Tales printables (A4). Brand colours and fonts match the website. */
+@font-face { font-family: 'Fredoka'; font-weight: 500; src: url('../node_modules/@fontsource/fredoka/files/fredoka-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fredoka'; font-weight: 600; src: url('../node_modules/@fontsource/fredoka/files/fredoka-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fredoka'; font-weight: 700; src: url('../node_modules/@fontsource/fredoka/files/fredoka-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito Sans'; font-weight: 200 1000; src: url('../node_modules/@fontsource-variable/nunito-sans/files/nunito-sans-latin-wght-normal.woff2') format('woff2'); }
+
+:root {
+  --cream: #fff5e6; --cream-deep: #f7e9d2; --plum: #53406c; --plum-deep: #2e2140; --ink: #3f3354; --ink-soft: #5c4f70;
+  --yellow: #f6bd60; --yellow-soft: #fdefd6; --mint: #80c9c3; --mint-soft: #ddf1ef; --coral: #f39a9d; --coral-soft: #fce3e4;
+  --lavender: #b6a5e3; --lavender-soft: #ece6f8; --line: #eadfcb;
+}
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: 'Nunito Sans', sans-serif; color: var(--ink); font-size: 12.5pt; line-height: 1.4; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+h1, h2, h3, .display { font-family: 'Fredoka', sans-serif; color: var(--plum-deep); font-weight: 600; margin: 0; line-height: 1.1; }
+h1 { font-size: 30pt; }
+h2 { font-size: 17pt; }
+h3 { font-size: 13.5pt; }
+p { margin: 0; }
+
+.page { width: 210mm; height: 297mm; padding: 13mm 14mm 0; position: relative; overflow: hidden; page-break-after: always; display: flex; flex-direction: column; gap: 5mm; background: #fff; }
+.page:last-child { page-break-after: auto; }
+.top { display: flex; align-items: center; justify-content: space-between; }
+.top img { height: 11mm; }
+.kicker { font-weight: 900; font-size: 9pt; letter-spacing: .14em; text-transform: uppercase; color: var(--plum); }
+.lead { font-size: 13pt; color: var(--ink); }
+.refrain { display: inline-block; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 13pt; color: var(--plum-deep); background: var(--yellow); border-radius: 999px; padding: 1.2mm 5mm; }
+.hero { display: grid; grid-template-columns: 1fr 72mm; gap: 6mm; align-items: center; }
+.hero img { width: 100%; height: 48mm; object-fit: cover; border-radius: 5mm; border: 1.2mm solid #fff; box-shadow: 0 0 0 .4mm var(--line); }
+.box { border-radius: 5mm; padding: 5mm 6mm; }
+.mint { background: var(--mint-soft); } .yellow { background: var(--yellow-soft); } .lav { background: var(--lavender-soft); } .coral { background: var(--coral-soft); } .cream { background: var(--cream); }
+.draw { border: .6mm dashed var(--lavender); border-radius: 4mm; background: #fff; }
+.lines { display: flex; flex-direction: column; gap: 7mm; padding-top: 4mm; }
+.lines span { display: block; border-bottom: .4mm solid #cfc3e6; height: 0; }
+.write { display: inline-block; min-width: 38mm; border-bottom: .4mm solid #cfc3e6; height: 6mm; vertical-align: bottom; }
+.note { font-size: 10pt; color: var(--ink-soft); }
+.grownup { font-size: 10pt; background: var(--cream); border-left: 1.5mm solid var(--coral); border-radius: 2mm; padding: 2.5mm 4mm; }
+.foot { margin-top: auto; padding: 3mm 0 6mm; border-top: .3mm solid var(--line); font-size: 8.5pt; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 4mm; }
+.row { display: flex; gap: 5mm; } .row > * { flex: 1; }
+.tick { display: inline-block; width: 5.5mm; height: 5.5mm; border: .5mm solid var(--plum); border-radius: 1.2mm; vertical-align: middle; margin-right: 2mm; background: #fff; }
+table.grid { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 11.5pt; }
+table.grid th, table.grid td { border-bottom: .4mm solid var(--line); padding: 2.6mm 2mm; text-align: left; vertical-align: middle; }
+table.grid th { font-family: 'Fredoka', sans-serif; font-weight: 600; color: var(--plum-deep); font-size: 11pt; }
+.num { display: inline-flex; align-items: center; justify-content: center; width: 8mm; height: 8mm; border-radius: 50%; background: var(--plum); color: #fff; font-family: 'Fredoka', sans-serif; font-weight: 600; margin-right: 2mm; font-size: 11pt; }

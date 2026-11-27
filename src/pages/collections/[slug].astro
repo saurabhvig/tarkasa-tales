@@ -14,7 +14,7 @@ import CollectionCard from '../../components/CollectionCard.astro';
 import AmazonButtons from '../../components/AmazonButtons.astro';
 import {
   type Collection, getActiveCollections, getAllCollections, getSeriesInCollection, getBooksInSeries,
-  getVisibleEditions, getTopicsInUse, SERIES_COLORS, bookUrl, coverAlt, collectionUrl,
+  getVisibleEditions, getTopicsInUse, getResources, SERIES_COLORS, bookUrl, coverAlt, collectionUrl,
 } from '../../lib/books';
 import { SITE } from '../../site.config';
 
@@ -37,12 +37,11 @@ const newest = published.at(-1);
 const formats = [...new Set(published.flatMap((b) => b.data.formats))];
 const editions = await getVisibleEditions(c.id);
 
-const bookIds = new Set(allBooks.map((b) => b.id));
-const printables = await getCollection('activities', (a) => !!a.data.relatedBook && bookIds.has(a.data.relatedBook.id));
+const printables = (await getResources()).filter((r) => r.collectionId === c.id);
 const byType = Object.entries(
-  printables.reduce<Record<string, number>>((acc, a) => ((acc[a.data.type] = (acc[a.data.type] ?? 0) + 1), acc), {}),
+  printables.reduce<Record<string, number>>((acc, r) => ((acc[r.entry.data.type] = (acc[r.entry.data.type] ?? 0) + 1), acc), {}),
 ).sort((a, b) => b[1] - a[1]);
-const plural = (type: string, n: number) => `${n} ${type.toLowerCase()}${n === 1 ? '' : type.endsWith('h') ? 'es' : 's'}`;
+const plural = (type: string, n: number) => { const t = type.toLowerCase(); return n === 1 ? `1 ${t}` : `${n} ${t.endsWith('cards') ? t : t.endsWith('h') ? t + 'es' : t + 's'}`; };
 
 const others = (await getAllCollections()).filter((o) => o.id !== c.id);
 // Topic filter buttons: only topics that a published book in this series actually has.
@@ -107,7 +106,7 @@ const ld = [
             {newest.data.subtitle && <p class="font-display text-xl text-plum">{newest.data.subtitle}</p>}
             <p class="text-lg">{newest.data.shortDescription}</p>
             <a href={bookUrl(newest)} class="font-extrabold">See inside the book <span aria-hidden="true">→</span></a>
-            <AmazonButtons book={newest} />
+            <AmazonButtons book={newest} placement="collection-page" />
           </div>
         </div>
       </section>

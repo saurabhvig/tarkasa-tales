@@ -17,7 +17,7 @@ const action = SITE.brevoFormAction;
       <div class="flex flex-col gap-3">
         <p class="text-sm font-extrabold uppercase tracking-[0.12em] inline-flex items-center gap-2"><Sparkle size={16} color="#53406C" /> Tarkasa Tales Learning Club · free</p>
         <h2 id={`${id}-title`} class:list={['!text-plum-deep', compact ? 'text-[1.9rem]' : 'text-[2.1rem] sm:text-[2.6rem]']}>{title}</h2>
-        <p class="text-lg">One email a month: a new printable, a science fact and book news. For parents, carers and teachers. Unsubscribe any time.</p>
+        <p class="text-lg">One email a month: a new printable, a science fact and book news. For parents, carers and teachers (18+). Unsubscribe any time.</p>
       </div>
       <form action={action} method="post" class="flex flex-col gap-4" data-brevo-signup>
         <div class="flex flex-col gap-1.5">
@@ -28,16 +28,21 @@ const action = SITE.brevoFormAction;
           <label for={`${id}-name`} class="font-extrabold">First name <span class="font-normal text-ink-soft">(optional)</span></label>
           <input id={`${id}-name`} name="FIRSTNAME" type="text" autocomplete="given-name" class="min-h-12 rounded-xl border-2 border-plum/40 bg-white px-4 text-lg focus:border-plum" />
         </div>
+        {/* Adults only. This box is checked in the browser and is not sent to Brevo. */}
+        <label class="flex items-start gap-3">
+          <input id={`${id}-adult`} type="checkbox" required class="mt-1 h-5 w-5 shrink-0 accent-[#53406C]" />
+          <span>I am 18 or older, and I’m a parent, carer or teacher.</span>
+        </label>
         <label class="flex items-start gap-3">
           <input name="OPT_IN" type="checkbox" value="1" required class="mt-1 h-5 w-5 shrink-0 accent-[#53406C]" />
-          <span>Yes, send me the Tarkasa Tales email. I’m 16 or older.</span>
+          <span>Yes, please send me the Learning Club email: about one a month, with a printable, a science fact and book news. I can unsubscribe at any time.</span>
         </label>
         {/* Spam trap for bots: people never see or fill this. */}
         <input type="text" name="email_address_check" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden" />
         <input type="hidden" name="locale" value="en" />
         <button type="submit" class="btn btn-primary self-start" data-umami-event="signup-submit" data-umami-event-source={source}>Join the club</button>
         <p class="rounded-lg border-l-4 border-coral bg-white px-3 py-2 font-bold text-plum-deep" role="alert" aria-live="polite" data-signup-error hidden></p>
-        <p class="text-sm text-ink-soft">We use Brevo to send our emails and you’ll get one email to confirm. We never ask for children’s details. See our <a href="/privacy/" class="underline">Privacy Policy</a>.</p>
+        <p class="text-sm text-ink-soft">We send one email first to confirm your address; you’re only added once you click the link. We use Brevo (EU) to send our emails, never share your details and never ask for children’s details. See our <a href="/privacy/" class="underline">Privacy Policy</a>.</p>
       </form>
     </div>
   </section>
