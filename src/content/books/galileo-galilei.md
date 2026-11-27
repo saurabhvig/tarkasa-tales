@@ -22,6 +22,14 @@ videoDescription: "A play-along video: swing your arm and count like Galileo’s
 themes: ["Stars and planets", "Measuring and testing", "Curiosity", "Looking again", "Telescopes"]
 topics: [space-astronomy, physics-discoveries, inventions-technology]
 qualities: [curiosity, perseverance]
+learningOutcomes:
+  science:
+    - "Scientists test ideas by looking, measuring and then looking again."
+    - "A telescope makes faraway things look closer: the Moon has mountains and craters, and Jupiter has moons."
+    - "The Earth travels around the Sun."
+    - "Who Galileo Galilei was."
+  growth:
+    - "Keep thinking, even when not everyone likes your ideas."
 samples:
   - src: ../../assets/samples/galileo-galilei-p7.jpg
     alt: "Inside page: young Galileo in Pisa Cathedral watches a great lamp swinging on its chain, timing it with his pulse"

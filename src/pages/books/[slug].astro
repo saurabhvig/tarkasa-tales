@@ -38,7 +38,7 @@ const editions = await editionsWithBook(book);
 // Topic and "helps with" links: only topics/qualities that are shown on the site.
 const topicLinks = (await getTopicsInUse()).filter((t) => d.topics.some((r) => r.id === t.topic.id));
 const qualityLinks = (await getQualitiesInUse()).filter((q) => d.qualities.some((r) => r.id === q.quality.id));
-const { science, growth } = d.learningOutcomes;
+const { science, growth, activity } = d.learningOutcomes;
 const isScience = collection.id === 'little-scientists';
 // The first outcome list is about science for science books, and about the story and its culture for traditional tales.
 const knowledgeLabel = isScience ? 'Science learning' : 'Story and culture';
@@ -174,7 +174,7 @@ const crumbsLd = {
             </p>
           )}
         </div>
-        {(science.length > 0 || growth.length > 0) && (
+        {(science.length > 0 || growth.length > 0 || activity.length > 0) && (
           <section aria-labelledby="outcomes" class:list={['max-sm:order-3 flex flex-col gap-4 rounded-[var(--radius-card)] p-5 sm:p-6 text-plum-deep', col.soft]}>
             <h2 id="outcomes" class="text-[1.5rem] !text-plum-deep">What your child will take away</h2>
             <div class:list={['grid gap-5', science.length > 0 && growth.length > 0 && 'sm:grid-cols-2']}>
@@ -191,6 +191,12 @@ const crumbsLd = {
                 </div>
               )}
             </div>
+            {activity.length > 0 && (
+              <div class="flex flex-col gap-2 border-t border-plum-deep/15 pt-4">
+                <h3 class="font-sans text-sm font-extrabold uppercase tracking-[0.1em] !text-plum-deep">Try it together</h3>
+                <ul class="prose-tt !text-[1.0625rem]">{activity.map((o) => <li>{o}</li>)}</ul>
+              </div>
+            )}
           </section>
         )}
         {d.video && <div class="max-sm:order-3"><BookVideo book={book} /></div>}

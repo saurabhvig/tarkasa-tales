@@ -18,6 +18,13 @@ video: /videos/shabari-forest-welcome.mp4
 videoDescription: "Pictures from the book show Shabari sweeping the forest path, picking fruit by the lake and welcoming Rama and Lakshmana with a basket of the sweetest fruits, ending with Sweep the path. Pick the fruit. Be ready!"
 themes: ["Patience", "Kindness", "Welcoming others", "Keeping a promise", "Stories from India"]
 qualities: [patience, kindness]
+learningOutcomes:
+  science:
+    - "Who Shabari, Rama and Lakshmana are, in a gentle story from the Ramayana."
+  growth:
+    - "Keep a promise, day after day."
+    - "Get ready, and wait patiently for something special."
+    - "A warm welcome needs care and kindness, not riches."
 samples:
   - src: ../../assets/samples/shabari-forest-welcome-p6.jpg
     alt: "Inside page: Shabari sweeps the path outside her thatched forest hut in the morning sunshine"

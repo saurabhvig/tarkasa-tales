@@ -29,6 +29,8 @@ learningOutcomes:
     - "Wondering about everyday things, like a compass needle, is how science begins."
     - "Imagining is a way of thinking, and good ideas still need checking."
     - "Who Albert Einstein was, and why people still talk about his ideas about light and energy."
+  growth:
+    - "Keep imagining, even when nobody says yes at first."
 samples:
   - src: ../../assets/samples/albert-einstein-1.jpg
     alt: "Inside page: Albert, sick in bed, is given a small compass by his father"

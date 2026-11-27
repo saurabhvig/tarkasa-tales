@@ -18,6 +18,14 @@ video: /videos/shiva-river-from-sky.mp4
 videoDescription: "Pictures from the book show King Bhagiratha balancing on one toe, Lord Shiva catching the river Ganga in his hair and the sage Jahnu drinking up the whole river, ending with Ask kindly. Wait patiently. Keep going!"
 themes: ["Patience", "Never giving up", "Asking for help", "Rivers and water", "Stories from India"]
 qualities: [patience, perseverance]
+learningOutcomes:
+  science:
+    - "How the river Ganga came down to Earth, in a story from the Ramayana."
+  growth:
+    - "Big things can take a long time, so keep going."
+    - "Ask kindly for help, and wait patiently."
+  activity:
+    - "Explore how materials such as a sponge can absorb water and change how it flows."
 samples:
   - src: ../../assets/samples/shiva-river-from-sky-p8.jpg
     alt: "Inside page: King Bhagiratha balances on the tip of one toe on a snowy mountain rock, arms spread wide"

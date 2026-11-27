@@ -23,12 +23,12 @@ video: /videos/bobbin-and-the-wobble-bridge.mp4
 videoDescription: "Pictures from the book show Bobbin the fox feeling wobbly on the bridge, cross with her kite, and brave with her friends, ending with One toe, then the next."
 themes: ["Feeling nervous", "Frustration", "Sadness and loss", "Jealousy", "Friendship", "Helping others"]
 qualities: [big-feelings, kindness]
-storyCount: 5
 learningOutcomes:
   growth:
     - "Feelings like worry, frustration, sadness and jealousy have names, and everyone has them."
     - "Small, simple steps can help when a feeling gets big."
     - "Friends can help each other through wobbly moments."
+storyCount: 5
 samples:
   - src: ../../assets/samples/bobbin-1.jpg
     alt: "Inside page: Bobbin the fox looks across the pond at the lanterns and the Wobble Bridge"

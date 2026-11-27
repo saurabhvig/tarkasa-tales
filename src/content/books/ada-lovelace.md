@@ -21,7 +21,15 @@ video: /videos/ada-lovelace.mp4
 videoDescription: "A play-along video: guess what 2 + 3 makes like Babbage’s calculating machine, find the punched cards on the loom, and follow Ada’s steps like a robot (clap, touch your nose, spin around), ending with Imagine it! Plan it! Step by step!"
 themes: ["Imagination", "Maths and computers", "Step-by-step thinking", "Patterns", "Women in science"]
 topics: [women-in-science, maths-computing, inventions-technology]
-qualities: [imagination, perseverance]
+qualities: [imagination, perseverance, problem-solving]
+learningOutcomes:
+  science:
+    - "A computer program is a list of step-by-step instructions for a machine."
+    - "Patterns, like the punched cards in a weaving loom, can carry instructions."
+    - "Who Ada Lovelace was, and why she is often remembered as the world’s first computer programmer."
+  growth:
+    - "Imagine it, plan it, then do it step by step."
+    - "Keep learning, even when things are hard."
 samples:
   - src: ../../assets/samples/ada-lovelace-p5.jpg
     alt: "Inside page: twelve-year-old Ada in a garden holds a paper wing, with drawings of flying machines spread on the grass"

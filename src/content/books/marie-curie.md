@@ -27,9 +27,10 @@ qualities: [curiosity, perseverance]
 learningOutcomes:
   science:
     - "Who Marie Curie was, and why she is the first person to win two Nobel Prizes."
+    - "Marie found two new elements, radium and polonium."
   growth:
     - "Big discoveries start with small questions, like “What’s inside a stone?”"
-    - "When a door is closed, you can keep learning and wait for your turn."
+    - "When one door closes, you can keep learning and look for another way forward."
 samples:
   - src: ../../assets/samples/marie-curie-1.jpg
     alt: "Inside page: Manya presses her nose to her father’s glass cabinet full of science instruments"

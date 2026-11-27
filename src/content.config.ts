@@ -147,6 +147,8 @@ const books = defineCollection({
           z.object({
             science: z.array(z.string()).max(5).default([]),
             growth: z.array(z.string()).max(5).default([]),
+            /** Optional hands-on learning to try together after reading, e.g. a simple experiment. */
+            activity: z.array(z.string()).max(3).default([]),
           }).strict(),
         ),
         /**

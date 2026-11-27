@@ -21,10 +21,11 @@ video: /videos/mae-jemison.mp4
 videoDescription: "Pictures from the book show little Mae telling her teacher she will be a scientist, dancing, training as an astronaut and looking at the Earth from space, ending with Dream big. Learn lots. Reach far."
 themes: ["Big dreams", "Space and astronauts", "Science and dance", "Hard work", "Being yourself"]
 topics: [women-in-science, space-astronomy]
-qualities: [confidence, perseverance]
+qualities: [confidence, perseverance, courage]
 learningOutcomes:
   science:
     - "Who Mae Jemison was, and why her trip into space mattered."
+    - "Astronauts train together as a crew; in space, Mae looked after frog eggs that hatched into tadpoles."
   growth:
     - "Your dream is yours, even when someone suggests a smaller one."
     - "You can love science and dance at the same time."

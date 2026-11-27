@@ -25,6 +25,7 @@ qualities: [patience, curiosity, kindness]
 learningOutcomes:
   science:
     - "Who Jane Goodall was, and what she discovered about wild chimpanzees."
+    - "Chimpanzees make and use simple tools."
   growth:
     - "Watching quietly and patiently helps you notice things others miss."
     - "Animals deserve kindness, and nature is worth protecting."

@@ -22,6 +22,14 @@ videoDescription: "Pictures from the book show young Alec exploring the Scottish
 themes: ["Noticing small things", "Germs and medicine", "Curiosity", "Teamwork", "Mistakes that lead to discoveries"]
 topics: [medicine-health]
 qualities: [curiosity, teamwork]
+learningOutcomes:
+  science:
+    - "Germs are so tiny that we usually cannot see them without special tools. Some germs are bacteria, and medicines called antibiotics can help fight certain bacterial infections."
+    - "Washing our hands with soap helps remove germs and keeps us healthier."
+    - "Who Alexander Fleming was, and how a mould on a forgotten dish led to penicillin."
+  growth:
+    - "Notice small things and ask “why?”: it can lead to big discoveries."
+    - "A surprise can teach us something, and big discoveries need teamwork."
 samples:
   - src: ../../assets/samples/alexander-fleming-p5.jpg
     alt: "Inside page: young Alec lies by a Scottish stream, looking closely at a bird’s nest, fox tracks and a hiding trout"

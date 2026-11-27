@@ -43,7 +43,17 @@
   order: 8
   description: Being brave, even when you feel small.
 
+- id: problem-solving
+  title: Problem-solving
+  order: 9
+  description: Working out a tricky problem, step by step.
+
+- id: creativity
+  title: Creativity
+  order: 10
+  description: Making new things and finding new uses for old ones.
+
 - id: big-feelings
   title: Managing Big Feelings
-  order: 9
+  order: 11
   description: Naming feelings and finding simple ways to calm down.
