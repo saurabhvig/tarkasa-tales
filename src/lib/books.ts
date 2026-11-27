@@ -49,8 +49,9 @@ export const collectionUrl = (c: Collection | string) => `/collections/${typeof 
 
 /* ---------- Collections and themed editions ---------- */
 
+/** Every collection shown on the site. Collections with status "hidden" are prepared internally and left out everywhere. */
 export async function getAllCollections(): Promise<Collection[]> {
-  return (await getCollection('collections')).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+  return (await getCollection('collections', (c) => c.data.status !== 'hidden')).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
 }
 /** Collections that have their own page (not "coming soon"). */
 export const getActiveCollections = async () => (await getAllCollections()).filter((c) => c.data.status === 'active');

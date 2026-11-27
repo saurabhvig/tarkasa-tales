@@ -39,7 +39,8 @@ const collectionsCollection = defineCollection({
       summary: z.string().describe('One or two sentences shown on cards'),
       color: z.enum(['mint', 'lavender', 'yellow', 'coral']),
       order: z.number().default(10),
-      status: z.enum(['active', 'coming-soon']).default('active'),
+      /** active = has its own page · coming-soon = teaser card only · hidden = prepared internally, not shown anywhere on the site. */
+      status: z.enum(['active', 'coming-soon', 'hidden']).default('active'),
       ageMin: z.number().int().default(4),
       ageMax: z.number().int().default(8),
       /** A picture from one of the books for the top of the collection page (optional). */
