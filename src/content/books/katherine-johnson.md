@@ -11,14 +11,10 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 24
-formats: [Kindle eBook]          # add Paperback when the paperback is live
+formats: [Paperback, Kindle eBook]
 isbn: "9798167386389"         # paperback ISBN
-# Kindle edition only for now. When the paperback is approved, put its code in asin,
-# keep the Kindle code in kindleAsin, and delete the amazonStores line.
-asin: "B0HQ5HWYQR"
+asin: "B0HQ77WVXY"
 kindleAsin: "B0HQ5HWYQR"
-# Kindle eBooks are sold only in these Amazon stores:
-amazonStores: [com, couk, de, nl, fr, es, it, ca, au, jp, in]
 status: published
 featured: true
 video: /videos/katherine-johnson.mp4

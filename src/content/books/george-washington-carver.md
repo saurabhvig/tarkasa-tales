@@ -11,8 +11,9 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 24
-formats: [Paperback]
+formats: [Paperback, Kindle eBook]
 asin: "B0HR321WJC"
+kindleAsin: "B0HR3HTKSD"
 status: published
 featured: true
 video: /videos/george-washington-carver.mp4
