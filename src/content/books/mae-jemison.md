@@ -11,9 +11,10 @@ ageMin: 4
 ageMax: 8
 language: English
 pageCount: 24
-formats: [Paperback]
+formats: [Paperback, Kindle eBook]
 isbn: "9798141777790"
 asin: "B0HRFT8577"
+kindleAsin: "B0HR9WFQXH"
 status: published
 featured: true
 video: /videos/mae-jemison.mp4
