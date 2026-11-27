@@ -20,5 +20,12 @@ import Sparkle from '../components/Sparkle.astro';
 
 <script is:inline>
   // Statistics: count this step of the Learning Club signup once Umami has loaded (no personal data is sent).
-  (function t(n) { if (window.umami) window.umami.track('club-signup-sent'); else if (n < 20) setTimeout(function () { t(n + 1); }, 250); })(0);
+  // Counted once per browser session, so a page refresh is not counted twice.
+  (function t(n) {
+    var key = 'tt-club-signup-sent', done = false;
+    try { done = sessionStorage.getItem(key) === '1'; } catch (e) {}
+    if (done) return;
+    if (window.umami) { window.umami.track('club-signup-sent'); try { sessionStorage.setItem(key, '1'); } catch (e) {} }
+    else if (n < 20) setTimeout(function () { t(n + 1); }, 250);
+  })(0);
 </script>

@@ -24,6 +24,8 @@ const fullTitle = title === SITE.name ? `${SITE.name} — ${SITE.tagline}`
   : `${title} | ${SITE.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
 const ogImage = new URL(image, Astro.site ?? SITE.url).href;
+// Removes URL parameters that could carry personal data (email, name, phone) before statistics load.
+const PRIVACY_GUARD = `(function(){try{var u=new URL(location.href),c=false;Array.from(u.searchParams.keys()).forEach(function(k){var v=u.searchParams.get(k)||'';if(/@|%40/.test(v)||/mail|name|phone|tel|address/i.test(k)){u.searchParams.delete(k);c=true;}});if(c)history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams:'')+u.hash);}catch(e){}})();`;
 const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 <!doctype html>
@@ -61,6 +63,11 @@ const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta name="twitter:image" content={ogImage} />
     {ld.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
     {/* Cookieless visitor statistics (Umami Cloud, EU region). Only loads when umamiWebsiteId is set. See /privacy/. */}
+    {/* Privacy guard: before statistics load, drop any address parameter that could hold personal data
+        (an email address, a name or phone number), so it can never reach Umami. Campaign (utm_) and filter parameters stay. */}
+    {SITE.umamiWebsiteId && (
+      <script is:inline set:html={PRIVACY_GUARD} />
+    )}
     {SITE.umamiWebsiteId && (
       <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={SITE.umamiWebsiteId} data-domains="tarkasatales.com,www.tarkasatales.com" data-do-not-track="true"></script>
     )}
