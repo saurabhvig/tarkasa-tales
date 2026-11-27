@@ -12,7 +12,7 @@ const reviews = (await getCollection('testimonials')).sort((a, b) => b.data.date
 const books = (await getCollection('books', (b) => b.data.status === 'published')).sort((a, b) => a.data.title.localeCompare(b.data.title));
 const email = SITE.contactEmail;
 ---
-<BaseLayout title="Reviews" description="What families and teachers say about Tarkasa Tales picture books, and how to share your own review.">
+<BaseLayout title="Reviews of Tarkasa Tales Picture Books" description="Read what families and teachers say about Tarkasa Tales picture books for ages 4–8, and share your own review of a book your child enjoyed." noindex={reviews.length === 0}>
   <div class="container-site flex flex-col gap-14 py-14 lg:py-20">
     <header class="flex max-w-3xl flex-col gap-5">
       <p class="eyebrow">Reviews</p>

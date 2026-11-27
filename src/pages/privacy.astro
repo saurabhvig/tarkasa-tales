@@ -11,10 +11,11 @@ import { SITE } from '../site.config';
 const updated = new Date(SITE.privacyUpdated).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 const email = SITE.contactEmail;
 const stats = !!SITE.umamiWebsiteId;
+const speed = !!SITE.cloudflareBeaconToken;
 const news = !!SITE.brevoFormAction;
 const ext = (href: string, label: string) => `<a href="${href}" rel="noopener" target="_blank">${label}<span class="sr-only"> (opens in a new tab)</span></a>`;
 ---
-<BaseLayout title="Privacy & Cookies" description="How the Tarkasa Tales website handles personal data: no cookies, cookieless visitor statistics, an optional email newsletter, and nothing collected from children.">
+<BaseLayout title="Privacy & Cookies" description="How Tarkasa Tales handles personal data: no cookies, cookieless visitor statistics, an optional adults-only newsletter, and nothing collected from children.">
   <div class="container-site py-14 lg:py-20">
     <article class="mx-auto flex max-w-3xl flex-col gap-4">
       <p class="eyebrow">Last updated {updated}</p>
@@ -48,6 +49,7 @@ const ext = (href: string, label: string) => `<a href="${href}" rel="noopener" t
           <>
             <p>To understand which pages are useful and how visitors find us, we use <strong>Umami Cloud</strong>, hosted in the European Union. Umami does not use cookies, local storage or any other identifier stored on your device, and it does not build a profile of you. It records the page you visit, the website or campaign link you came from, your country, your browser and device type, and simple actions such as clicking a “Buy on Amazon” store button, downloading a free activity or submitting the newsletter form. Your IP address is not stored. Because no one can be identified, we do not need to ask for consent and we do not show a cookie banner.</p>
             <p>If your browser sends a “Do Not Track” signal, no statistics are recorded at all. Our legal basis is our legitimate interest in improving the website. Umami acts as our processor; see <Fragment set:html={ext('https://umami.is/privacy', 'Umami’s privacy policy')} />.</p>
+            {speed && <p>To check that pages load quickly, we also use <strong>Cloudflare Web Analytics</strong>, which measures page speed (such as how long the main picture takes to appear). It uses no cookies or local storage, does not track you across websites, and does not store your IP address. Cloudflare already hosts this website; see <Fragment set:html={ext('https://www.cloudflare.com/privacypolicy/', 'Cloudflare’s privacy policy')} />.</p>}
           </>
         ) : (
           <p>This website does not currently run visitor statistics or analytics tools.</p>

@@ -6,7 +6,7 @@ seriesNumber: 10
 author: "Saurabh Vig"
 cover: ../../assets/covers/ada-lovelace.jpg
 coverAlt: "Cover of Ada Lovelace: The Girl Who Saw Possibilities, showing young Ada peeking through a punched card among roses, with grown-up Ada smiling behind her and a great brass machine of gears"
-shortDescription: "A girl who dreamed of flying machines saw what a calculating machine could become, and wrote what we now call the first computer program."
+shortDescription: "A girl who dreamed of flying machines saw what a calculating machine could become, and is often regarded as the first computer programmer."
 ageMin: 4
 ageMax: 8
 language: English

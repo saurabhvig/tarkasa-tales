@@ -1,6 +1,22 @@
 ---
+/**
+ * Breadcrumb trail ("Home / Books / …"). Also tells search engines about the trail (BreadcrumbList),
+ * so every page with breadcrumbs gets that structured data automatically. Repeated labels are shown once.
+ */
+import { SITE } from '../site.config';
 interface Props { items: { href?: string; label: string }[]; onColor?: boolean }
-const { items, onColor = false } = Astro.props;
+const { items: raw, onColor = false } = Astro.props;
+const items = raw.filter((it, i) => i === 0 || it.label !== raw[i - 1].label);
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((it, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: it.label,
+    ...(it.href && i < items.length - 1 ? { item: new URL(it.href, SITE.url).href } : {}),
+  })),
+};
 ---
 <nav aria-label="Breadcrumb" class:list={['text-[0.9375rem]', onColor ? 'text-plum-deep' : 'text-ink-soft']}>
   <ol class="flex flex-wrap items-center gap-2">
@@ -12,3 +28,4 @@ const { items, onColor = false } = Astro.props;
     ))}
   </ol>
 </nav>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />

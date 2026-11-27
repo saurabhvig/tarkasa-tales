@@ -8,7 +8,7 @@ const all = await getAllCollections();
 const active = all.filter((c) => c.data.status === 'active');
 const soon = all.filter((c) => c.data.status === 'coming-soon');
 ---
-<BaseLayout title="Book Collections for Ages 4–8" description="Explore the Tarkasa Tales collections: Bobbin's World for big feelings, Little Scientists for true science stories, and Timeless Tales of classic stories, for ages 4–8.">
+<BaseLayout title="Book Collections for Ages 4–8" description="Three collections for ages 4–8: Bobbin's World for big feelings, Little Scientists for true science stories, and Timeless Tales of classic stories.">
   <div class="container-site flex flex-col gap-10 py-12 lg:py-16">
     <div class="flex max-w-3xl flex-col gap-3">
       <Breadcrumbs items={[{ href: '/', label: 'Home' }, { label: 'Collections' }]} />

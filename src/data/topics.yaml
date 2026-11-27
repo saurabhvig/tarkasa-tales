@@ -30,7 +30,7 @@
   title: Maths & Computing
   status: active
   order: 4
-  description: Counting, patterns, careful checking and the very first computer program.
+  description: Counting, patterns, careful checking and what is often called the first computer program.
   intro: True stories for children who love numbers, patterns and step-by-step thinking. Ages 4–8.
 
 - id: inventions-technology
@@ -38,7 +38,7 @@
   status: active
   order: 5
   description: Telescopes, calculating machines and the ideas that built them.
-  intro: Picture books about scientists who built and imagined machines, from a homemade telescope to the first computer program. Ages 4–8.
+  intro: Picture books about scientists who built and imagined machines, from a homemade telescope to an early computer program. Ages 4–8.
 
 - id: nature-animals
   title: Nature & Animals

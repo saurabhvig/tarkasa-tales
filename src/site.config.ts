@@ -34,6 +34,17 @@ export const SITE = {
     youtube: '',
   },
 
+  /**
+   * SEARCH ENGINE VERIFICATION (optional). Only needed if you verify with an HTML tag instead of DNS.
+   * Google Search Console → Add property → URL prefix → HTML tag: paste only the content="…" value.
+   * Bing Webmaster Tools → Add site → HTML Meta Tag: paste only the content="…" value.
+   * Leave empty ('') and nothing is added. (Easiest: verify with DNS in Cloudflare, or import from Google into Bing.)
+   */
+  verification: {
+    google: '',
+    bing: '',
+  },
+
   /** The date the Privacy Policy was last updated. */
   privacyUpdated: '2026-11-27',
 
@@ -43,6 +54,14 @@ export const SITE = {
    * Leave empty ('') and no statistics script is loaded at all.
    */
   umamiWebsiteId: IS_PREVIEW ? '' : '653625b0-8936-4013-8fa4-7e1bc41afffc',
+
+  /**
+   * SPEED STATISTICS (Cloudflare Web Analytics, free, no cookies). Shows Core Web Vitals: how fast pages load for real visitors.
+   * Cloudflare → Analytics & Logs → Web Analytics → Add a site → tarkasatales.com → choose "JS snippet" (not automatic),
+   * then paste only the token from the snippet (the value after "token": ). Leave empty ('') to switch it off.
+   * Visits and button clicks stay in Umami; Cloudflare is only used for page speed.
+   */
+  cloudflareBeaconToken: IS_PREVIEW ? '' : '',
 
   /**
    * EMAIL NEWSLETTER (Brevo).
@@ -62,6 +81,13 @@ export const SITE = {
     ],
   },
 };
+
+/**
+ * AMAZON ATTRIBUTION (free for KDP authors, via the Amazon Ads console) only works in these stores.
+ * A book can list tag links for them under `attribution:`; every other store keeps its normal link.
+ * Source: Amazon Ads launch announcement for KDP authors (US, Canada, UK, Germany, France, Italy, Spain).
+ */
+export const ATTRIBUTION_STORES = ['com', 'ca', 'couk', 'de', 'fr', 'it', 'es'] as const;
 
 /**
  * Amazon stores we link to, in the order buttons appear.

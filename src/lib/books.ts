@@ -44,12 +44,14 @@ export const ageLabel = (b: Book) =>
 export const bookUrl = (b: Book) => `/books/${b.id}/`;
 /** A series has no page of its own: it is a section on its collection's page. */
 export const seriesUrl = (s: Series) => `/collections/${s.data.collection.id}/#series-${s.id}`;
+export const editionUrl = (e: Edition) => `/editions/${e.id}/`;
 export const collectionUrl = (c: Collection | string) => `/collections/${typeof c === 'string' ? c : c.id}/`;
 
 /* ---------- Collections and themed editions ---------- */
 
+/** Every collection shown on the site. Collections with status "hidden" are prepared internally and left out everywhere. */
 export async function getAllCollections(): Promise<Collection[]> {
-  return (await getCollection('collections')).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+  return (await getCollection('collections', (c) => c.data.status !== 'hidden')).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
 }
 /** Collections that have their own page (not "coming soon"). */
 export const getActiveCollections = async () => (await getAllCollections()).filter((c) => c.data.status === 'active');
@@ -79,15 +81,21 @@ export async function editionsWithBook(book: Book): Promise<Edition[]> {
 }
 
 export function amazonLinks(b: Book) {
-  const { asin, kindleAsin, amazon, amazonStores } = b.data;
+  const { asin, kindleAsin, amazon, amazonStores, attribution } = b.data;
   const custom = amazon as Record<string, string | undefined>;
+  const tags = attribution as Record<string, string | undefined>;
   return AMAZON_STORES.map((s) => {
     const id = s.kindleOnly ? kindleAsin : asin;
     const allowed = !amazonStores || amazonStores.includes(s.key);
     // Only verified editions are linked: a Kindle-only store (Amazon.in) appears only once the book has a kindleAsin.
     const auto = id && allowed ? `https://www.${s.host}/dp/${id}` : undefined;
-    return { ...s, url: custom[s.key] ?? auto };
-  }).filter((s) => !!s.url) as Array<(typeof AMAZON_STORES)[number] & { url: string }>;
+    // An Attribution tag link (eligible stores only) wins; otherwise the store's own link.
+    const url = tags[s.key] ?? custom[s.key] ?? auto;
+    // For statistics: which edition the link opens, and whether it carries an Amazon Attribution tag.
+    const format = s.kindleOnly || (b.data.formats.length === 1 && b.data.formats[0] === 'Kindle eBook') ? 'kindle' : 'paperback';
+    const tagged = !!url && /[?&]maas=/.test(url);
+    return { ...s, url, format, tagged };
+  }).filter((s) => !!s.url) as Array<(typeof AMAZON_STORES)[number] & { url: string; format: 'kindle' | 'paperback'; tagged: boolean }>;
 }
 
 /**

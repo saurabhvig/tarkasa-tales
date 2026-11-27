@@ -3,6 +3,9 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE, IS_PREVIEW } from '../site.config';
+// The two fonts used above the fold, fetched early so text doesn't jump when they arrive (better CLS).
+import headingFont from '@fontsource/fredoka/files/fredoka-latin-600-normal.woff2?url';
+import bodyFont from '@fontsource-variable/nunito-sans/files/nunito-sans-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;              // page title (brand is appended automatically)
@@ -14,9 +17,15 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 const { title, description = SITE.description, image = '/og-default.png', imageAlt = 'Tarkasa Tales — Little Questions. Big Discoveries.', type = 'website', noindex = false, jsonLd } = Astro.props;
-const fullTitle = title === SITE.name ? `${SITE.name} — ${SITE.tagline}` : `${title} | ${SITE.name}`;
+// The brand is added after the page title, unless the title already names it or the result would be too long
+// for search results (about 65 characters), where the page's own words matter more.
+const fullTitle = title === SITE.name ? `${SITE.name} — ${SITE.tagline}`
+  : title.includes(SITE.name) || `${title} | ${SITE.name}`.length > 65 ? title
+  : `${title} | ${SITE.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url).href;
 const ogImage = new URL(image, Astro.site ?? SITE.url).href;
+// Removes URL parameters that could carry personal data (email, name, phone) before statistics load.
+const PRIVACY_GUARD = `(function(){try{var u=new URL(location.href),c=false;Array.from(u.searchParams.keys()).forEach(function(k){var v=u.searchParams.get(k)||'';if(/@|%40/.test(v)||/mail|name|phone|tel|address/i.test(k)){u.searchParams.delete(k);c=true;}});if(c)history.replaceState(null,'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams:'')+u.hash);}catch(e){}})();`;
 const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 <!doctype html>
@@ -29,6 +38,10 @@ const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {IS_PREVIEW ? <meta name="robots" content="noindex, nofollow" /> : noindex && <meta name="robots" content="noindex, follow" />}
+    {!IS_PREVIEW && SITE.verification.google && <meta name="google-site-verification" content={SITE.verification.google} />}
+    {!IS_PREVIEW && SITE.verification.bing && <meta name="msvalidate.01" content={SITE.verification.bing} />}
+    <link rel="preload" href={headingFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#53406C" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
@@ -50,8 +63,17 @@ const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta name="twitter:image" content={ogImage} />
     {ld.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
     {/* Cookieless visitor statistics (Umami Cloud, EU region). Only loads when umamiWebsiteId is set. See /privacy/. */}
+    {/* Privacy guard: before statistics load, drop any address parameter that could hold personal data
+        (an email address, a name or phone number), so it can never reach Umami. Campaign (utm_) and filter parameters stay. */}
+    {SITE.umamiWebsiteId && (
+      <script is:inline set:html={PRIVACY_GUARD} />
+    )}
     {SITE.umamiWebsiteId && (
       <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={SITE.umamiWebsiteId} data-domains="tarkasatales.com,www.tarkasatales.com" data-do-not-track="true"></script>
+    )}
+    {/* Cookieless page-speed statistics (Cloudflare Web Analytics). Only loads when cloudflareBeaconToken is set. See /privacy/. */}
+    {SITE.cloudflareBeaconToken && (
+      <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: SITE.cloudflareBeaconToken })}></script>
     )}
   </head>
   <body class="min-h-dvh flex flex-col">

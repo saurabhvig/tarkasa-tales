@@ -30,7 +30,19 @@ export default {
         return go('/reviews/?error=1#write');
       }
     }
-    return env.ASSETS.fetch(request);
+    // One address for search engines: www.tarkasatales.com → tarkasatales.com (same page, permanent).
+    if (url.hostname === 'www.tarkasatales.com' && (request.method === 'GET' || request.method === 'HEAD')) {
+      url.hostname = 'tarkasatales.com';
+      return Response.redirect(url.toString(), 301);
+    }
+    const res = await env.ASSETS.fetch(request);
+    // Any other address (e.g. *.workers.dev or a preview copy) is never indexed by search engines.
+    if (!LIVE_HOSTS.includes(url.hostname)) {
+      const copy = new Response(res.body, res);
+      copy.headers.set('X-Robots-Tag', 'noindex, nofollow');
+      return copy;
+    }
+    return res;
   },
 };
 

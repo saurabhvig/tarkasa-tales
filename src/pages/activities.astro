@@ -20,7 +20,7 @@ const ages = [4, 5, 6, 7, 8];
 const recommended = [...new Map(resources.filter((r) => r.entry.data.isNew && r.main?.data.status === 'published').map((r) => [r.main!.id, r.main!])).values()].slice(0, 4);
 const newCount = resources.filter((r) => r.entry.data.isNew).length;
 ---
-<BaseLayout title="Free Printable Activities for Kids 4–8" description="Free printable activities for ages 4–8: feelings sheets, calm-down cards, science journals, counting and space activities, word searches and read-aloud guides. No sign-up needed.">
+<BaseLayout title="Free Printable Activities for Kids Ages 4–8" description="Free printable activities for kids aged 4–8: feelings sheets, calm-down cards, science journals, counting games and word searches. No sign-up needed.">
   <section class="bg-yellow text-plum-deep">
     <div class="container-site flex flex-col gap-4 py-10 lg:py-14">
       <Breadcrumbs items={[{ href: '/', label: 'Home' }, { label: 'Free Resources' }]} onColor />

@@ -7,7 +7,7 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { AMAZON_STORES } from './site.config';
+import { AMAZON_STORES, ATTRIBUTION_STORES } from './site.config';
 
 const storeKeys = AMAZON_STORES.map((s) => s.key) as [string, ...string[]];
 
@@ -39,7 +39,8 @@ const collectionsCollection = defineCollection({
       summary: z.string().describe('One or two sentences shown on cards'),
       color: z.enum(['mint', 'lavender', 'yellow', 'coral']),
       order: z.number().default(10),
-      status: z.enum(['active', 'coming-soon']).default('active'),
+      /** active = has its own page · coming-soon = teaser card only · hidden = prepared internally, not shown anywhere on the site. */
+      status: z.enum(['active', 'coming-soon', 'hidden']).default('active'),
       ageMin: z.number().int().default(4),
       ageMax: z.number().int().default(8),
       /** A picture from one of the books for the top of the collection page (optional). */
@@ -108,6 +109,9 @@ const books = defineCollection({
         cover: image(),
         coverAlt: z.string().optional(),
         shortDescription: z.string().max(220),
+        /** Optional: title and description for search results, when the defaults are too long. Up to about 65 and 160 characters. */
+        seoTitle: z.string().max(70).optional(),
+        seoDescription: z.string().max(160).optional(),
         ageMin: z.number().int().min(0).max(18),
         ageMax: z.number().int().min(0).max(18),
         language: z.string().default('English'),
@@ -117,6 +121,15 @@ const books = defineCollection({
         asin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
         /** ASIN of the Kindle eBook edition (used for Kindle-only stores such as Amazon.in). */
         kindleAsin: z.string().regex(/^[A-Z0-9]{10}$/, 'An ASIN is 10 capital letters/numbers').optional(),
+        /**
+         * Optional: Amazon Attribution tag links, only for stores where Attribution works (com, ca, couk, de, fr, it, es).
+         * Paste the full link Amazon Ads gives you, e.g.  attribution: { com: "https://www.amazon.com/dp/B0…?maas=…" }
+         * Other stores keep their normal link. Leave out until your Attribution account is confirmed.
+         */
+        attribution: z.preprocess(
+          (v) => v ?? {},
+          z.object(Object.fromEntries(ATTRIBUTION_STORES.map((k) => [k, amazonUrl(AMAZON_STORES.find((st) => st.key === k)!.host)]))).strict(),
+        ),
         /** Optional: a different link for a particular store, e.g.  amazon: { in: "https://www.amazon.in/dp/XXXXXXXXXX" } */
         amazon: z.preprocess(
           (v) => v ?? {},
@@ -186,6 +199,13 @@ const books = defineCollection({
             path: ['amazon'],
             message: 'A published book needs an asin or at least one Amazon link',
           });
+        for (const [k, u] of Object.entries(b.attribution as Record<string, string | undefined>)) {
+          if (!u) continue;
+          if (!/[?&]maas=/.test(u))
+            ctx.addIssue({ code: 'custom', path: ['attribution', k], message: 'An Attribution link must contain "maas=" (copy the full tag link from Amazon Ads)' });
+          if (![b.asin, b.kindleAsin].some((id) => id && u.includes(id)))
+            ctx.addIssue({ code: 'custom', path: ['attribution', k], message: 'This Attribution link does not contain this book’s ASIN: check it is for the right book' });
+        }
         if (b.status === 'coming-soon' && hasLink && !b.preorder)
           ctx.addIssue({
             code: 'custom',
@@ -212,6 +232,11 @@ const editions = defineCollection({
       status: z.enum(['planned', 'forthcoming', 'published']),
       book: reference('books').optional(),
       order: z.number().default(10),
+      /** Recommended ages for the whole edition. */
+      ageMin: z.number().int().default(4),
+      ageMax: z.number().int().default(8),
+      /** Optional: description for search results (up to 160 characters). */
+      seoDescription: z.string().max(160).optional(),
     })
     .superRefine((e, ctx) => {
       if (e.status === 'published' && !e.book)
