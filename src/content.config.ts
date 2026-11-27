@@ -216,6 +216,11 @@ const editions = defineCollection({
       status: z.enum(['planned', 'forthcoming', 'published']),
       book: reference('books').optional(),
       order: z.number().default(10),
+      /** Recommended ages for the whole edition. */
+      ageMin: z.number().int().default(4),
+      ageMax: z.number().int().default(8),
+      /** Optional: description for search results (up to 160 characters). */
+      seoDescription: z.string().max(160).optional(),
     })
     .superRefine((e, ctx) => {
       if (e.status === 'published' && !e.book)

@@ -17,7 +17,7 @@ import FeelingsInside from '../../components/FeelingsInside.astro';
 import AboutCreator from '../../components/AboutCreator.astro';
 import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import BuyBar from '../../components/BuyBar.astro';
-import { type Book, getAllBooks, getBooksInCollection, seriesOf, collectionOf, collectionUrl, editionsWithBook, getTopicsInUse, getResourcesForBook, getQualitiesInUse, topicHref, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
+import { editionUrl, type Book, getAllBooks, getBooksInCollection, seriesOf, collectionOf, collectionUrl, editionsWithBook, getTopicsInUse, getResourcesForBook, getQualitiesInUse, topicHref, ageLabel, coverAlt, formatDate, seriesUrl, amazonLinks, SERIES_COLORS } from '../../lib/books';
 import { SITE } from '../../site.config';
 
 export async function getStaticPaths() {
@@ -171,7 +171,7 @@ const bookLd = {
           <AmazonButtons book={book} />
           {editions.length > 0 && (
             <p class="text-[0.9375rem] text-ink-soft">
-              Also in: {editions.map((e, i) => <>{i > 0 && ', '}<a href={`${collectionUrl(collection)}#editions`} class="font-bold">{e.data.title}</a>{e.data.status === 'forthcoming' && ' (forthcoming edition, not yet available)'}</>)}
+              Also in: {editions.map((e, i) => <>{i > 0 && ', '}<a href={editionUrl(e)} class="font-bold">{e.data.title}</a>{e.data.status === 'forthcoming' && ' (forthcoming edition, not yet available)'}</>)}
             </p>
           )}
         </div>

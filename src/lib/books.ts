@@ -44,6 +44,7 @@ export const ageLabel = (b: Book) =>
 export const bookUrl = (b: Book) => `/books/${b.id}/`;
 /** A series has no page of its own: it is a section on its collection's page. */
 export const seriesUrl = (s: Series) => `/collections/${s.data.collection.id}/#series-${s.id}`;
+export const editionUrl = (e: Edition) => `/editions/${e.id}/`;
 export const collectionUrl = (c: Collection | string) => `/collections/${typeof c === 'string' ? c : c.id}/`;
 
 /* ---------- Collections and themed editions ---------- */
