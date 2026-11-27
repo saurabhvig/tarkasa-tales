@@ -2,6 +2,8 @@
 
 This guide covers everything you need to run the website without programming knowledge. Most updates involve **one text file and one image**, uploaded through the GitHub website. Cloudflare (Workers & Pages) then rebuilds and publishes the site automatically, usually within 1–2 minutes.
 
+> **New since the 2026 redesign:** topics, "Helps with", learning outcomes, printables with previews, collections, themed editions, Amazon Attribution and the Learning Club emails are explained in `docs/maintenance-guide.md`. Launch steps are in `docs/launch-checklist.md`; dashboard tasks are in `docs/manual-actions.md`.
+
 ---
 
 ## Where things live

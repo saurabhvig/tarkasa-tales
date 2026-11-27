@@ -156,7 +156,7 @@ newsletter = page('This month: the Great Drop Test, a feather on the Moon, and s
          p('Welcome to the very first Learning Club email! This month is all about a question children ask the moment they can let go of a spoon: '
            '<strong>why do things fall down?</strong>')),
     media_card(f'{IMG}/isaac-newton-gravity-activity.jpg', 'Page 1 of the Great Drop Test activity',
-               kicker('Printable of the month · ages 4–8') + h('The Great Drop Test') +
+               kicker('Printable of the month · ages 5–8') + h('The Great Drop Test') +
                p('Look, ask, test: guess which of two things will land first, drop them together three times and record what happens. '
                  'Then find out what gravity is. Safe, simple and mess-free. Two pages.', 16) +
                button(utm('/activities/isaac-newton-gravity-activity.pdf', c), 'Download the free PDF'), C['yellow_soft']),
